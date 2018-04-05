@@ -1,0 +1,2108 @@
+From ac4120107af3e0d11ac0bb52ea6c5d5494cdad85 Mon Sep 17 00:00:00 2001
+From: Robert Ancell <robert.ancell@canonical.com>
+Date: Tue, 20 Mar 2018 11:51:30 +1300
+Subject: [PATCH] Add Ubuntu mode with special pages
+
+---
+ .gitignore                                         |   5 +
+ configure.ac                                       |   9 +-
+ data/Makefile.am                                   |   6 +
+ data/com.ubuntu.welcome.policy.in                  |  21 +
+ gnome-initial-setup/Makefile.am                    |   4 +
+ gnome-initial-setup/gnome-initial-setup.c          |  40 +-
+ gnome-initial-setup/pages/Makefile.am              |   6 +-
+ gnome-initial-setup/pages/apps/Makefile.am         |  21 +
+ gnome-initial-setup/pages/apps/apps.gresource.xml  |   7 +
+ gnome-initial-setup/pages/apps/gis-apps-page.c     | 305 +++++++++++++++
+ gnome-initial-setup/pages/apps/gis-apps-page.h     |  52 +++
+ gnome-initial-setup/pages/apps/gis-apps-page.ui    |  79 ++++
+ gnome-initial-setup/pages/livepatch/Makefile.am    |  21 +
+ .../pages/livepatch/gis-livepatch-page.c           | 429 +++++++++++++++++++++
+ .../pages/livepatch/gis-livepatch-page.h           |  52 +++
+ .../pages/livepatch/gis-livepatch-page.ui          |  80 ++++
+ .../pages/livepatch/livepatch.gresource.xml        |   7 +
+ .../pages/privacy/gis-privacy-page.c               |   2 +-
+ .../pages/ubuntu-changes/Makefile.am               |  21 +
+ .../pages/ubuntu-changes/gis-ubuntu-changes-page.c | 106 +++++
+ .../pages/ubuntu-changes/gis-ubuntu-changes-page.h |  52 +++
+ .../ubuntu-changes/gis-ubuntu-changes-page.ui      |  60 +++
+ .../ubuntu-changes/ubuntu-changes.gresource.xml    |   8 +
+ .../pages/ubuntu-changes/ubuntu-changes.png        | Bin 0 -> 18322 bytes
+ .../pages/ubuntu-report/Makefile.am                |  21 +
+ .../pages/ubuntu-report/gis-ubuntu-report-page.c   | 189 +++++++++
+ .../pages/ubuntu-report/gis-ubuntu-report-page.h   |  52 +++
+ .../pages/ubuntu-report/gis-ubuntu-report-page.ui  | 131 +++++++
+ .../ubuntu-report/ubuntu-report.gresource.xml      |   7 +
+ po/POTFILES.in                                     |   9 +
+ 30 files changed, 1797 insertions(+), 5 deletions(-)
+ create mode 100644 data/com.ubuntu.welcome.policy.in
+ create mode 100644 gnome-initial-setup/pages/apps/Makefile.am
+ create mode 100644 gnome-initial-setup/pages/apps/apps.gresource.xml
+ create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.c
+ create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.h
+ create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.ui
+ create mode 100644 gnome-initial-setup/pages/livepatch/Makefile.am
+ create mode 100644 gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
+ create mode 100644 gnome-initial-setup/pages/livepatch/gis-livepatch-page.h
+ create mode 100644 gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
+ create mode 100644 gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
+ create mode 100644 gnome-initial-setup/pages/ubuntu-changes/Makefile.am
+ create mode 100644 gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.c
+ create mode 100644 gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.h
+ create mode 100644 gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui
+ create mode 100644 gnome-initial-setup/pages/ubuntu-changes/ubuntu-changes.gresource.xml
+ create mode 100644 gnome-initial-setup/pages/ubuntu-changes/ubuntu-changes.png
+ create mode 100644 gnome-initial-setup/pages/ubuntu-report/Makefile.am
+ create mode 100644 gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
+ create mode 100644 gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
+ create mode 100644 gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
+ create mode 100644 gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
+
+diff --git a/configure.ac b/configure.ac
+index ce17c55..45288c8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -61,7 +61,10 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
+                   json-glib-1.0
+                   libsecret-1
+                   pwquality
+-                  webkit2gtk-4.0)
++                  webkit2gtk-4.0
++                  snapd-glib
++                  libsoup-2.4
++                  sysmetrics)
+ 
+ INITIAL_SETUP_CFLAGS="$INITIAL_SETUP_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_2"
+ INITIAL_SETUP_CFLAGS="$INITIAL_SETUP_CFLAGS -DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_2"
+@@ -157,6 +160,10 @@ gnome-initial-setup/pages/account/Makefile
+ gnome-initial-setup/pages/password/Makefile
+ gnome-initial-setup/pages/software/Makefile
+ gnome-initial-setup/pages/summary/Makefile
++gnome-initial-setup/pages/ubuntu-report/Makefile
++gnome-initial-setup/pages/livepatch/Makefile
++gnome-initial-setup/pages/ubuntu-changes/Makefile
++gnome-initial-setup/pages/apps/Makefile
+ po/Makefile.in
+ ])
+ AC_OUTPUT
+diff --git a/data/Makefile.am b/data/Makefile.am
+index f9a9e12..ef6b767 100644
+--- a/data/Makefile.am
++++ b/data/Makefile.am
+@@ -11,6 +11,10 @@ edit = $(AM_V_GEN) sed \
+ 	$(edit) $< >$@
+ 
+ @INTLTOOL_DESKTOP_RULE@
++@INTLTOOL_POLICY_RULE@
++
++actionsdir = $(datadir)/polkit-1/actions
++actions_DATA = com.ubuntu.welcome.policy
+ 
+ rulesdir = $(datadir)/polkit-1/rules.d
+ rules_DATA = 20-gnome-initial-setup.rules
+@@ -29,6 +33,7 @@ desktop_DATA =						\
+ 
+ EXTRA_DIST =						\
+ 	20-gnome-initial-setup.rules			\
++	com.ubuntu.welcome.policy.in			\
+ 	gnome-welcome-tour				\
+ 	setup-shell.desktop				\
+ 	gnome-welcome-tour.desktop.in.in		\
+@@ -40,6 +45,7 @@ EXTRA_DIST =						\
+ 	$(NULL)
+ 
+ CLEANFILES =						\
++	com.ubuntu.welcome.policy			\
+ 	gnome-initial-setup.desktop.in			\
+ 	gnome-initial-setup.desktop			\
+ 	gnome-initial-setup-copy-worker.desktop.in	\
+diff --git a/data/com.ubuntu.welcome.policy.in b/data/com.ubuntu.welcome.policy.in
+new file mode 100644
+index 0000000..35424df
+--- /dev/null
++++ b/data/com.ubuntu.welcome.policy.in
+@@ -0,0 +1,21 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE policyconfig PUBLIC
++ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
++ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
++
++<policyconfig>
++  <vendor>Ubuntu Welcome</vendor>
++  <vendor_url>https://www.ubuntu.com/</vendor_url>
++
++  <action id="com.ubuntu.welcome.livepatch">
++    <_description>Manage Livepatch</_description>
++    <_message>Authentication is required to enable Livepatch</_message>
++    <defaults>
++      <allow_any>no</allow_any>
++      <allow_inactive>no</allow_inactive>
++      <allow_active>auth_admin_keep</allow_active>
++    </defaults>
++    <annotate key="org.freedesktop.policykit.imply">io.snapcraft.snapd.login com.ubuntu.softwareproperties.applychanges </annotate>
++  </action>
++
++</policyconfig>
+\ No newline at end of file
+diff --git a/gnome-initial-setup/Makefile.am b/gnome-initial-setup/Makefile.am
+index c04f1e4..6c36682 100644
+--- a/gnome-initial-setup/Makefile.am
++++ b/gnome-initial-setup/Makefile.am
+@@ -44,6 +44,10 @@ gnome_initial_setup_LDADD =	\
+ 	pages/password/libgispassword.la \
+ 	pages/software/libgissoftware.la \
+ 	pages/summary/libgissummary.la \
++	pages/ubuntu-report/libgisubuntu-report.la \
++	pages/livepatch/libgislivepatch.la \
++	pages/ubuntu-changes/libgisubuntu-changes.la \
++	pages/apps/libgisapps.la \
+ 	$(INITIAL_SETUP_LIBS) \
+ 	-lm
+ 
+diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
+index 5671cae..da3c6bf 100644
+--- a/gnome-initial-setup/gnome-initial-setup.c
++++ b/gnome-initial-setup/gnome-initial-setup.c
+@@ -48,6 +48,10 @@
+ #include "pages/account/gis-account-pages.h"
+ #include "pages/password/gis-password-page.h"
+ #include "pages/summary/gis-summary-page.h"
++#include "pages/ubuntu-report/gis-ubuntu-report-page.h"
++#include "pages/livepatch/gis-livepatch-page.h"
++#include "pages/ubuntu-changes/gis-ubuntu-changes-page.h"
++#include "pages/apps/gis-apps-page.h"
+ 
+ #define VENDOR_PAGES_GROUP "pages"
+ #define VENDOR_PAGES_SKIP_KEY "skip"
+@@ -80,6 +84,16 @@ static PageData page_table[] = {
+   { NULL },
+ };
+ 
++static PageData ubuntu_page_table[] = {
++  PAGE (language,       FALSE),
++/*  PAGE (ubuntu_changes, FALSE), */
++  PAGE (livepatch,      FALSE),
++  PAGE (ubuntu_report,  FALSE),
++  PAGE (apps,           FALSE),
++  PAGE (summary,        FALSE),
++  { NULL },
++};
++
+ #undef PAGE
+ 
+ static gboolean
+@@ -155,6 +169,25 @@ destroy_pages_after (GisAssistant *assistant,
+   }
+ }
+ 
++static gboolean
++is_desktop (const gchar *name)
++{
++  const gchar *xdg_current_desktop;
++  g_auto(GStrv) tokens = NULL;
++  int i;
++
++  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
++  if (xdg_current_desktop == NULL)
++    return FALSE;
++
++  tokens = g_strsplit (xdg_current_desktop, ":", -1);
++  for (i = 0; tokens[i] != NULL; i++)
++    if (strcmp (tokens[i], name) == 0)
++      return TRUE;
++
++  return FALSE;
++}
++
+ static void
+ rebuild_pages_cb (GisDriver *driver)
+ {
+@@ -169,12 +202,15 @@ rebuild_pages_cb (GisDriver *driver)
+ 
+   skip_pages = pages_to_skip_from_file ();
+ 
+-  page_data = page_table;
++  if (is_desktop ("ubuntu"))
++    page_data = ubuntu_page_table;
++  else
++    page_data = page_table;
+ 
+   if (current_page != NULL) {
+     destroy_pages_after (assistant, current_page);
+ 
+-    for (page_data = page_table; page_data->page_id != NULL; ++page_data)
++    for (page_data = ubuntu_page_table; page_data->page_id != NULL; ++page_data) // FIXME conditional
+       if (g_str_equal (page_data->page_id, GIS_PAGE_GET_CLASS (current_page)->page_id))
+         break;
+ 
+diff --git a/gnome-initial-setup/pages/Makefile.am b/gnome-initial-setup/pages/Makefile.am
+index e5182a7..551c5a4 100644
+--- a/gnome-initial-setup/pages/Makefile.am
++++ b/gnome-initial-setup/pages/Makefile.am
+@@ -11,4 +11,8 @@ SUBDIRS = \
+ 	account \
+ 	password \
+ 	summary \
+-	software
++	software \
++	ubuntu-report \
++	livepatch \
++	ubuntu-changes \
++	apps
+diff --git a/gnome-initial-setup/pages/apps/Makefile.am b/gnome-initial-setup/pages/apps/Makefile.am
+new file mode 100644
+index 0000000..8badc4d
+--- /dev/null
++++ b/gnome-initial-setup/pages/apps/Makefile.am
+@@ -0,0 +1,21 @@
++
++noinst_LTLIBRARIES = libgisapps.la
++
++BUILT_SOURCES =
++
++resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/apps.gresource.xml)
++apps-resources.c: apps.gresource.xml $(resource_files)
++	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $<
++apps-resources.h: apps.gresource.xml $(resource_files)
++	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-header $<
++BUILT_SOURCES += apps-resources.c apps-resources.h
++
++libgisapps_la_SOURCES =	\
++	gis-apps-page.c gis-apps-page.h	\
++	$(BUILT_SOURCES)
++
++libgisapps_la_CFLAGS = $(INITIAL_SETUP_CFLAGS) -I "$(srcdir)/../.." -I "$(top_srcdir)" -I "$(top_builddir)"
++libgisapps_la_LIBADD = $(INITIAL_SETUP_LIBS)
++libgisapps_la_LDFLAGS = -export_dynamic -avoid-version -module -no-undefined
++
++EXTRA_DIST = apps.gresource.xml $(resource_files)
+diff --git a/gnome-initial-setup/pages/apps/apps.gresource.xml b/gnome-initial-setup/pages/apps/apps.gresource.xml
+new file mode 100644
+index 0000000..7d14caf
+--- /dev/null
++++ b/gnome-initial-setup/pages/apps/apps.gresource.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<gresources>
++  <gresource prefix="/org/gnome/initial-setup">
++    <file preprocess="xml-stripblanks" alias="gis-apps-page.ui">gis-apps-page.ui</file>
++  </gresource>
++</gresources>
++
+diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.c b/gnome-initial-setup/pages/apps/gis-apps-page.c
+new file mode 100644
+index 0000000..ad599d7
+--- /dev/null
++++ b/gnome-initial-setup/pages/apps/gis-apps-page.c
+@@ -0,0 +1,305 @@
++/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
++/*
++ * Copyright (C) 2018 Canonical Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++/* Get more apps page {{{1 */
++
++#define PAGE_ID "apps"
++
++#include "config.h"
++#include "gis-apps-page.h"
++#include "apps-resources.h"
++
++#include <glib/gi18n.h>
++#include <gio/gio.h>
++#include <snapd-glib/snapd-glib.h>
++#include <libsoup/soup.h>
++
++struct _GisAppsPagePrivate {
++  SoupSession *soup_session;
++  GtkWidget *installed_grid;
++  GtkWidget *featured_grid;
++};
++typedef struct _GisAppsPagePrivate GisAppsPagePrivate;
++
++G_DEFINE_TYPE_WITH_PRIVATE (GisAppsPage, gis_apps_page, GIS_TYPE_PAGE);
++
++static void
++gis_apps_page_constructed (GObject *object)
++{
++  GisAppsPage *page = GIS_APPS_PAGE (object);
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++
++  G_OBJECT_CLASS (gis_apps_page_parent_class)->constructed (object);
++
++  gis_page_set_skippable (GIS_PAGE (page), TRUE);
++
++  gis_page_set_complete (GIS_PAGE (page), TRUE);
++  gtk_widget_show (GTK_WIDGET (page));
++}
++
++static void
++gis_apps_page_dispose (GObject *object)
++{
++  GisAppsPage *page = GIS_APPS_PAGE (object);
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++
++  g_clear_object (&priv->soup_session);
++
++  G_OBJECT_CLASS (gis_apps_page_parent_class)->dispose (object);
++}
++
++static void
++open_software (GtkButton      *button,
++               const gchar    *uri,
++               GisAppsPage *page)
++{
++  g_autoptr(GAppInfo) info = NULL;
++  g_autoptr(GError) error = NULL;
++
++  info = g_app_info_create_from_commandline ("gnome-software", NULL, G_APP_INFO_CREATE_NONE, &error);
++  if (info == NULL) {
++     g_warning ("Failed to get launch information from gnome-software: %s", error->message);
++     return;
++  }
++  if (!g_app_info_launch (info, NULL, NULL, &error)) {
++     g_warning ("Failed to launch gnome-software: %s", error->message);
++     return;
++  }
++}
++
++static void
++gis_apps_page_locale_changed (GisPage *page)
++{
++  gis_page_set_title (GIS_PAGE (page), _("Welcome to Ubuntu"));
++}
++
++static void
++gis_apps_page_class_init (GisAppsPageClass *klass)
++{
++  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
++  GObjectClass *object_class = G_OBJECT_CLASS (klass);
++
++  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-apps-page.ui");
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, installed_grid);
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, featured_grid);
++  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), open_software);
++
++  page_class->page_id = PAGE_ID;
++  page_class->locale_changed = gis_apps_page_locale_changed;
++  object_class->constructed = gis_apps_page_constructed;
++  object_class->dispose = gis_apps_page_dispose;
++}
++
++static GdkPixbuf *
++load_desktop_icon (SnapdSnap *snap)
++{
++  GPtrArray *apps;
++  guint i;
++
++  apps = snapd_snap_get_apps (snap);
++  for (i = 0; i < apps->len; i++) {
++    SnapdApp *app = g_ptr_array_index (apps, i);
++    const gchar *desktop_file_path;
++    g_autoptr(GKeyFile) desktop_file = NULL;
++    g_autoptr(GError) error = NULL;
++    g_autofree gchar *icon = NULL;
++
++    desktop_file_path = snapd_app_get_desktop_file (app);
++    if (desktop_file_path == NULL)
++      continue;
++
++    desktop_file = g_key_file_new ();
++    if (!g_key_file_load_from_file (desktop_file, desktop_file_path, G_KEY_FILE_NONE, &error)) {
++      g_warning ("Failed to load desktop file %s: %s", desktop_file_path, error->message);
++      continue;
++    }
++
++    icon = g_key_file_get_string (desktop_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_ICON, &error);
++    if (icon == NULL) {
++      g_warning ("Failed to get desktop file icon %s: %s", desktop_file_path, error->message);
++      continue;
++    }
++
++    if (g_str_has_prefix (icon, "/")) {
++      g_autoptr(GdkPixbuf) pixbuf = NULL;
++
++      pixbuf = gdk_pixbuf_new_from_file_at_scale (icon, 48, 48, TRUE, &error);
++      if (pixbuf == NULL) {
++        g_warning ("Failed to load icon %s: %s", icon, error->message);
++        continue;
++      }
++
++      return g_steal_pointer (&pixbuf);
++    }
++    else {
++      g_autoptr(GdkPixbuf) pixbuf = NULL;
++
++      pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), icon, 48, 0, &error);
++      if (pixbuf == NULL) {
++        g_warning ("Failed to load icon %s: %s", icon, error->message);
++        continue;
++      }
++
++      return g_steal_pointer (&pixbuf);
++    }
++  }
++
++  return NULL;
++}
++
++static void
++icon_cb (GObject *object, GAsyncResult *result, gpointer user_data)
++{
++  GtkWidget *image = user_data;
++  g_autoptr(GInputStream) stream = NULL;
++  g_autoptr(GdkPixbuf) pixbuf = NULL;
++  g_autoptr(GError) error = NULL;
++
++  stream = soup_session_send_finish (SOUP_SESSION (object), result, &error);
++  if (stream == NULL) {
++    g_warning ("Failed to download icon: %s", error->message);
++    return;
++  }
++
++  pixbuf = gdk_pixbuf_new_from_stream_at_scale (stream, 48, 48, TRUE, NULL, &error);
++  if (pixbuf == NULL) {
++    g_warning ("Failed to load icon: %s", error->message);
++    return;
++  }
++
++  gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
++}
++
++static void
++load_store_icon (GisAppsPage *page, GtkWidget *image, SnapdSnap *snap)
++{
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++  const gchar *url;
++  g_autoptr(SoupMessage) message = NULL;
++
++  url = snapd_snap_get_icon (snap);
++  if (url == NULL || !(g_str_has_prefix (url, "http://") || g_str_has_prefix (url, "https://")))
++    return;
++
++  message = soup_message_new ("GET", url);
++  soup_session_send_async (priv->soup_session, message, NULL, icon_cb, image);
++}
++
++static void
++load_icon (GisAppsPage *page, GtkWidget *image, SnapdSnap *snap)
++{
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++  g_autoptr(GdkPixbuf) pixbuf = NULL;
++
++  pixbuf = load_desktop_icon (snap);
++  if (pixbuf != NULL) {
++    gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
++    return;
++  }
++
++  // FIXME: Add placeholder icon
++  load_store_icon (page, image, snap);
++}
++
++static GtkWidget *
++snap_tile_new (GisAppsPage *page, SnapdSnap *snap)
++{
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++  GtkWidget *box, *icon, *label;
++  const gchar *title;
++
++  box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
++
++  icon = gtk_image_new ();
++  gtk_widget_show (icon);
++  gtk_box_pack_start (GTK_BOX (box), icon, FALSE, TRUE, 0);
++
++  title = snapd_snap_get_title (snap);
++  if (title == NULL)
++    title = snapd_snap_get_name (snap);
++  label = gtk_label_new (title);
++  gtk_widget_show (label);
++  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
++  gtk_label_set_xalign (GTK_LABEL (label), 0);
++  gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
++
++  load_icon (page, icon, snap);
++
++  return box;
++}
++
++static void
++gis_apps_page_init (GisAppsPage *page)
++{
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++  g_autoptr(SnapdClient) client = NULL;
++  g_autoptr(GPtrArray) installed_snaps = NULL;
++  g_autoptr(GPtrArray) featured_snaps = NULL;
++  g_autoptr(GError) error = NULL;
++
++  g_resources_register (apps_get_resource ());
++
++  gtk_widget_init_template (GTK_WIDGET (page));
++
++  priv->soup_session = soup_session_new ();
++
++  client = snapd_client_new ();
++
++  installed_snaps = snapd_client_list_sync (client, NULL, &error);
++  if (installed_snaps != NULL) {
++    guint i, count = 0;
++    for (i = 0; i < installed_snaps->len; i++) {
++      SnapdSnap *snap = g_ptr_array_index (installed_snaps, i);
++      GtkWidget *tile;
++
++      if (snapd_snap_get_snap_type (snap) != SNAPD_SNAP_TYPE_APP)
++        continue;
++
++      tile = snap_tile_new (page, snap);
++      gtk_widget_show (tile);
++      gtk_grid_attach (GTK_GRID (priv->installed_grid), tile, count % 4, count / 4, 1, 1);
++      count++;
++    }
++  }
++  else
++    g_warning ("Failed to get installed snaps: %s", error->message);
++
++  featured_snaps = snapd_client_find_section_sync (client, SNAPD_FIND_FLAGS_NONE, "featured", NULL, NULL, NULL, &error);
++  if (featured_snaps != NULL) {
++    guint i;
++    for (i = 0; i < featured_snaps->len; i++) {
++      SnapdSnap *snap = g_ptr_array_index (featured_snaps, i);
++      GtkWidget *tile;
++
++      tile = snap_tile_new (page, snap);
++      gtk_widget_show (tile);
++      gtk_grid_attach (GTK_GRID (priv->featured_grid), tile, i % 4, i / 4, 1, 1);
++    }
++  }
++  else
++    g_warning ("Failed to get featured snaps: %s", error->message);
++}
++
++void
++gis_prepare_apps_page (GisDriver *driver)
++{
++  gis_driver_add_page (driver,
++                       g_object_new (GIS_TYPE_APPS_PAGE,
++                                     "driver", driver,
++                                     NULL));
++}
+diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.h b/gnome-initial-setup/pages/apps/gis-apps-page.h
+new file mode 100644
+index 0000000..347dcbc
+--- /dev/null
++++ b/gnome-initial-setup/pages/apps/gis-apps-page.h
+@@ -0,0 +1,52 @@
++/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
++/*
++ * Copyright (C) 2018 Canonical Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef __GIS_APPS_PAGE_H__
++#define __GIS_APPS_PAGE_H__
++
++#include "gnome-initial-setup.h"
++
++G_BEGIN_DECLS
++
++#define GIS_TYPE_APPS_PAGE            (gis_apps_page_get_type ())
++#define GIS_APPS_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_APPS_PAGE, GisAppsPage))
++#define GIS_APPS_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_APPS_PAGE, GisAppsPageClass))
++#define GIS_IS_APPS_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_APPS_PAGE))
++#define GIS_IS_APPS_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_APPS_PAGE))
++#define GIS_APPS_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_APPS_PAGE, GisAppsPageClass))
++
++typedef struct _GisAppsPage        GisAppsPage;
++typedef struct _GisAppsPageClass   GisAppsPageClass;
++
++struct _GisAppsPage
++{
++  GisPage parent;
++};
++
++struct _GisAppsPageClass
++{
++  GisPageClass parent_class;
++};
++
++GType gis_apps_page_get_type (void);
++
++void gis_prepare_apps_page (GisDriver *driver);
++
++G_END_DECLS
++
++#endif /* __GIS_APPS_PAGE_H__ */
+diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.ui b/gnome-initial-setup/pages/apps/gis-apps-page.ui
+new file mode 100644
+index 0000000..925b33d
+--- /dev/null
++++ b/gnome-initial-setup/pages/apps/gis-apps-page.ui
+@@ -0,0 +1,79 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<interface>
++  <!-- interface-requires gtk+ 3.0 -->
++  <template class="GisAppsPage" parent="GisPage">
++    <child>
++      <object class="GtkBox">
++        <property name="visible">True</property>
++        <property name="can_focus">False</property>
++        <property name="halign">center</property>
++        <property name="valign">fill</property>
++        <property name="orientation">vertical</property>
++        <child>
++          <object class="GtkLabel" id="title">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">center</property>
++            <property name="valign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Get more apps</property>
++            <attributes>
++              <attribute name="weight" value="bold"/>
++              <attribute name="scale" value="1.8"/>
++            </attributes>
++          </object>
++        </child>
++        <child>
++          <object class="GtkLabel">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Your Ubuntu system has these apps already:</property>
++            <property name="wrap">True</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkGrid" id="installed_grid">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="row-homogeneous">True</property>
++            <property name="column-homogeneous">True</property>
++            <property name="row-spacing">10</property>
++            <property name="column-spacing">10</property>
++            <property name="margin_top">18</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkLabel">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">You can use “Software” to install apps like these:</property>
++            <property name="wrap">True</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkGrid" id="featured_grid">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="row-homogeneous">True</property>
++            <property name="column-homogeneous">True</property>
++            <property name="row-spacing">10</property>
++            <property name="column-spacing">10</property>
++            <property name="margin_top">18</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkButton">
++            <property name="visible">True</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Open “Software” now</property>
++            <signal name="clicked" handler="open_software"/>
++          </object>
++        </child>
++      </object>
++    </child>
++  </template>
++</interface>
+diff --git a/gnome-initial-setup/pages/livepatch/Makefile.am b/gnome-initial-setup/pages/livepatch/Makefile.am
+new file mode 100644
+index 0000000..e40c6dc
+--- /dev/null
++++ b/gnome-initial-setup/pages/livepatch/Makefile.am
+@@ -0,0 +1,21 @@
++
++noinst_LTLIBRARIES = libgislivepatch.la
++
++BUILT_SOURCES =
++
++resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/livepatch.gresource.xml)
++livepatch-resources.c: livepatch.gresource.xml $(resource_files)
++	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $<
++livepatch-resources.h: livepatch.gresource.xml $(resource_files)
++	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-header $<
++BUILT_SOURCES += livepatch-resources.c livepatch-resources.h
++
++libgislivepatch_la_SOURCES =	\
++	gis-livepatch-page.c gis-livepatch-page.h	\
++	$(BUILT_SOURCES)
++
++libgislivepatch_la_CFLAGS = $(INITIAL_SETUP_CFLAGS) -I "$(srcdir)/../.." -I "$(top_srcdir)" -I "$(top_builddir)"
++libgislivepatch_la_LIBADD = $(INITIAL_SETUP_LIBS)
++libgislivepatch_la_LDFLAGS = -export_dynamic -avoid-version -module -no-undefined
++
++EXTRA_DIST = livepatch.gresource.xml $(resource_files)
+diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
+new file mode 100644
+index 0000000..39a031d
+--- /dev/null
++++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
+@@ -0,0 +1,429 @@
++/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
++/*
++ * Copyright (C) 2018 Canonical Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ *
++ * Written by:
++ *     Andrea Azzarone <andrea.azzarone@canonical.com>
++ */
++
++/* Canonical Livepatch page {{{1 */
++
++#define PAGE_ID "livepatch"
++
++#include "config.h"
++#include "gis-livepatch-page.h"
++#include "livepatch-resources.h"
++
++#define GOA_API_IS_SUBJECT_TO_CHANGE
++#include <goa/goa.h>
++#define GOA_BACKEND_API_IS_SUBJECT_TO_CHANGE
++#include <goabackend/goabackend.h>
++
++#include <glib/gi18n.h>
++#include <gio/gio.h>
++#include <polkit/polkit.h>
++
++struct _GisLivepatchPagePrivate {
++  GtkWidget *setup_button;
++  GtkWidget *message_box;
++  GtkWidget *signout_button;
++  GtkWidget *message_label;
++
++  GoaClient *goa_client;
++  GoaAccount *goa_account;
++  GPermission *permission;
++
++  gchar *token;
++  gboolean waiting_for_livepatch_response;
++  gboolean user_current_choice;
++};
++typedef struct _GisLivepatchPagePrivate GisLivepatchPagePrivate;
++
++G_DEFINE_TYPE_WITH_PRIVATE (GisLivepatchPage, gis_livepatch_page, GIS_TYPE_PAGE);
++
++#define LIVEPATCH_ENABLE_SUCCESS_MESSAGE  _("You're all set: Livepatch is now on.")
++#define LIVEPATCH_ENABLE_FAILURE_MESSAGE  _("Failed to setup Livepatch: please retry.")
++#define LIVEPATCH_DISABLE_FAILURE_MESSAGE _("Failed to disable Livepatch: please retry.")
++
++static gboolean
++set_livepatch_enabled (GisLivepatchPage *page,
++                       gboolean          value);
++
++static gboolean
++is_livepatch_enabled ()
++{
++  return g_file_test ("/var/snap/canonical-livepatch/common/machine-token",
++                      G_FILE_TEST_EXISTS);
++}
++
++static void
++on_livepatch_enabled (GObject *source_object,
++                      GAsyncResult *res,
++                      gpointer data)
++{
++  GisLivepatchPage *page = GIS_LIVEPATCH_PAGE (data);
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++  g_autoptr(GVariant) result = NULL;
++  gboolean success = TRUE;
++  gboolean current_state = is_livepatch_enabled ();
++  g_autoptr(GError) error = NULL;
++
++  priv->waiting_for_livepatch_response = FALSE;
++
++  result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
++  if (result == NULL) {
++    g_warning ("Failed to enable/disable Livepatch through DBus: %s\n", error->message);
++    success = FALSE;
++  } else {
++    gboolean out_error;
++    g_autofree gchar *out_message = NULL;
++
++    g_variant_get (result, "(bs)", &out_error, &out_message);
++    if (out_error) {
++      g_warning ("Failed to enable/disable Livepatch: %s\n", out_message);
++      success = FALSE;
++    }
++  }
++
++  if (success) {
++     /* We failed to enable or disable livepatch.
++        Check if this corresponds to the current user choice. */
++    if (current_state != priv->user_current_choice) {
++      set_livepatch_enabled (page, priv->user_current_choice);
++    } else if (current_state) {
++      gtk_label_set_text (GTK_LABEL (priv->message_label), LIVEPATCH_ENABLE_SUCCESS_MESSAGE);
++    }
++  } else if (current_state != priv->user_current_choice) {
++    /* We failed to enable or disable livepatch. Show an error message if
++       the current state does not correpond the current user choice.
++       Ignore the message if the call failed but the current status correponds
++       to the user choice. */
++    if (priv->user_current_choice) {
++      gtk_label_set_text (GTK_LABEL (priv->message_label), LIVEPATCH_ENABLE_FAILURE_MESSAGE);
++      gtk_widget_set_sensitive (priv->setup_button, TRUE);
++    } else {
++      gtk_label_set_text (GTK_LABEL (priv->message_label), LIVEPATCH_DISABLE_FAILURE_MESSAGE);
++    }
++  }
++}
++
++static GoaAccount*
++add_ubuntusso_account (GisLivepatchPage *page)
++{
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++  GtkWindow *parent = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page)));
++  GtkWidget *dialog;
++  g_autoptr(GoaProvider) provider = NULL;
++  g_autoptr(GError) error = NULL;
++  GoaObject *goa_object = NULL;
++  GoaAccount *ret = NULL;
++
++  dialog = gtk_dialog_new_with_buttons (_("Add Account"),
++                                        parent,
++                                        GTK_DIALOG_MODAL
++                                        | GTK_DIALOG_DESTROY_WITH_PARENT
++                                        | GTK_DIALOG_USE_HEADER_BAR,
++                                        NULL, NULL);
++
++  /* Set dialog to not resize. */
++  gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
++
++  provider = goa_provider_get_for_provider_type ("ubuntusso");
++  if (provider == NULL) {
++    g_warning ("Failed to get an ubuntusso provider: %s", error->message);
++    goto out;
++  }
++
++  /* This actually show the login dialog */
++  goa_object = goa_provider_add_account (provider,
++                                         priv->goa_client,
++                                         GTK_DIALOG (dialog),
++                                         GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
++                                         &error);
++
++  if (error) {
++    if (!g_error_matches (error, GOA_ERROR, GOA_ERROR_DIALOG_DISMISSED))
++      g_warning ("Failed to add un Ubuntu Single Sign-on account: %s", error->message);
++    goto out;
++  }
++
++  ret = goa_object_get_account (goa_object);
++
++ out:
++  gtk_widget_destroy (dialog);
++  g_clear_object (&goa_object);
++  return ret;
++}
++
++static gboolean
++set_livepatch_enabled (GisLivepatchPage *page,
++                       gboolean          value)
++{
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++  g_autoptr(GDBusProxy) proxy = NULL;
++  g_autoptr(GError) error = NULL;
++  GVariant *args;
++
++  proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
++                                         G_DBUS_PROXY_FLAGS_NONE,
++                                         NULL, /* info */
++                                         "com.ubuntu.SoftwareProperties",
++                                         "/",
++                                         "com.ubuntu.SoftwareProperties",
++                                         NULL, /* cancellable */
++                                         &error);
++
++  if (proxy == NULL) {
++    g_warning ("Failed to get dbus proxy for com.ubuntu.SoftwareProperties: %s", error->message);
++    return FALSE;
++  }
++
++  if (value) {
++    args = g_variant_new ("(bs)", TRUE, priv->token);
++  } else {
++    args = g_variant_new ("(bs)", FALSE, "");
++  }
++
++  priv->waiting_for_livepatch_response = TRUE;
++  g_dbus_proxy_call (proxy,
++                     "SetLivepatchEnabled",
++                     args,
++                     /* Fallback to interactive authorization if the meta action didn't work */
++                     G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
++                     1200000, /* 20 minutes timeout should be enough to install and enable livepatch */
++                     NULL, /* cancellable */
++                     on_livepatch_enabled,
++                     page);
++
++  return TRUE;
++}
++
++static void
++on_livepatch_token_ready (GObject      *source_object,
++                          GAsyncResult *res,
++                          gpointer      data)
++{
++  GisLivepatchPage *page = GIS_LIVEPATCH_PAGE (data);
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++  GoaPasswordBased *password_based = GOA_PASSWORD_BASED (source_object);
++  g_autoptr(GError) error = NULL;
++
++  if (!goa_password_based_call_get_password_finish (password_based, &priv->token, res, &error)) {
++    g_warning ("Failed to get livepatch token: %s", error->message);
++    gtk_widget_set_sensitive (priv->setup_button, TRUE);
++    return;
++  }
++
++  priv->user_current_choice = TRUE;
++  gtk_widget_set_visible (priv->message_box, TRUE);
++  if (set_livepatch_enabled (page, TRUE)) {
++    gtk_label_set_text (GTK_LABEL (priv->message_label), LIVEPATCH_ENABLE_SUCCESS_MESSAGE);
++  } else {
++    gtk_label_set_text (GTK_LABEL (priv->message_label), LIVEPATCH_ENABLE_FAILURE_MESSAGE);
++    gtk_widget_set_sensitive (priv->setup_button, TRUE);
++  }
++}
++
++void
++login_and_enable_livepatch (GisLivepatchPage *page)
++{
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++  GoaObject *object = NULL;
++  GoaPasswordBased *password_based = NULL;
++
++  /* show the login dialog if needed */
++  if (priv->goa_account == NULL)
++    priv->goa_account = add_ubuntusso_account (page);
++
++  /* login dialog was dismissed */
++  if (priv->goa_account == NULL) {
++    gtk_widget_set_sensitive (priv->setup_button, TRUE);
++    return;
++  }
++
++  /* retrieve livepatch token */
++  object = GOA_OBJECT (g_dbus_interface_get_object (G_DBUS_INTERFACE (priv->goa_account)));
++  password_based = goa_object_peek_password_based (object);
++
++  goa_password_based_call_get_password (password_based,
++                                        "livepatch",
++                                        NULL /* cancellable */,
++                                        on_livepatch_token_ready,
++                                        page);
++
++}
++
++static void
++on_livepatch_permission_acquired (GObject      *source,
++                                  GAsyncResult *res,
++                                  gpointer      data)
++{
++  GisLivepatchPage *page = GIS_LIVEPATCH_PAGE (data);
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++  g_autoptr(GError) error = NULL;
++  gboolean allowed;
++
++  allowed = g_permission_acquire_finish (priv->permission, res, &error);
++  if (error) {
++      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
++        g_warning ("Failed to acquire permission: %s", error->message);
++      else
++        gtk_widget_set_sensitive (priv->setup_button, TRUE);
++      return;
++  }
++
++  if (allowed)
++    login_and_enable_livepatch (page);
++}
++
++static void
++on_setup_button_clicked (GtkButton *button,
++                         gpointer  data)
++{
++  GisLivepatchPage *page = GIS_LIVEPATCH_PAGE (data);
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++
++  gtk_widget_set_sensitive (priv->setup_button, FALSE);
++
++  if (G_IS_PERMISSION (priv->permission) && g_permission_get_allowed (priv->permission)) {
++    login_and_enable_livepatch (page);
++  }
++  else if (G_IS_PERMISSION (priv->permission)  && g_permission_get_can_acquire (priv->permission)) {
++    g_permission_acquire_async (priv->permission,
++                                NULL,
++                                on_livepatch_permission_acquired,
++                                page);
++  } else {
++     g_warning ("Could not start the attempt to acquire the permission to enable Livepatch. Fallback to per-app policy.");
++     login_and_enable_livepatch (page);
++  }
++}
++
++static void
++on_signout_button_clicked (GtkButton        *button,
++                           GisLivepatchPage *page)
++{
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++
++  /* disable livepatch */
++  priv->user_current_choice = FALSE;
++  if (!priv->waiting_for_livepatch_response && is_livepatch_enabled ())
++    set_livepatch_enabled (page, FALSE);
++
++  /* remove GoaAccount from system */
++  goa_account_call_remove (priv->goa_account, NULL, NULL, NULL);
++
++  /* reset the GUI */
++  gtk_widget_set_sensitive (priv->setup_button, TRUE);
++  gtk_widget_set_visible (priv->message_box, FALSE);
++
++  g_clear_object (&priv->goa_account);
++  g_clear_pointer (&priv->token, g_free);
++}
++
++static void
++gis_livepatch_page_constructed (GObject *object)
++{
++  GisLivepatchPage *page = GIS_LIVEPATCH_PAGE (object);
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++  g_autoptr(GError) error = NULL;
++
++  G_OBJECT_CLASS (gis_livepatch_page_parent_class)->constructed (object);
++
++  gis_page_set_skippable (GIS_PAGE (page), TRUE);
++
++  priv->goa_client = goa_client_new_sync (NULL, &error);
++  priv->goa_account = NULL;
++  priv->token = NULL;
++  priv->waiting_for_livepatch_response = FALSE;
++  priv->user_current_choice = FALSE;
++
++  if (priv->goa_client == NULL) {
++    g_error ("Failed to get a GoaClient: %s", error->message);
++    return;
++  }
++
++  priv->permission = polkit_permission_new_sync ("com.ubuntu.welcome.livepatch", NULL, NULL, &error);
++  if (priv->permission == NULL) {
++    g_warning ("Could not get 'com.ubuntu.welcome.livepatch' permission: %s",
++                error->message);
++  }
++
++  g_signal_connect (priv->setup_button, "clicked",
++                    G_CALLBACK (on_setup_button_clicked), page);
++
++  g_signal_connect (priv->signout_button, "clicked",
++                    G_CALLBACK (on_signout_button_clicked), page);
++
++  gis_page_set_complete (GIS_PAGE (page), TRUE);
++  gtk_widget_show (GTK_WIDGET (page));
++}
++
++static void
++gis_livepatch_page_dispose (GObject *object)
++{
++  GisLivepatchPage *page = GIS_LIVEPATCH_PAGE (object);
++  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
++
++  g_clear_object (&priv->goa_client);
++  g_clear_object (&priv->goa_account);
++  g_clear_object (&priv->permission);
++  g_clear_pointer (&priv->token, g_free);
++
++  G_OBJECT_CLASS (gis_livepatch_page_parent_class)->dispose (object);
++}
++
++static void
++gis_livepatch_page_locale_changed (GisPage *page)
++{
++  gis_page_set_title (GIS_PAGE (page), _("Welcome to Ubuntu"));
++}
++
++static void
++gis_livepatch_page_class_init (GisLivepatchPageClass *klass)
++{
++  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
++  GObjectClass *object_class = G_OBJECT_CLASS (klass);
++
++  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-livepatch-page.ui");
++
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisLivepatchPage, setup_button);
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisLivepatchPage, message_box);
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisLivepatchPage, signout_button);
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisLivepatchPage, message_label);
++
++  page_class->page_id = PAGE_ID;
++  page_class->locale_changed = gis_livepatch_page_locale_changed;
++  object_class->constructed = gis_livepatch_page_constructed;
++  object_class->dispose = gis_livepatch_page_dispose;
++}
++
++static void
++gis_livepatch_page_init (GisLivepatchPage *page)
++{
++  g_resources_register (livepatch_get_resource ());
++
++  gtk_widget_init_template (GTK_WIDGET (page));
++}
++
++void
++gis_prepare_livepatch_page (GisDriver *driver)
++{
++  gis_driver_add_page (driver,
++                       g_object_new (GIS_TYPE_LIVEPATCH_PAGE,
++                                     "driver", driver,
++                                     NULL));
++}
+diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h
+new file mode 100644
+index 0000000..eed18e5
+--- /dev/null
++++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h
+@@ -0,0 +1,52 @@
++/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
++/*
++ * Copyright (C) 2018 Canonical Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef __GIS_LIVEPATCH_PAGE_H__
++#define __GIS_LIVEPATCH_PAGE_H__
++
++#include "gnome-initial-setup.h"
++
++G_BEGIN_DECLS
++
++#define GIS_TYPE_LIVEPATCH_PAGE            (gis_livepatch_page_get_type ())
++#define GIS_LIVEPATCH_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_LIVEPATCH_PAGE, GisLivepatchPage))
++#define GIS_LIVEPATCH_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_LIVEPATCH_PAGE, GisLivepatchPageClass))
++#define GIS_IS_LIVEPATCH_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_LIVEPATCH_PAGE))
++#define GIS_IS_LIVEPATCH_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_LIVEPATCH_PAGE))
++#define GIS_LIVEPATCH_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_LIVEPATCH_PAGE, GisLivepatchPageClass))
++
++typedef struct _GisLivepatchPage        GisLivepatchPage;
++typedef struct _GisLivepatchPageClass   GisLivepatchPageClass;
++
++struct _GisLivepatchPage
++{
++  GisPage parent;
++};
++
++struct _GisLivepatchPageClass
++{
++  GisPageClass parent_class;
++};
++
++GType gis_livepatch_page_get_type (void);
++
++void gis_prepare_livepatch_page (GisDriver *driver);
++
++G_END_DECLS
++
++#endif /* __GIS_LIVEPATCH_PAGE_H__ */
+diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
+new file mode 100644
+index 0000000..fad9c2d
+--- /dev/null
++++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
+@@ -0,0 +1,80 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<interface>
++  <!-- interface-requires gtk+ 3.0 -->
++  <template class="GisLivepatchPage" parent="GisPage">
++    <child>
++      <object class="GtkBox">
++        <property name="visible">True</property>
++        <property name="can_focus">False</property>
++        <property name="halign">center</property>
++        <property name="valign">fill</property>
++        <property name="orientation">vertical</property>
++        <child>
++          <object class="GtkLabel" id="title">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">center</property>
++            <property name="valign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Livepatch</property>
++            <attributes>
++              <attribute name="weight" value="bold"/>
++              <attribute name="scale" value="1.8"/>
++            </attributes>
++          </object>
++        </child>
++        <child>
++          <object class="GtkLabel">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="max-width-chars">50</property>
++            <property name="xalign">0</property>
++            <property name="halign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Canonical Livepatch helps keep your computer secure, by applying some updates that would normally require restarting.</property>
++            <property name="wrap">True</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkLabel">
++            <property name="visible">True</property>
++            <property name="xalign">0</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Would you like to set up Livepatch now?</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkButton" id="setup_button">
++            <property name="visible">True</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Set Up Livepatch…</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkBox" id="message_box">
++            <property name="visible">False</property>
++            <property name="can_focus">False</property>
++            <property name="halign">fill</property>
++            <property name="orientation">horizontal</property>
++            <property name="margin_top">18</property>
++            <child>
++              <object class="GtkLabel" id="message_label">
++                <property name="visible">True</property>
++                <property name="xalign">0</property>
++              </object>
++            </child>
++            <child>
++              <object class="GtkButton" id="signout_button">
++                <property name="visible">True</property>
++                <property name="label" translatable="yes">Sign Out</property>
++              </object>
++              <packing>
++                <property name="pack-type">end</property>
++              </packing>
++            </child>
++          </object>
++        </child>
++      </object>
++    </child>
++  </template>
++</interface>
+diff --git a/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml b/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
+new file mode 100644
+index 0000000..54141df
+--- /dev/null
++++ b/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<gresources>
++  <gresource prefix="/org/gnome/initial-setup">
++    <file preprocess="xml-stripblanks" alias="gis-livepatch-page.ui">gis-livepatch-page.ui</file>
++  </gresource>
++</gresources>
++
+diff --git a/gnome-initial-setup/pages/privacy/gis-privacy-page.c b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
+index f2af372..30e76e3 100644
+--- a/gnome-initial-setup/pages/privacy/gis-privacy-page.c
++++ b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
+@@ -289,7 +289,7 @@ activate_link (GtkLabel       *label,
+ static void
+ gis_privacy_page_locale_changed (GisPage *page)
+ {
+-  gis_page_set_title (GIS_PAGE (page), _("Privacy"));
++  gis_page_set_title (GIS_PAGE (page), _("Welcome to Ubuntu"));
+ }
+ 
+ static void
+diff --git a/gnome-initial-setup/pages/ubuntu-changes/Makefile.am b/gnome-initial-setup/pages/ubuntu-changes/Makefile.am
+new file mode 100644
+index 0000000..f7da724
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-changes/Makefile.am
+@@ -0,0 +1,21 @@
++
++noinst_LTLIBRARIES = libgisubuntu-changes.la
++
++BUILT_SOURCES =
++
++resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/ubuntu-changes.gresource.xml)
++ubuntu-changes-resources.c: ubuntu-changes.gresource.xml $(resource_files)
++	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $<
++ubuntu-changes-resources.h: ubuntu-changes.gresource.xml $(resource_files)
++	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-header $<
++BUILT_SOURCES += ubuntu-changes-resources.c ubuntu-changes-resources.h
++
++libgisubuntu_changes_la_SOURCES =	\
++	gis-ubuntu-changes-page.c gis-ubuntu-changes-page.h	\
++	$(BUILT_SOURCES)
++
++libgisubuntu_changes_la_CFLAGS = $(INITIAL_SETUP_CFLAGS) -I "$(srcdir)/../.." -I "$(top_srcdir)" -I "$(top_builddir)"
++libgisubuntu_changes_la_LIBADD = $(INITIAL_SETUP_LIBS)
++libgisubuntu_changes_la_LDFLAGS = -export_dynamic -avoid-version -module -no-undefined
++
++EXTRA_DIST = ubuntu-changes.gresource.xml $(resource_files)
+diff --git a/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.c b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.c
+new file mode 100644
+index 0000000..5295825
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.c
+@@ -0,0 +1,106 @@
++/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
++/*
++ * Copyright (C) 2018 Canonical Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++/* Ubuntu changes page {{{1 */
++
++#define PAGE_ID "ubuntu-changes"
++
++#include "config.h"
++#include "gis-ubuntu-changes-page.h"
++#include "ubuntu-changes-resources.h"
++
++#include <glib/gi18n.h>
++#include <gio/gio.h>
++
++struct _GisUbuntuChangesPagePrivate {
++  int dummy;
++};
++typedef struct _GisUbuntuChangesPagePrivate GisUbuntuChangesPagePrivate;
++
++G_DEFINE_TYPE_WITH_PRIVATE (GisUbuntuChangesPage, gis_ubuntu_changes_page, GIS_TYPE_PAGE);
++
++static void
++gis_ubuntu_changes_page_constructed (GObject *object)
++{
++  GisUbuntuChangesPage *page = GIS_UBUNTU_CHANGES_PAGE (object);
++  GisUbuntuChangesPagePrivate *priv = gis_ubuntu_changes_page_get_instance_private (page);
++
++  G_OBJECT_CLASS (gis_ubuntu_changes_page_parent_class)->constructed (object);
++
++  gis_page_set_skippable (GIS_PAGE (page), TRUE);
++
++  gis_page_set_complete (GIS_PAGE (page), TRUE);
++  gtk_widget_show (GTK_WIDGET (page));
++}
++
++static void
++gis_ubuntu_changes_page_dispose (GObject *object)
++{
++  GisUbuntuChangesPage *page = GIS_UBUNTU_CHANGES_PAGE (object);
++  GisUbuntuChangesPagePrivate *priv = gis_ubuntu_changes_page_get_instance_private (page);
++
++  G_OBJECT_CLASS (gis_ubuntu_changes_page_parent_class)->dispose (object);
++}
++
++static gboolean
++activate_link (GtkLabel             *label,
++               const gchar          *uri,
++               GisUbuntuChangesPage *page)
++{
++  /* FIXME: Show changes */
++
++  return TRUE;
++}
++
++static void
++gis_ubuntu_changes_page_locale_changed (GisPage *page)
++{
++  gis_page_set_title (GIS_PAGE (page), _("Welcome to Ubuntu"));
++}
++
++static void
++gis_ubuntu_changes_page_class_init (GisUbuntuChangesPageClass *klass)
++{
++  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
++  GObjectClass *object_class = G_OBJECT_CLASS (klass);
++
++  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntu-changes-page.ui");
++  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), activate_link);
++
++  page_class->page_id = PAGE_ID;
++  page_class->locale_changed = gis_ubuntu_changes_page_locale_changed;
++  object_class->constructed = gis_ubuntu_changes_page_constructed;
++  object_class->dispose = gis_ubuntu_changes_page_dispose;
++}
++
++static void
++gis_ubuntu_changes_page_init (GisUbuntuChangesPage *page)
++{
++  g_resources_register (ubuntu_changes_get_resource ());
++
++  gtk_widget_init_template (GTK_WIDGET (page));
++}
++
++void
++gis_prepare_ubuntu_changes_page (GisDriver *driver)
++{
++  gis_driver_add_page (driver,
++                       g_object_new (GIS_TYPE_UBUNTU_CHANGES_PAGE,
++                                     "driver", driver,
++                                     NULL));
++}
+diff --git a/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.h b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.h
+new file mode 100644
+index 0000000..c42993b
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.h
+@@ -0,0 +1,52 @@
++/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
++/*
++ * Copyright (C) 2018 Canonical Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef __GIS_UBUNTU_CHANGES_PAGE_H__
++#define __GIS_UBUNTU_CHANGES_PAGE_H__
++
++#include "gnome-initial-setup.h"
++
++G_BEGIN_DECLS
++
++#define GIS_TYPE_UBUNTU_CHANGES_PAGE            (gis_ubuntu_changes_page_get_type ())
++#define GIS_UBUNTU_CHANGES_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTU_CHANGES_PAGE, GisUbuntuChangesPage))
++#define GIS_UBUNTU_CHANGES_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTU_CHANGES_PAGE, GisUbuntuChangesPageClass))
++#define GIS_IS_UBUNTU_CHANGES_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTU_CHANGES_PAGE))
++#define GIS_IS_UBUNTU_CHANGES_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTU_CHANGES_PAGE))
++#define GIS_UBUNTU_CHANGES_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTU_CHANGES_PAGE, GisUbuntuChangesPageClass))
++
++typedef struct _GisUbuntuChangesPage        GisUbuntuChangesPage;
++typedef struct _GisUbuntuChangesPageClass   GisUbuntuChangesPageClass;
++
++struct _GisUbuntuChangesPage
++{
++  GisPage parent;
++};
++
++struct _GisUbuntuChangesPageClass
++{
++  GisPageClass parent_class;
++};
++
++GType gis_ubuntu_changes_page_get_type (void);
++
++void gis_prepare_ubuntu_changes_page (GisDriver *driver);
++
++G_END_DECLS
++
++#endif /* __GIS_UBUNTU_CHANGES_PAGE_H__ */
+diff --git a/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui
+new file mode 100644
+index 0000000..146bd34
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui
+@@ -0,0 +1,60 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<interface>
++  <!-- interface-requires gtk+ 3.0 -->
++  <template class="GisUbuntuChangesPage" parent="GisPage">
++    <child>
++      <object class="GtkBox" id="box">
++        <property name="visible">True</property>
++        <property name="can_focus">False</property>
++        <property name="halign">center</property>
++        <property name="valign">fill</property>
++        <property name="orientation">vertical</property>
++        <child>
++          <object class="GtkLabel" id="title">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">center</property>
++            <property name="valign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">What's new in Ubuntu</property>
++            <attributes>
++              <attribute name="weight" value="bold"/>
++              <attribute name="scale" value="1.8"/>
++            </attributes>
++          </object>
++        </child>
++        <child>
++          <object class="GtkLabel">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="max-width-chars">50</property>
++            <property name="halign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Ubuntu 18.04 works differently from older versions.</property>
++            <property name="wrap">True</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkImage" id="changes_image">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="margin_top">24</property>
++            <property name="resource">/org/gnome/initial-setup/ubuntu-changes.png</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkLabel" id="guide_label">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">If you like, you can read a &lt;a href=""&gt;quick guide to the new system&lt;/a&gt;.</property>
++            <property name="use-markup">True</property>
++            <property name="wrap">True</property>
++            <signal name="activate-link" handler="activate_link"/>
++          </object>
++        </child>
++      </object>
++    </child>
++  </template>
++</interface>
+diff --git a/gnome-initial-setup/pages/ubuntu-changes/ubuntu-changes.gresource.xml b/gnome-initial-setup/pages/ubuntu-changes/ubuntu-changes.gresource.xml
+new file mode 100644
+index 0000000..946b23b
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-changes/ubuntu-changes.gresource.xml
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<gresources>
++  <gresource prefix="/org/gnome/initial-setup">
++    <file preprocess="xml-stripblanks" alias="gis-ubuntu-changes-page.ui">gis-ubuntu-changes-page.ui</file>
++    <file alias="ubuntu-changes.png">ubuntu-changes.png</file>
++  </gresource>
++</gresources>
++
+diff --git a/gnome-initial-setup/pages/ubuntu-report/Makefile.am b/gnome-initial-setup/pages/ubuntu-report/Makefile.am
+new file mode 100644
+index 0000000..a769ba5
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-report/Makefile.am
+@@ -0,0 +1,21 @@
++
++noinst_LTLIBRARIES = libgisubuntu-report.la
++
++BUILT_SOURCES =
++
++resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/ubuntu-report.gresource.xml)
++ubuntu-report-resources.c: ubuntu-report.gresource.xml $(resource_files)
++	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $<
++ubuntu-report-resources.h: ubuntu-report.gresource.xml $(resource_files)
++	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-header $<
++BUILT_SOURCES += ubuntu-report-resources.c ubuntu-report-resources.h
++
++libgisubuntu_report_la_SOURCES =	\
++	gis-ubuntu-report-page.c gis-ubuntu-report-page.h	\
++	$(BUILT_SOURCES)
++
++libgisubuntu_report_la_CFLAGS = $(INITIAL_SETUP_CFLAGS) -I "$(srcdir)/../.." -I "$(top_srcdir)" -I "$(top_builddir)"
++libgisubuntu_report_la_LIBADD = $(INITIAL_SETUP_LIBS)
++libgisubuntu_report_la_LDFLAGS = -export_dynamic -avoid-version -module -no-undefined
++
++EXTRA_DIST = ubuntu-report.gresource.xml $(resource_files)
+diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
+new file mode 100644
+index 0000000..49f2fe3
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
+@@ -0,0 +1,189 @@
++/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
++/*
++ * Copyright (C) 2018 Canonical Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++/* Ubuntu report page {{{1 */
++
++#define PAGE_ID "ubuntu-report"
++
++#include "config.h"
++#include "gis-ubuntu-report-page.h"
++#include "ubuntu-report-resources.h"
++
++#include <glib/gi18n.h>
++#include <gio/gio.h>
++#include <libsysmetrics.h>
++
++struct _GisUbuntuReportPagePrivate {
++  GtkWidget *opt_in_radio;
++  gchar *report;
++};
++typedef struct _GisUbuntuReportPagePrivate GisUbuntuReportPagePrivate;
++
++G_DEFINE_TYPE_WITH_PRIVATE (GisUbuntuReportPage, gis_ubuntu_report_page, GIS_TYPE_PAGE);
++
++static void
++gis_ubuntu_report_page_constructed (GObject *object)
++{
++  GisUbuntuReportPage *page = GIS_UBUNTU_REPORT_PAGE (object);
++  GisUbuntuReportPagePrivate *priv = gis_ubuntu_report_page_get_instance_private (page);
++
++  G_OBJECT_CLASS (gis_ubuntu_report_page_parent_class)->constructed (object);
++
++  gis_page_set_skippable (GIS_PAGE (page), TRUE);
++
++  gis_page_set_complete (GIS_PAGE (page), TRUE);
++  gtk_widget_show (GTK_WIDGET (page));
++}
++
++static void
++gis_ubuntu_report_page_dispose (GObject *object)
++{
++  GisUbuntuReportPage *page = GIS_UBUNTU_REPORT_PAGE (object);
++  GisUbuntuReportPagePrivate *priv = gis_ubuntu_report_page_get_instance_private (page);
++
++  g_free (priv->report);
++
++  G_OBJECT_CLASS (gis_ubuntu_report_page_parent_class)->dispose (object);
++}
++
++static void
++show_report (GtkButton *button, GisUbuntuReportPage *page)
++{
++  GisUbuntuReportPagePrivate *priv = gis_ubuntu_report_page_get_instance_private (page);
++  g_autofree char *error = NULL;
++  GtkWidget *dialog, *scroll, *text_view;
++
++  if (priv->report == NULL)
++    error = sysmetrics_collect (&priv->report);
++  if (error != NULL) {
++    dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
++                                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
++                                     GTK_MESSAGE_ERROR,
++                                     GTK_BUTTONS_CLOSE,
++                                     _("Failed to get report informaiton: %s"), error);
++    gtk_dialog_run (GTK_DIALOG (dialog));
++    gtk_widget_destroy (dialog);
++    return;
++  }
++
++  dialog = gtk_dialog_new_with_buttons (_("Report"),
++                                        GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
++                                        GTK_DIALOG_MODAL |
++                                        GTK_DIALOG_DESTROY_WITH_PARENT |
++                                        GTK_DIALOG_USE_HEADER_BAR,
++                                       NULL, NULL);
++  gtk_widget_set_size_request (dialog, 800, 600);
++
++  scroll = gtk_scrolled_window_new (NULL, NULL);
++  gtk_widget_show (scroll);
++  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), scroll, TRUE, TRUE, 0);
++
++  text_view = gtk_text_view_new ();
++  gtk_widget_show (text_view);
++  gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (text_view)), priv->report, -1);
++  gtk_container_add (GTK_CONTAINER (scroll), text_view);
++
++  gtk_dialog_run (GTK_DIALOG (dialog));
++  gtk_widget_destroy (dialog);
++}
++
++static void
++show_policy (GtkButton *button, GisUbuntuReportPage *page)
++{
++  g_autoptr(GError) error = NULL;
++
++  if (!gtk_show_uri_on_window (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
++                               "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
++                               GDK_CURRENT_TIME, &error)) {
++    GtkWidget *dialog;
++    dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
++                                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
++                                     GTK_MESSAGE_ERROR,
++                                     GTK_BUTTONS_CLOSE,
++                                     _("Failed to show privacy policy: %s"), error->message);
++    gtk_dialog_run (GTK_DIALOG (dialog));
++    gtk_widget_destroy (dialog);
++    return;
++  }
++}
++
++static void
++gis_ubuntu_report_page_save_data (GisPage *page)
++{
++  GisUbuntuReportPagePrivate *priv = gis_ubuntu_report_page_get_instance_private (GIS_UBUNTU_REPORT_PAGE (page));
++  g_autofree char *error = NULL;
++
++  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->opt_in_radio))) {
++    if (priv->report == NULL) {
++      error = sysmetrics_collect (&priv->report);
++      if (error != NULL) {
++        g_warning ("Failed to get report data: %s", error);
++        return;
++      }
++    }
++
++    error = sysmetrics_send_report (priv->report, FALSE, "");
++    if (error != NULL)
++      g_warning ("Failed to send report: %s", error);
++  } else {
++    error = sysmetrics_send_decline (FALSE, "");
++    if (error != NULL)
++      g_warning ("Failed to send decline: %s", error);
++  }
++}
++
++static void
++gis_ubuntu_report_page_locale_changed (GisPage *page)
++{
++  gis_page_set_title (GIS_PAGE (page), _("Welcome to Ubuntu"));
++}
++
++static void
++gis_ubuntu_report_page_class_init (GisUbuntuReportPageClass *klass)
++{
++  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
++  GObjectClass *object_class = G_OBJECT_CLASS (klass);
++
++  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntu-report-page.ui");
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuReportPage, opt_in_radio);
++  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), show_report);
++  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), show_policy);
++
++  page_class->page_id = PAGE_ID;
++  page_class->locale_changed = gis_ubuntu_report_page_locale_changed;
++  page_class->save_data = gis_ubuntu_report_page_save_data;
++  object_class->constructed = gis_ubuntu_report_page_constructed;
++  object_class->dispose = gis_ubuntu_report_page_dispose;
++}
++
++static void
++gis_ubuntu_report_page_init (GisUbuntuReportPage *page)
++{
++  g_resources_register (ubuntu_report_get_resource ());
++
++  gtk_widget_init_template (GTK_WIDGET (page));
++}
++
++void
++gis_prepare_ubuntu_report_page (GisDriver *driver)
++{
++  gis_driver_add_page (driver,
++                       g_object_new (GIS_TYPE_UBUNTU_REPORT_PAGE,
++                                     "driver", driver,
++                                     NULL));
++}
+diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
+new file mode 100644
+index 0000000..1e5063f
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
+@@ -0,0 +1,52 @@
++/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
++/*
++ * Copyright (C) 2018 Canonical Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef __GIS_UBUNTU_REPORT_PAGE_H__
++#define __GIS_UBUNTU_REPORT_PAGE_H__
++
++#include "gnome-initial-setup.h"
++
++G_BEGIN_DECLS
++
++#define GIS_TYPE_UBUNTU_REPORT_PAGE            (gis_ubuntu_report_page_get_type ())
++#define GIS_UBUNTU_REPORT_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTU_REPORT_PAGE, GisUbuntuReportPage))
++#define GIS_UBUNTU_REPORT_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTU_REPORT_PAGE, GisUbuntuReportPageClass))
++#define GIS_IS_UBUNTU_REPORT_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTU_REPORT_PAGE))
++#define GIS_IS_UBUNTU_REPORT_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTU_REPORT_PAGE))
++#define GIS_UBUNTU_REPORT_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTU_REPORT_PAGE, GisUbuntuReportPageClass))
++
++typedef struct _GisUbuntuReportPage        GisUbuntuReportPage;
++typedef struct _GisUbuntuReportPageClass   GisUbuntuReportPageClass;
++
++struct _GisUbuntuReportPage
++{
++  GisPage parent;
++};
++
++struct _GisUbuntuReportPageClass
++{
++  GisPageClass parent_class;
++};
++
++GType gis_ubuntu_report_page_get_type (void);
++
++void gis_prepare_ubuntu_report_page (GisDriver *driver);
++
++G_END_DECLS
++
++#endif /* __GIS_UBUNTU_REPORT_PAGE_H__ */
+diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
+new file mode 100644
+index 0000000..3558d6f
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
+@@ -0,0 +1,131 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<interface>
++  <!-- interface-requires gtk+ 3.0 -->
++  <template class="GisUbuntuReportPage" parent="GisPage">
++    <child>
++      <object class="GtkBox">
++        <property name="visible">True</property>
++        <property name="can_focus">False</property>
++        <property name="halign">center</property>
++        <property name="valign">fill</property>
++        <property name="orientation">vertical</property>
++<!--        <child>
++          <object class="GtkImage">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="pixel_size">96</property>
++            <property name="icon_name">preferences-system-privacy-symbolic</property>
++            <property name="icon_size">1</property>
++            <property name="margin_top">24</property>
++            <style>
++              <class name="dim-label" />
++            </style>
++          </object>
++        </child> -->
++        <child>
++          <object class="GtkLabel" id="title">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">center</property>
++            <property name="valign">start</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Help improve Ubuntu</property>
++            <attributes>
++              <attribute name="weight" value="bold"/>
++              <attribute name="scale" value="1.8"/>
++            </attributes>
++          </object>
++        </child>
++        <child>
++          <object class="GtkLabel">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="max-width-chars">50</property>
++            <property name="halign">center</property>
++            <property name="margin_top">18</property>
++            <property name="label" translatable="yes">Ubuntu can report information that helps developers improve it. This includes things like computer model, what software is installed, and the approximate location you chose (FIXME).</property>
++            <property name="wrap">True</property>
++          </object>
++        </child>
++        <child>
++          <object class="GtkBox">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">center</property>
++            <property name="orientation">horizontal</property>
++            <property name="homogeneous">True</property>
++            <property name="margin_top">18</property>
++            <child>
++              <object class="GtkButton">
++                <property name="visible">True</property>
++                <property name="label" translatable="yes">Show the First Report</property>
++                <signal name="clicked" handler="show_report"/>
++              </object>
++            </child>
++            <child>
++              <object class="GtkButton">
++                <property name="visible">True</property>
++                <property name="label" translatable="yes">Show the Privacy Policy</property>
++                <signal name="clicked" handler="show_policy"/>
++              </object>
++            </child>
++          </object>
++        </child>
++        <child>
++          <object class="GtkBox">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="halign">center</property>
++            <property name="orientation">vertical</property>
++            <property name="margin_top">18</property>
++            <child>
++              <object class="GtkLabel">
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
++                <property name="margin_top">18</property>
++                <property name="xalign">0</property>
++                <property name="label" translatable="yes">Would you like to send this information?</property>
++                <property name="wrap">True</property>
++              </object>
++            </child>
++            <child>
++              <object class="GtkRadioButton" id="opt_in_radio">
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
++                <property name="xalign">0</property>
++                <property name="label" translatable="yes">Yes, send occasional system info to Canonical</property>
++              </object>
++            </child>
++            <child>
++              <object class="GtkRadioButton" id="opt_out_radio">
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
++                <property name="xalign">0</property>
++                <property name="label" translatable="yes">No, don't send any info</property>
++                <property name="group">opt_in_radio</property>
++              </object>
++            </child>
++          </object>
++        </child>
++        <child>
++          <object class="GtkLabel" id="footer_label">
++            <property name="visible">True</property>
++            <property name="can_focus">False</property>
++            <property name="label" translatable="yes">You can change your mind later in Settings -> Privacy -> Diagnostics.</property>
++            <property name="justify">center</property>
++            <property name="wrap">True</property>
++            <property name="margin_bottom">18</property>
++            <style>
++              <class name="dim-label"/>
++            </style>
++          </object>
++          <packing>
++            <property name="expand">False</property>
++            <property name="fill">True</property>
++            <property name="pack_type">end</property>
++          </packing>
++        </child>
++      </object>
++    </child>
++  </template>
++</interface>
+diff --git a/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
+new file mode 100644
+index 0000000..7ab30ac
+--- /dev/null
++++ b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<gresources>
++  <gresource prefix="/org/gnome/initial-setup">
++    <file preprocess="xml-stripblanks" alias="gis-ubuntu-report-page.ui">gis-ubuntu-report-page.ui</file>
++  </gresource>
++</gresources>
++
+diff --git a/po/POTFILES.in b/po/POTFILES.in
+index 7af03af..5acf040 100644
+--- a/po/POTFILES.in
++++ b/po/POTFILES.in
+@@ -1,3 +1,4 @@
++data/com.ubuntu.welcome.policy.in
+ data/gnome-initial-setup.desktop.in.in
+ data/gnome-initial-setup-first-login.desktop.in.in
+ gnome-initial-setup/gis-assistant.c
+@@ -41,3 +42,11 @@ gnome-initial-setup/pages/timezone/gis-timezone-page.c
+ [type: gettext/glade]gnome-initial-setup/pages/timezone/gis-timezone-page.ui
+ gnome-initial-setup/pages/software/gis-software-page.c
+ [type: gettext/glade]gnome-initial-setup/pages/software/gis-software-page.ui
++gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
++[type: gettext/glade]gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
++gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
++[type: gettext/glade]gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
++gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.c
++[type: gettext/glade]gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui
++gnome-initial-setup/pages/apps/gis-apps-page.c
++[type: gettext/glade]gnome-initial-setup/pages/apps/gis-apps-page.ui
+-- 
+2.15.1
+

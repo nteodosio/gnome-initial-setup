@@ -1,3 +1,15 @@
+gnome-initial-setup (3.28.0-2ubuntu1) bionic; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+  * debian/ubuntu-changes.png:
+    - Show Ubuntu welcome pages (LP: #1755456)
+  * debian/control:
+    - Build-Depends on libsnapd-glib-dev, libsoupd2.4-dev, 
+      libsysmetrics-dev
+    - Enable langpack usage
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 06 Apr 2018 09:52:39 +1200
+
 gnome-initial-setup (3.28.0-2) unstable; urgency=medium
 
   * Add welcome-screen.patch from Fedora to still show Welcome screen if
