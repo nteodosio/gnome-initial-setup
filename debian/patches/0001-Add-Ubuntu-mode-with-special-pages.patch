@@ -1,45 +1,47 @@
-From 4ea3a7dfb0f1095197bb3aa21f318dc54651db18 Mon Sep 17 00:00:00 2001
+From 35f550e732ba293057949a4bbfae7df9f8b94ecc Mon Sep 17 00:00:00 2001
 From: Robert Ancell <robert.ancell@canonical.com>
 Date: Tue, 20 Mar 2018 11:51:30 +1300
 Subject: [PATCH] Add Ubuntu mode with special pages
 
 ---
- .gitignore                                         |   5 +
- configure.ac                                       |   9 +-
- data/Makefile.am                                   |   6 +
- data/com.ubuntu.welcome.policy.in                  |  21 +
- gnome-initial-setup/Makefile.am                    |   4 +
- gnome-initial-setup/gnome-initial-setup.c          |  42 +-
- gnome-initial-setup/pages/Makefile.am              |   6 +-
- gnome-initial-setup/pages/apps/Makefile.am         |  21 +
- gnome-initial-setup/pages/apps/apps.gresource.xml  |   7 +
- gnome-initial-setup/pages/apps/gis-apps-page.c     | 571 +++++++++++++++++++++
- gnome-initial-setup/pages/apps/gis-apps-page.h     |  52 ++
- gnome-initial-setup/pages/apps/gis-apps-page.ui    | 144 ++++++
- gnome-initial-setup/pages/livepatch/Makefile.am    |  21 +
- .../pages/livepatch/gis-livepatch-page.c           | 432 ++++++++++++++++
- .../pages/livepatch/gis-livepatch-page.h           |  52 ++
- .../pages/livepatch/gis-livepatch-page.ui          |  91 ++++
- .../pages/livepatch/livepatch.gresource.xml        |   8 +
- gnome-initial-setup/pages/livepatch/livepatch.svg  |   1 +
- .../pages/privacy/gis-privacy-page.c               |   2 +-
- .../pages/ubuntu-changes/Makefile.am               |  21 +
- .../pages/ubuntu-changes/gis-ubuntu-changes-page.c | 106 ++++
- .../pages/ubuntu-changes/gis-ubuntu-changes-page.h |  52 ++
- .../ubuntu-changes/gis-ubuntu-changes-page.ui      |  60 +++
- .../ubuntu-changes/ubuntu-changes.gresource.xml    |   8 +
- .../pages/ubuntu-changes/ubuntu-changes.png        | Bin 0 -> 18322 bytes
- .../pages/ubuntu-report/Makefile.am                |  21 +
- .../pages/ubuntu-report/gis-ubuntu-report-page.c   | 223 ++++++++
- .../pages/ubuntu-report/gis-ubuntu-report-page.h   |  52 ++
- .../pages/ubuntu-report/gis-ubuntu-report-page.ui  | 138 +++++
- .../ubuntu-report/ubuntu-report.gresource.xml      |   8 +
- .../pages/ubuntu-report/ubuntu-report.svg          |   1 +
- po/POTFILES.in                                     |   9 +
- 32 files changed, 2189 insertions(+), 5 deletions(-)
+ .gitignore                                    |   5 +
+ configure.ac                                  |   9 +-
+ data/Makefile.am                              |   6 +
+ data/com.ubuntu.welcome.policy.in             |  21 +
+ gnome-initial-setup/Makefile.am               |   4 +
+ gnome-initial-setup/gnome-initial-setup.c     |  40 +-
+ gnome-initial-setup/pages/Makefile.am         |   6 +-
+ gnome-initial-setup/pages/apps/Makefile.am    |  21 +
+ .../pages/apps/apps.gresource.xml             |   8 +
+ .../pages/apps/default-snap-icon.svg          |   1 +
+ .../pages/apps/gis-apps-page.c                | 593 ++++++++++++++++++
+ .../pages/apps/gis-apps-page.h                |  52 ++
+ .../pages/apps/gis-apps-page.ui               |  95 +++
+ .../pages/livepatch/Makefile.am               |  21 +
+ .../pages/livepatch/gis-livepatch-page.c      | 461 ++++++++++++++
+ .../pages/livepatch/gis-livepatch-page.h      |  52 ++
+ .../pages/livepatch/gis-livepatch-page.ui     | 143 +++++
+ .../pages/livepatch/livepatch.gresource.xml   |   8 +
+ .../pages/livepatch/livepatch.svg             |   1 +
+ .../pages/privacy/gis-privacy-page.c          |   2 +-
+ .../pages/ubuntu-changes/Makefile.am          |  21 +
+ .../ubuntu-changes/gis-ubuntu-changes-page.c  | 106 ++++
+ .../ubuntu-changes/gis-ubuntu-changes-page.h  |  52 ++
+ .../ubuntu-changes/gis-ubuntu-changes-page.ui |  62 ++
+ .../ubuntu-changes.gresource.xml              |   8 +
+ .../pages/ubuntu-changes/ubuntu-changes.png   | Bin 0 -> 182199 bytes
+ .../pages/ubuntu-report/Makefile.am           |  21 +
+ .../ubuntu-report/gis-ubuntu-report-page.c    | 243 +++++++
+ .../ubuntu-report/gis-ubuntu-report-page.h    |  52 ++
+ .../ubuntu-report/gis-ubuntu-report-page.ui   | 184 ++++++
+ .../ubuntu-report/ubuntu-report.gresource.xml |   8 +
+ .../pages/ubuntu-report/ubuntu-report.svg     |   1 +
+ po/POTFILES.in                                |   9 +
+ 33 files changed, 2311 insertions(+), 5 deletions(-)
  create mode 100644 data/com.ubuntu.welcome.policy.in
  create mode 100644 gnome-initial-setup/pages/apps/Makefile.am
  create mode 100644 gnome-initial-setup/pages/apps/apps.gresource.xml
+ create mode 100644 gnome-initial-setup/pages/apps/default-snap-icon.svg
  create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.c
  create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.h
  create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.ui
@@ -164,7 +166,7 @@ index c04f1e4..6c36682 100644
  	-lm
  
 diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index 5671cae..128ee94 100644
+index 722c9ea..08dda87 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
 @@ -48,6 +48,10 @@
@@ -178,26 +180,24 @@ index 5671cae..128ee94 100644
  
  #define VENDOR_PAGES_GROUP "pages"
  #define VENDOR_PAGES_SKIP_KEY "skip"
-@@ -80,6 +84,18 @@ static PageData page_table[] = {
+@@ -80,6 +84,16 @@ static PageData page_table[] = {
    { NULL },
  };
  
 +static PageData ubuntu_page_table[] = {
-+  PAGE (language,       FALSE),
-+/*  PAGE (ubuntu_changes, FALSE), */
++  PAGE (ubuntu_changes, FALSE),
 +  PAGE (livepatch,      FALSE),
 +  PAGE (ubuntu_report,  FALSE),
 +  PAGE (account,        TRUE),
 +  PAGE (password,       TRUE),
 +  PAGE (apps,           FALSE),
-+  PAGE (summary,        FALSE),
 +  { NULL },
 +};
 +
  #undef PAGE
  
  static gboolean
-@@ -155,6 +171,25 @@ destroy_pages_after (GisAssistant *assistant,
+@@ -155,6 +169,25 @@ destroy_pages_after (GisAssistant *assistant,
    }
  }
  
@@ -223,7 +223,7 @@ index 5671cae..128ee94 100644
  static void
  rebuild_pages_cb (GisDriver *driver)
  {
-@@ -169,12 +204,15 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -169,12 +202,15 @@ rebuild_pages_cb (GisDriver *driver)
  
    skip_pages = pages_to_skip_from_file ();
  
@@ -284,23 +284,32 @@ index 0000000..8badc4d
 +EXTRA_DIST = apps.gresource.xml $(resource_files)
 diff --git a/gnome-initial-setup/pages/apps/apps.gresource.xml b/gnome-initial-setup/pages/apps/apps.gresource.xml
 new file mode 100644
-index 0000000..7d14caf
+index 0000000..e89e744
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/apps.gresource.xml
-@@ -0,0 +1,7 @@
+@@ -0,0 +1,8 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<gresources>
 +  <gresource prefix="/org/gnome/initial-setup">
 +    <file preprocess="xml-stripblanks" alias="gis-apps-page.ui">gis-apps-page.ui</file>
++    <file preprocess="xml-stripblanks">default-snap-icon.svg</file>
 +  </gresource>
 +</gresources>
 +
+diff --git a/gnome-initial-setup/pages/apps/default-snap-icon.svg b/gnome-initial-setup/pages/apps/default-snap-icon.svg
+new file mode 100644
+index 0000000..0d8dd94
+--- /dev/null
++++ b/gnome-initial-setup/pages/apps/default-snap-icon.svg
+@@ -0,0 +1 @@
++<svg width="96" height="96" xmlns="http://www.w3.org/2000/svg"><circle fill="#F7F7F7" cx="48" cy="48" r="48"/><path d="M55.71 53.294V32.766l14.248 6.28L55.71 53.293zM28.901 80.102L46.049 47.74l7.728 7.486-24.875 24.876zM19 19l35.502 12.8v22.702L19 19zm58.204 12.8L83 43.634 56.675 31.8h20.529z" fill="#CDCDCD"/></svg>
+\ No newline at end of file
 diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.c b/gnome-initial-setup/pages/apps/gis-apps-page.c
 new file mode 100644
-index 0000000..14e0cff
+index 0000000..54b709e
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.c
-@@ -0,0 +1,571 @@
+@@ -0,0 +1,593 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
 + * Copyright (C) 2018 Canonical Ltd.
@@ -334,9 +343,6 @@ index 0000000..14e0cff
 +
 +struct _GisAppsPagePrivate {
 +  SoupSession *soup_session;
-+  GtkWidget *installed_stack;
-+  GtkWidget *prev_installed_button;
-+  GtkWidget *next_installed_button;
 +  GtkWidget *featured_stack;
 +  GtkWidget *prev_featured_button;
 +  GtkWidget *next_featured_button;
@@ -344,6 +350,37 @@ index 0000000..14e0cff
 +typedef struct _GisAppsPagePrivate GisAppsPagePrivate;
 +
 +G_DEFINE_TYPE_WITH_PRIVATE (GisAppsPage, gis_apps_page, GIS_TYPE_PAGE);
++
++struct _GisSnapTile
++{
++  GtkFlowBoxChild parent;
++  SnapdSnap *snap;
++  SoupSession *soup_session;
++  GtkWidget *icon;
++};
++G_DECLARE_FINAL_TYPE (GisSnapTile, gis_snap_tile, GIS, SNAP_TILE, GtkFlowBoxChild)
++G_DEFINE_TYPE (GisSnapTile, gis_snap_tile, GTK_TYPE_FLOW_BOX_CHILD)
++
++static void
++gis_snap_tile_init (GisSnapTile *item)
++{
++}
++
++static void
++gis_snap_tile_finalize (GObject *object)
++{
++  g_clear_object (&GIS_SNAP_TILE (object)->snap);
++  g_clear_object (&GIS_SNAP_TILE (object)->soup_session);
++  G_OBJECT_CLASS (gis_snap_tile_parent_class)->finalize (object);
++}
++
++static void
++gis_snap_tile_class_init (GisSnapTileClass *klass)
++{
++  GObjectClass *object_class = G_OBJECT_CLASS (klass);
++
++  object_class->finalize = gis_snap_tile_finalize;
++}
 +
 +static void
 +gis_apps_page_constructed (GObject *object)
@@ -375,6 +412,7 @@ index 0000000..14e0cff
 +               const gchar    *uri,
 +               GisAppsPage *page)
 +{
++  g_autofree gchar *command = NULL;
 +  g_autoptr(GAppInfo) info = NULL;
 +  g_autoptr(GError) error = NULL;
 +
@@ -389,10 +427,18 @@ index 0000000..14e0cff
 +  }
 +}
 +
++static gboolean
++gis_apps_page_apply (GisPage *page, GCancellable *cancellable)
++{
++  gis_ensure_stamp_files ();
++  g_application_quit (G_APPLICATION (GIS_PAGE (page)->driver));
++  return FALSE;
++}
++
 +static void
 +gis_apps_page_locale_changed (GisPage *page)
 +{
-+  gis_page_set_title (GIS_PAGE (page), _("Get more apps"));
++  gis_page_set_title (GIS_PAGE (page), _("Ready to go"));
 +}
 +
 +static void
@@ -444,22 +490,6 @@ index 0000000..14e0cff
 +}
 +
 +static void
-+prev_installed (GtkButton   *button,
-+                GisAppsPage *page)
-+{
-+  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
-+  prev_page (priv->installed_stack, priv->prev_installed_button, priv->next_installed_button);
-+}
-+
-+static void
-+next_installed (GtkButton   *button,
-+                GisAppsPage *page)
-+{
-+  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
-+  next_page (priv->installed_stack, priv->prev_installed_button, priv->next_installed_button);
-+}
-+
-+static void
 +prev_featured (GtkButton   *button,
 +               GisAppsPage *page)
 +{
@@ -482,19 +512,15 @@ index 0000000..14e0cff
 +  GObjectClass *object_class = G_OBJECT_CLASS (klass);
 +
 +  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-apps-page.ui");
-+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, installed_stack);
-+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, prev_installed_button);
-+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, next_installed_button);
 +  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, featured_stack);
 +  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, prev_featured_button);
 +  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, next_featured_button);
 +  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), open_software);
-+  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), prev_installed);
-+  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_installed);
 +  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), prev_featured);
 +  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_featured);
 +
 +  page_class->page_id = PAGE_ID;
++  page_class->apply = gis_apps_page_apply;
 +  page_class->locale_changed = gis_apps_page_locale_changed;
 +  object_class->constructed = gis_apps_page_constructed;
 +  object_class->dispose = gis_apps_page_dispose;
@@ -521,7 +547,7 @@ index 0000000..14e0cff
 +     return NULL;
 +  }
 +  input_stream = g_memory_input_stream_new_from_bytes (snapd_icon_get_data (icon));
-+  pixbuf = gdk_pixbuf_new_from_stream_at_scale (input_stream, 48, 48, TRUE, NULL, &error);
++  pixbuf = gdk_pixbuf_new_from_stream_at_scale (input_stream, 64, 64, TRUE, NULL, &error);
 +  if (pixbuf == NULL) {
 +     g_warning ("Failed to decode snap icon: %s", error->message);
 +     return NULL;
@@ -534,18 +560,18 @@ index 0000000..14e0cff
 +load_local_icon (const gchar *name, GError **error)
 +{
 +  if (g_str_has_prefix (name, "/"))
-+    return gdk_pixbuf_new_from_file_at_scale (name, 48, 48, TRUE, error);
++    return gdk_pixbuf_new_from_file_at_scale (name, 64, 64, TRUE, error);
 +  else {
 +    g_autoptr(GdkPixbuf) pixbuf = NULL;
 +
-+    pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), name, 48, 0, error);
++    pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), name, 64, 0, error);
 +    if (pixbuf == NULL)
 +      return NULL;
 +
-+    if (gdk_pixbuf_get_width (pixbuf) == 48 && gdk_pixbuf_get_height (pixbuf) == 48)
++    if (gdk_pixbuf_get_width (pixbuf) == 64 && gdk_pixbuf_get_height (pixbuf) == 64)
 +      return g_steal_pointer (&pixbuf);
 +
-+    return gdk_pixbuf_scale_simple (pixbuf, 48, 48, GDK_INTERP_BILINEAR);
++    return gdk_pixbuf_scale_simple (pixbuf, 64, 64, GDK_INTERP_BILINEAR);
 +  }
 +}
 +
@@ -595,7 +621,7 @@ index 0000000..14e0cff
 +static void
 +icon_cb (GObject *object, GAsyncResult *result, gpointer user_data)
 +{
-+  GtkWidget *image = user_data;
++  GisSnapTile *tile = user_data;
 +  g_autoptr(GInputStream) stream = NULL;
 +  g_autoptr(GdkPixbuf) pixbuf = NULL;
 +  g_autoptr(GError) error = NULL;
@@ -606,73 +632,86 @@ index 0000000..14e0cff
 +    return;
 +  }
 +
-+  pixbuf = gdk_pixbuf_new_from_stream_at_scale (stream, 48, 48, TRUE, NULL, &error);
++  pixbuf = gdk_pixbuf_new_from_stream_at_scale (stream, 64, 64, TRUE, NULL, &error);
 +  if (pixbuf == NULL) {
 +    g_warning ("Failed to load icon: %s", error->message);
 +    return;
 +  }
 +
-+  gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
++  gtk_image_set_from_pixbuf (GTK_IMAGE (tile->icon), pixbuf);
 +}
 +
 +static void
-+load_store_icon (GisAppsPage *page, GtkWidget *image, SnapdSnap *snap)
++load_store_icon (GisSnapTile *tile)
 +{
-+  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
 +  const gchar *url;
 +  g_autoptr(SoupMessage) message = NULL;
 +
-+  url = snapd_snap_get_icon (snap);
++  url = snapd_snap_get_icon (tile->snap);
 +  if (url == NULL || !(g_str_has_prefix (url, "http://") || g_str_has_prefix (url, "https://")))
 +    return;
 +
 +  message = soup_message_new ("GET", url);
-+  soup_session_send_async (priv->soup_session, message, NULL, icon_cb, image);
++  soup_session_send_async (tile->soup_session, message, NULL, icon_cb, tile);
 +}
 +
 +static void
-+load_icon (GisAppsPage *page, GtkWidget *image, SnapdSnap *snap)
++load_icon (GisSnapTile *tile)
 +{
-+  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
 +  g_autoptr(GdkPixbuf) pixbuf = NULL;
++  g_autoptr(GError) error = NULL;
 +
-+  pixbuf = load_snap_icon (snap);
++  pixbuf = load_snap_icon (tile->snap);
 +  if (pixbuf != NULL) {
-+    gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
++    gtk_image_set_from_pixbuf (GTK_IMAGE (tile->icon), pixbuf);
 +    return;
 +  }
 +
-+  pixbuf = load_desktop_icon (snap);
++  pixbuf = load_desktop_icon (tile->snap);
 +  if (pixbuf != NULL) {
-+    gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
++    gtk_image_set_from_pixbuf (GTK_IMAGE (tile->icon), pixbuf);
 +    return;
 +  }
 +
-+  // FIXME: Add placeholder icon
-+  load_store_icon (page, image, snap);
++  /* Add placeholder icon */
++  pixbuf = gdk_pixbuf_new_from_resource_at_scale ("/org/gnome/initial-setup/default-snap-icon.svg", 64, 64, TRUE, &error);
++  if (pixbuf != NULL)
++    gtk_image_set_from_pixbuf (GTK_IMAGE (tile->icon), pixbuf);
++
++  load_store_icon (tile);
 +}
 +
 +static GtkWidget *
-+app_tile_new (const gchar *title, GtkWidget **icon_)
++gis_snap_tile_new (SnapdSnap *snap, SoupSession *soup_session)
 +{
++  const gchar *title;
++  GisSnapTile *tile;
 +  GtkWidget *box, *icon, *label;
 +
-+  box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
++  tile = g_object_new (gis_snap_tile_get_type (), NULL);
++  tile->snap = g_object_ref (snap);
++  tile->soup_session = g_object_ref (soup_session);
 +
-+  icon = gtk_image_new ();
-+  gtk_widget_show (icon);
-+  gtk_box_pack_start (GTK_BOX (box), icon, FALSE, TRUE, 0);
++  title = snapd_snap_get_title (snap);
++  if (title == NULL)
++    title = snapd_snap_get_name (snap);
++
++  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
++  gtk_widget_show (box);
++  gtk_container_add (GTK_CONTAINER (tile), box);
++
++  tile->icon = gtk_image_new ();
++  gtk_widget_show (tile->icon);
++  gtk_box_pack_start (GTK_BOX (box), tile->icon, FALSE, TRUE, 0);
 +
 +  label = gtk_label_new (title);
 +  gtk_widget_show (label);
 +  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-+  gtk_label_set_xalign (GTK_LABEL (label), 0);
 +  gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
 +
-+  if (icon_ != NULL)
-+    *icon_ = icon;
++  load_icon (tile);
 +
-+  return box;
++  return GTK_WIDGET (tile);
 +}
 +
 +static gboolean
@@ -720,6 +759,7 @@ index 0000000..14e0cff
 +        g_autoptr(GKeyFile) desktop_file = NULL;
 +        g_autoptr(GError) error = NULL;
 +        g_auto(GStrv) categories = NULL;
++        g_auto(GStrv) not_show_in = NULL;
 +
 +        if (!g_str_has_suffix (filename, ".desktop"))
 +          continue;
@@ -740,6 +780,10 @@ index 0000000..14e0cff
 +        if (g_key_file_get_boolean (desktop_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_NO_DISPLAY, NULL))
 +           continue;
 +
++        not_show_in = g_key_file_get_string_list (desktop_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_NOT_SHOW_IN, NULL, NULL);
++        if (not_show_in != NULL && g_strv_contains ((const gchar *const *) not_show_in, "GNOME"))
++           continue;
++
 +        /* Skip settings */
 +        categories = g_key_file_get_string_list (desktop_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_CATEGORIES, NULL, NULL);
 +        if (categories != NULL && g_strv_contains ((const gchar *const *) categories, "Settings"))
@@ -754,27 +798,43 @@ index 0000000..14e0cff
 +}
 +
 +static void
++on_app_clicked (GtkWidget *flow_box, GtkFlowBoxChild *child, gpointer user_data)
++{
++  GisSnapTile *tile = GIS_SNAP_TILE (child);
++  g_autofree gchar *url = NULL;
++  g_autoptr (GError) error = NULL;
++
++  url = g_strdup_printf ("snap://%s", snapd_snap_get_name (tile->snap));
++  if (!g_app_info_launch_default_for_uri (url, NULL, &error))
++     g_warning ("Failed to open %s: %s", url, error->message);
++}
++
++static void
 +add_tile (GtkWidget *stack, GtkWidget *tile)
 +{
 +  GList *children;
-+  GtkWidget *grid = NULL;
++  GtkWidget *flow_box = NULL;
 +  gint count = 0;
 +
 +  children = gtk_container_get_children (GTK_CONTAINER (stack));
 +  if (children != NULL) {
-+    grid = g_list_last (children)->data;
-+    count = g_list_length (gtk_container_get_children (GTK_CONTAINER (grid)));
++    flow_box = g_list_last (children)->data;
++    count = g_list_length (gtk_container_get_children (GTK_CONTAINER (flow_box)));
 +  }
-+  if (grid == NULL || count >= 9) {
++  if (flow_box == NULL || count >= 15) {
 +    count = 0;
-+    grid = gtk_grid_new ();
-+    gtk_widget_show (grid);
-+    gtk_grid_set_row_spacing (GTK_GRID (grid), 10);
-+    gtk_grid_set_column_spacing (GTK_GRID (grid), 10);
-+    gtk_container_add (GTK_CONTAINER (stack), grid);
++    flow_box = gtk_flow_box_new ();
++    gtk_flow_box_set_min_children_per_line (GTK_FLOW_BOX (flow_box), 5);
++    gtk_flow_box_set_selection_mode (GTK_FLOW_BOX (flow_box), GTK_SELECTION_NONE);
++    g_signal_connect (flow_box, "child-activated",
++                      G_CALLBACK (on_app_clicked), NULL);
++    gtk_widget_show (flow_box);
++    gtk_flow_box_set_row_spacing (GTK_FLOW_BOX (flow_box), 10);
++    gtk_flow_box_set_column_spacing (GTK_FLOW_BOX (flow_box), 10);
++    gtk_container_add (GTK_CONTAINER (stack), flow_box);
 +  }
 +
-+  gtk_grid_attach (GTK_GRID (grid), tile, count % 3, count / 3, 1, 1);
++  gtk_container_add (GTK_CONTAINER (flow_box), tile);
 +}
 +
 +static void
@@ -801,34 +861,7 @@ index 0000000..14e0cff
 +
 +  installed_apps = get_installed_apps ();
 +  for (i = 0; i < installed_apps->len; i++) {
-+      GKeyFile *desktop_file = g_ptr_array_index (installed_apps, i);
-+      const gchar *title;
-+      GtkWidget *tile, *icon;
-+      g_autofree gchar *name = NULL;
-+      g_autofree gchar *icon_name = NULL;
-+      g_autoptr(GdkPixbuf) pixbuf = NULL;
-+
-+      //G_KEY_FILE_DESKTOP_KEY_GETTEXT_DOMAIN or X-Ubuntu-Gettext-Domain
-+
-+      // FIXME: Get locale string
-+      name = g_key_file_get_locale_string (desktop_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_NAME, NULL, NULL);
-+      if (name == NULL) {
-+        g_warning ("Ignoring desktop file without name");
-+        continue;
-+      }
-+
-+      tile = app_tile_new (name, &icon);
-+      gtk_widget_show (tile);
-+      gtk_size_group_add_widget (size_group, tile);
-+
-+      icon_name = g_key_file_get_string (desktop_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_ICON, NULL);
-+      pixbuf = load_local_icon (icon_name, NULL);
-+      if (pixbuf != NULL)
-+        gtk_image_set_from_pixbuf (GTK_IMAGE (icon), pixbuf);
-+
-+      add_tile (priv->installed_stack, tile);
 +  }
-+  gtk_widget_set_sensitive (priv->next_installed_button, g_list_length (gtk_container_get_children (GTK_CONTAINER (priv->installed_stack))) > 0);
 +
 +  installed_snaps = snapd_client_list_sync (client, NULL, &error);
 +  if (installed_snaps == NULL)
@@ -839,29 +872,27 @@ index 0000000..14e0cff
 +
 +    for (i = 0; i < featured_snaps->len; i++) {
 +      SnapdSnap *snap = g_ptr_array_index (featured_snaps, i);
-+      const gchar *title;
 +      GtkWidget *tile, *icon;
 +
 +      /* Skip if already installed */
 +      if (contains_snap (installed_snaps, snapd_snap_get_name (snap)))
 +        continue;
 +
-+      title = snapd_snap_get_title (snap);
-+      if (title == NULL)
-+        title = snapd_snap_get_name (snap);
++      /* Ignore common snaps that have default .debs */
++      if (g_strcmp0 (snapd_snap_get_name (snap), "firefox") == 0)
++        continue;
 +
-+      tile = app_tile_new (title, &icon);
++      tile = gis_snap_tile_new (snap, priv->soup_session);
 +      gtk_widget_show (tile);
 +      gtk_size_group_add_widget (size_group, tile);
-+
-+      load_icon (page, icon, snap);
 +
 +      add_tile (priv->featured_stack, tile);
 +    }
 +  }
 +  else
 +    g_warning ("Failed to get featured snaps: %s", error->message);
-+  gtk_widget_set_sensitive (priv->next_featured_button, g_list_length (gtk_container_get_children (GTK_CONTAINER (priv->featured_stack))) > 0);
++  gtk_widget_set_visible (priv->next_featured_button, g_list_length (gtk_container_get_children (GTK_CONTAINER (priv->featured_stack))) > 1);
++  gtk_widget_set_visible (priv->prev_featured_button, g_list_length (gtk_container_get_children (GTK_CONTAINER (priv->featured_stack))) > 1);
 +}
 +
 +void
@@ -932,10 +963,10 @@ index 0000000..347dcbc
 +#endif /* __GIS_APPS_PAGE_H__ */
 diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.ui b/gnome-initial-setup/pages/apps/gis-apps-page.ui
 new file mode 100644
-index 0000000..14a0437
+index 0000000..919df43
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.ui
-@@ -0,0 +1,144 @@
+@@ -0,0 +1,95 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
 +  <!-- interface-requires gtk+ 3.0 -->
@@ -944,17 +975,17 @@ index 0000000..14a0437
 +      <object class="GtkBox">
 +        <property name="visible">True</property>
 +        <property name="can_focus">False</property>
-+        <property name="halign">center</property>
++        <property name="halign">start</property>
 +        <property name="valign">fill</property>
 +        <property name="orientation">vertical</property>
++	<property name="border_width">20</property>
 +        <child>
 +          <object class="GtkLabel" id="title">
 +            <property name="visible">True</property>
 +            <property name="can_focus">False</property>
-+            <property name="halign">center</property>
++            <property name="halign">start</property>
 +            <property name="valign">start</property>
-+            <property name="margin_top">18</property>
-+            <property name="label" translatable="yes">Get more apps</property>
++            <property name="label" translatable="yes">You're ready to go!</property>
 +            <attributes>
 +              <attribute name="weight" value="bold"/>
 +              <attribute name="scale" value="1.8"/>
@@ -966,61 +997,11 @@ index 0000000..14a0437
 +            <property name="visible">True</property>
 +            <property name="can_focus">False</property>
 +            <property name="halign">start</property>
-+            <property name="margin_top">18</property>
-+            <property name="label" translatable="yes">Your Ubuntu system has these apps already:</property>
-+            <property name="wrap">True</property>
-+          </object>
-+        </child>
-+        <child>
-+	  <object class="GtkBox">
-+            <property name="visible">True</property>
-+            <property name="orientation">horizontal</property>
-+            <property name="spacing">10</property>
-+            <child>
-+              <object class="GtkButton" id="prev_installed_button">
-+                <property name="visible">True</property>
-+                <property name="sensitive">False</property>
-+                <property name="relief">none</property>
-+                <signal name="clicked" handler="prev_installed"/>
-+                <child>
-+                  <object class="GtkImage">
-+                    <property name="visible">True</property>
-+                    <property name="icon_name">go-previous-symbolic</property>
-+                  </object>
-+                </child>
-+              </object>
-+            </child>
-+            <child>
-+              <object class="GtkStack" id="installed_stack">
-+                <property name="visible">True</property>
-+                <property name="can_focus">False</property>
-+                <property name="margin_top">18</property>
-+                <property name="hexpand">True</property>
-+              </object>
-+            </child>
-+            <child>
-+              <object class="GtkButton" id="next_installed_button">
-+                <property name="visible">True</property>
-+                <property name="sensitive">False</property>
-+                <property name="relief">none</property>
-+                <signal name="clicked" handler="next_installed"/>
-+                <child>
-+                  <object class="GtkImage">
-+                    <property name="visible">True</property>
-+                    <property name="icon_name">go-next-symbolic</property>
-+                  </object>
-+                </child>
-+              </object>
-+            </child>
-+          </object>
-+        </child>
-+        <child>
-+          <object class="GtkLabel">
-+            <property name="visible">True</property>
-+            <property name="can_focus">False</property>
-+            <property name="halign">start</property>
 +            <property name="margin_top">36</property>
 +            <property name="label" translatable="yes">You can use “Software” to install apps like these:</property>
++            <attributes>
++              <attribute name="weight" value="bold"/>
++            </attributes>
 +            <property name="wrap">True</property>
 +          </object>
 +        </child>
@@ -1028,6 +1009,7 @@ index 0000000..14a0437
 +	  <object class="GtkBox">
 +            <property name="visible">True</property>
 +            <property name="orientation">horizontal</property>
++            <property name="margin_top">36</property>
 +            <property name="spacing">10</property>
 +            <child>
 +              <object class="GtkButton" id="prev_featured_button">
@@ -1054,7 +1036,7 @@ index 0000000..14a0437
 +            <child>
 +              <object class="GtkButton" id="next_featured_button">
 +                <property name="visible">True</property>
-+                <property name="sensitive">False</property>
++                <property name="sensitive">True</property>
 +                <property name="relief">none</property>
 +                <signal name="clicked" handler="next_featured"/>
 +                <child>
@@ -1109,10 +1091,10 @@ index 0000000..e40c6dc
 +EXTRA_DIST = livepatch.gresource.xml $(resource_files)
 diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
 new file mode 100644
-index 0000000..b26c604
+index 0000000..ae5b497
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
-@@ -0,0 +1,432 @@
+@@ -0,0 +1,461 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
 + * Copyright (C) 2018 Canonical Ltd.
@@ -1352,7 +1334,33 @@ index 0000000..b26c604
 +  }
 +}
 +
-+void
++static void
++goa_account_store (GoaAccount *account)
++{
++  GSettingsSchemaSource *source;
++  g_autoptr(GSettingsSchema) schema = NULL;
++  g_autoptr(GSettings) settings = NULL;
++  const gchar *account_id = NULL;
++
++  /* Check if the gsettings schema is installed */
++  source = g_settings_schema_source_get_default ();
++  if (!source)
++    return;
++  schema = g_settings_schema_source_lookup (source, "com.ubuntu.SoftwareProperties", TRUE);
++  if (!schema)
++    return;
++
++  /* If the schema is installed... */
++  if (account)
++    account_id = goa_account_get_id (account);
++  else
++    account_id = "";
++
++  settings = g_settings_new ("com.ubuntu.SoftwareProperties");
++  g_settings_set_string (settings, "goa-account-id", account_id);
++}
++
++static void
 +login_and_enable_livepatch (GisLivepatchPage *page)
 +{
 +  GisLivepatchPagePrivate *priv = gis_livepatch_page_get_instance_private (page);
@@ -1368,6 +1376,8 @@ index 0000000..b26c604
 +    gtk_widget_set_sensitive (priv->setup_button, TRUE);
 +    return;
 +  }
++
++  goa_account_store (priv->goa_account);
 +
 +  /* retrieve livepatch token */
 +  object = GOA_OBJECT (g_dbus_interface_get_object (G_DBUS_INTERFACE (priv->goa_account)));
@@ -1438,6 +1448,7 @@ index 0000000..b26c604
 +  if (!priv->waiting_for_livepatch_response && is_livepatch_enabled ())
 +    set_livepatch_enabled (page, FALSE);
 +
++  goa_account_store (NULL);
 +  /* remove GoaAccount from system */
 +  goa_account_call_remove (priv->goa_account, NULL, NULL, NULL);
 +
@@ -1605,100 +1616,152 @@ index 0000000..eed18e5
 +#endif /* __GIS_LIVEPATCH_PAGE_H__ */
 diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
 new file mode 100644
-index 0000000..489347b
+index 0000000..66b3fd0
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
-@@ -0,0 +1,91 @@
+@@ -0,0 +1,143 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
 +  <!-- interface-requires gtk+ 3.0 -->
 +  <template class="GisLivepatchPage" parent="GisPage">
 +    <child>
-+      <object class="GtkBox">
++      <object class="GtkGrid">
 +        <property name="visible">True</property>
 +        <property name="can_focus">False</property>
-+        <property name="halign">center</property>
-+        <property name="valign">fill</property>
-+        <property name="orientation">vertical</property>
-+        <child>
-+          <object class="GtkImage">
-+            <property name="visible">True</property>
-+            <property name="can_focus">False</property>
-+            <property name="margin_top">24</property>
-+            <property name="resource">/org/gnome/initial-setup/livepatch.svg</property>
-+            <style>
-+              <class name="dim-label" />
-+            </style>
-+          </object>
-+        </child>
++        <property name="row_spacing">40</property>
++	<property name="border_width">20</property>
 +        <child>
 +          <object class="GtkLabel" id="title">
 +            <property name="visible">True</property>
 +            <property name="can_focus">False</property>
-+            <property name="halign">center</property>
++            <property name="halign">start</property>
 +            <property name="valign">start</property>
-+            <property name="margin_top">18</property>
 +            <property name="label" translatable="yes">Livepatch</property>
 +            <attributes>
 +              <attribute name="weight" value="bold"/>
 +              <attribute name="scale" value="1.8"/>
 +            </attributes>
 +          </object>
++          <packing>
++            <property name="left_attach">0</property>
++            <property name="top_attach">0</property>
++            <property name="width">3</property>
++            <property name="height">1</property>
++          </packing>
 +        </child>
 +        <child>
-+          <object class="GtkLabel">
++          <object class="GtkImage" id="icon_image">
 +            <property name="visible">True</property>
 +            <property name="can_focus">False</property>
-+            <property name="max-width-chars">50</property>
-+            <property name="xalign">0</property>
++            <property name="valign">start</property>
 +            <property name="halign">start</property>
-+            <property name="margin_top">18</property>
-+            <property name="label" translatable="yes">Canonical Livepatch helps keep your computer secure, by applying some updates that would normally require restarting.</property>
-+            <property name="wrap">True</property>
++            <property name="resource">/org/gnome/initial-setup/livepatch.svg</property>
++            <style>
++              <class name="dim-label" />
++            </style>
 +          </object>
++          <packing>
++            <property name="left_attach">0</property>
++            <property name="top_attach">1</property>
++            <property name="width">1</property>
++            <property name="height">1</property>
++          </packing>
 +        </child>
 +        <child>
-+          <object class="GtkLabel">
++          <object class="GtkLabel" id="right_padding_label">
 +            <property name="visible">True</property>
-+            <property name="xalign">0</property>
-+            <property name="margin_top">18</property>
-+            <property name="label" translatable="yes">Would you like to set up Livepatch now?</property>
 +          </object>
++          <packing>
++            <property name="left_attach">2</property>
++            <property name="top_attach">1</property>
++            <property name="width">1</property>
++            <property name="height">1</property>
++          </packing>
 +        </child>
 +        <child>
-+          <object class="GtkButton" id="setup_button">
++          <object class="GtkBox">
 +            <property name="visible">True</property>
-+            <property name="margin_top">18</property>
-+            <property name="label" translatable="yes">Set Up Livepatch…</property>
-+          </object>
-+        </child>
-+        <child>
-+          <object class="GtkBox" id="message_box">
-+            <property name="visible">False</property>
 +            <property name="can_focus">False</property>
-+            <property name="halign">fill</property>
-+            <property name="orientation">horizontal</property>
-+            <property name="margin_top">18</property>
++	    <property name="halign">center</property>
++	    <property name="hexpand">True</property>
++	    <property name="valign">start</property>
++	    <property name="vexpand">True</property>
++	    <property name="orientation">vertical</property>
 +            <child>
-+              <object class="GtkLabel" id="message_label">
++              <object class="GtkLabel">
++                <property name="visible">True</property>
++                <property name="can_focus">False</property>
++                <property name="max-width-chars">50</property>
++                <property name="xalign">0</property>
++                <property name="halign">start</property>
++                <property name="label" translatable="yes">Canonical Livepatch helps keep your computer secure, by applying some updates that would normally require restarting.</property>
++                <property name="wrap">True</property>
++              </object>
++            </child>
++            <child>
++              <object class="GtkLabel">
 +                <property name="visible">True</property>
 +                <property name="xalign">0</property>
++                <property name="margin_top">18</property>
++                <property name="label" translatable="yes">Would you like to set up Livepatch now?</property>
++                <attributes>
++                  <attribute name="weight" value="bold"/>
++                </attributes>
 +              </object>
 +            </child>
 +            <child>
-+              <object class="GtkButton" id="signout_button">
++              <object class="GtkButton" id="setup_button">
 +                <property name="visible">True</property>
-+                <property name="label" translatable="yes">Sign Out</property>
++                <property name="margin_top">18</property>
++                <property name="halign">start</property>
++                <property name="label" translatable="yes">Set Up Livepatch…</property>
++                <style>
++                  <class name="suggested-action"/>
++                </style>
 +              </object>
-+              <packing>
-+                <property name="pack-type">end</property>
-+              </packing>
 +            </child>
++            <child>
++              <object class="GtkBox" id="message_box">
++                <property name="visible">False</property>
++                <property name="can_focus">False</property>
++                <property name="halign">fill</property>
++                <property name="orientation">horizontal</property>
++                <property name="margin_top">18</property>
++                <child>
++                  <object class="GtkLabel" id="message_label">
++                    <property name="visible">True</property>
++                    <property name="xalign">0</property>
++                  </object>
++                </child>
++                <child>
++                  <object class="GtkButton" id="signout_button">
++                    <property name="visible">True</property>
++                    <property name="label" translatable="yes">Sign Out</property>
++                  </object>
++                  <packing>
++                    <property name="pack-type">end</property>
++                  </packing>
++                </child>
++	      </object>
++	    </child>
 +          </object>
++          <packing>
++            <property name="left_attach">1</property>
++            <property name="top_attach">1</property>
++            <property name="width">1</property>
++            <property name="height">1</property>
++          </packing>
 +        </child>
 +      </object>
 +    </child>
 +  </template>
++  <object class="GtkSizeGroup">
++    <property name="mode">horizontal</property>
++    <widgets>
++      <widget name="icon_image"/>
++      <widget name="right_padding_label"/>
++    </widgets>
++  </object>
 +</interface>
 diff --git a/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml b/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
 new file mode 100644
@@ -1716,11 +1779,11 @@ index 0000000..d0490d9
 +
 diff --git a/gnome-initial-setup/pages/livepatch/livepatch.svg b/gnome-initial-setup/pages/livepatch/livepatch.svg
 new file mode 100644
-index 0000000..81b2c32
+index 0000000..c91aecb
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/livepatch.svg
 @@ -0,0 +1 @@
-+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="96px" height="96px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666;} </style> <g> <path class="st0" d="M73.7,168.4c0-69.7,56.7-126.3,126.3-126.3c69.7,0,126.3,56.7,126.3,126.3h42.1C368.4,75.6,292.9,0,200,0 C107.1,0,31.6,75.6,31.6,168.4v63.7h0C31.9,324.8,107.3,400,200,400c92.9,0,168.4-75.6,168.4-168.4v-21.1H73.7V168.4L73.7,168.4z M200,242.1c17.4,0,31.6,14.1,31.6,31.6c0,13.7-8.8,25.4-21,29.7v54.4c0,5.8-4.7,10.5-10.5,10.5s-10.5-4.7-10.5-10.5v-54.4 c-12.3-4.3-21.1-16-21.1-29.8C168.4,256.3,182.6,242.1,200,242.1L200,242.1z"/> </g> </svg>
++<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666;} </style> <g> <path class="st0" d="M73.7,168.4c0-69.7,56.7-126.3,126.3-126.3c69.7,0,126.3,56.7,126.3,126.3h42.1C368.4,75.6,292.9,0,200,0 C107.1,0,31.6,75.6,31.6,168.4v63.7h0C31.9,324.8,107.3,400,200,400c92.9,0,168.4-75.6,168.4-168.4v-21.1H73.7V168.4L73.7,168.4z M200,242.1c17.4,0,31.6,14.1,31.6,31.6c0,13.7-8.8,25.4-21,29.7v54.4c0,5.8-4.7,10.5-10.5,10.5s-10.5-4.7-10.5-10.5v-54.4 c-12.3-4.3-21.1-16-21.1-29.8C168.4,256.3,182.6,242.1,200,242.1L200,242.1z"/> </g> </svg>
 diff --git a/gnome-initial-setup/pages/privacy/gis-privacy-page.c b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
 index f2af372..30e76e3 100644
 --- a/gnome-initial-setup/pages/privacy/gis-privacy-page.c
@@ -1933,10 +1996,10 @@ index 0000000..c42993b
 +#endif /* __GIS_UBUNTU_CHANGES_PAGE_H__ */
 diff --git a/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui
 new file mode 100644
-index 0000000..146bd34
+index 0000000..e562904
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,62 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
 +  <!-- interface-requires gtk+ 3.0 -->
@@ -1945,16 +2008,17 @@ index 0000000..146bd34
 +      <object class="GtkBox" id="box">
 +        <property name="visible">True</property>
 +        <property name="can_focus">False</property>
-+        <property name="halign">center</property>
++        <property name="halign">fill</property>
 +        <property name="valign">fill</property>
 +        <property name="orientation">vertical</property>
++	<property name="border_width">20</property>
 +        <child>
 +          <object class="GtkLabel" id="title">
 +            <property name="visible">True</property>
 +            <property name="can_focus">False</property>
-+            <property name="halign">center</property>
++            <property name="halign">start</property>
++            <property name="hexpand">True</property>
 +            <property name="valign">start</property>
-+            <property name="margin_top">18</property>
 +            <property name="label" translatable="yes">What's new in Ubuntu</property>
 +            <attributes>
 +              <attribute name="weight" value="bold"/>
@@ -1968,6 +2032,7 @@ index 0000000..146bd34
 +            <property name="can_focus">False</property>
 +            <property name="max-width-chars">50</property>
 +            <property name="halign">start</property>
++            <property name="hexpand">False</property>
 +            <property name="margin_top">18</property>
 +            <property name="label" translatable="yes">Ubuntu 18.04 works differently from older versions.</property>
 +            <property name="wrap">True</property>
@@ -1983,7 +2048,7 @@ index 0000000..146bd34
 +        </child>
 +        <child>
 +          <object class="GtkLabel" id="guide_label">
-+            <property name="visible">True</property>
++            <property name="visible">False</property>
 +            <property name="can_focus">False</property>
 +            <property name="halign">start</property>
 +            <property name="margin_top">18</property>
@@ -2040,10 +2105,10 @@ index 0000000..a769ba5
 +EXTRA_DIST = ubuntu-report.gresource.xml $(resource_files)
 diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
 new file mode 100644
-index 0000000..222d8c8
+index 0000000..1e4f4ab
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
-@@ -0,0 +1,223 @@
+@@ -0,0 +1,243 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
 + * Copyright (C) 2018 Canonical Ltd.
@@ -2075,6 +2140,7 @@ index 0000000..222d8c8
 +#include <libsysmetrics.h>
 +
 +struct _GisUbuntuReportPagePrivate {
++  GtkWidget *description_label;
 +  GtkWidget *opt_in_radio;
 +  gchar *report;
 +};
@@ -2121,7 +2187,7 @@ index 0000000..222d8c8
 +                                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 +                                     GTK_MESSAGE_ERROR,
 +                                     GTK_BUTTONS_CLOSE,
-+                                     _("Failed to get report informaiton: %s"), error);
++                                     _("Failed to get report information: %s"), error);
 +    gtk_dialog_run (GTK_DIALOG (dialog));
 +    gtk_widget_destroy (dialog);
 +    return;
@@ -2149,7 +2215,7 @@ index 0000000..222d8c8
 +}
 +
 +static void
-+show_policy (GtkButton *button, GisUbuntuReportPage *page)
++show_legal (GtkButton *button, GisUbuntuReportPage *page)
 +{
 +  g_autofree gchar *data = NULL;
 +  g_auto(GStrv) lines = NULL;
@@ -2202,8 +2268,8 @@ index 0000000..222d8c8
 +  }
 +}
 +
-+static void
-+gis_ubuntu_report_page_save_data (GisPage *page)
++static gboolean
++gis_ubuntu_report_page_apply (GisPage *page, GCancellable *cancellable)
 +{
 +  GisUbuntuReportPagePrivate *priv = gis_ubuntu_report_page_get_instance_private (GIS_UBUNTU_REPORT_PAGE (page));
 +  g_autofree char *error = NULL;
@@ -2213,7 +2279,7 @@ index 0000000..222d8c8
 +      error = sysmetrics_collect (&priv->report);
 +      if (error != NULL) {
 +        g_warning ("Failed to get report data: %s", error);
-+        return;
++        return FALSE;
 +      }
 +    }
 +
@@ -2225,12 +2291,30 @@ index 0000000..222d8c8
 +    if (error != NULL)
 +      g_warning ("Failed to send decline: %s", error);
 +  }
++
++  return FALSE;
 +}
 +
 +static void
 +gis_ubuntu_report_page_locale_changed (GisPage *page)
 +{
++  GisUbuntuReportPagePrivate *priv = gis_ubuntu_report_page_get_instance_private (GIS_UBUNTU_REPORT_PAGE (page));
++  g_autofree gchar *timezone_text = NULL;
++  g_autofree gchar *description_text = NULL;
++  g_autoptr(GError) error = NULL;
++
 +  gis_page_set_title (GIS_PAGE (page), _("Help improve Ubuntu"));
++
++  if (!g_file_get_contents ("/etc/timezone", &timezone_text, NULL, &error)) {
++    g_warning ("Failed to get timezone from /etc/timezone: %s", error->message);
++    return;
++  }
++
++  description_text = g_strdup_printf (_("Ubuntu can report information that helps developers improve it. "
++                                        "This includes things like the computer model, "
++					"what software is installed, "
++					"and the approximate location you choose (%s)."), g_strstrip (timezone_text));
++  gtk_label_set_label (GTK_LABEL (priv->description_label), description_text);
 +}
 +
 +static void
@@ -2240,13 +2324,14 @@ index 0000000..222d8c8
 +  GObjectClass *object_class = G_OBJECT_CLASS (klass);
 +
 +  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntu-report-page.ui");
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuReportPage, description_label);
 +  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuReportPage, opt_in_radio);
 +  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), show_report);
-+  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), show_policy);
++  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), show_legal);
 +
 +  page_class->page_id = PAGE_ID;
++  page_class->apply = gis_ubuntu_report_page_apply;
 +  page_class->locale_changed = gis_ubuntu_report_page_locale_changed;
-+  page_class->save_data = gis_ubuntu_report_page_save_data;
 +  object_class->constructed = gis_ubuntu_report_page_constructed;
 +  object_class->dispose = gis_ubuntu_report_page_dispose;
 +}
@@ -2327,140 +2412,186 @@ index 0000000..1e5063f
 +#endif /* __GIS_UBUNTU_REPORT_PAGE_H__ */
 diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
 new file mode 100644
-index 0000000..28ad4c6
+index 0000000..6190dd3
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
-@@ -0,0 +1,138 @@
+@@ -0,0 +1,184 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
 +  <!-- interface-requires gtk+ 3.0 -->
 +  <template class="GisUbuntuReportPage" parent="GisPage">
 +    <child>
-+      <object class="GtkBox">
++      <object class="GtkGrid">
 +        <property name="visible">True</property>
 +        <property name="can_focus">False</property>
-+        <property name="halign">center</property>
-+        <property name="valign">fill</property>
-+        <property name="orientation">vertical</property>
-+        <child>
-+          <object class="GtkImage">
-+            <property name="visible">True</property>
-+            <property name="can_focus">False</property>
-+            <property name="margin_top">24</property>
-+            <property name="resource">/org/gnome/initial-setup/ubuntu-report.svg</property>
-+            <style>
-+              <class name="dim-label" />
-+            </style>
-+          </object>
-+        </child>
++        <property name="row_spacing">40</property>
++	<property name="border_width">20</property>
 +        <child>
 +          <object class="GtkLabel" id="title">
 +            <property name="visible">True</property>
 +            <property name="can_focus">False</property>
-+            <property name="halign">center</property>
++            <property name="halign">start</property>
 +            <property name="valign">start</property>
-+            <property name="margin_top">18</property>
 +            <property name="label" translatable="yes">Help improve Ubuntu</property>
 +            <attributes>
 +              <attribute name="weight" value="bold"/>
 +              <attribute name="scale" value="1.8"/>
 +            </attributes>
 +          </object>
++          <packing>
++            <property name="left_attach">0</property>
++            <property name="top_attach">0</property>
++            <property name="width">3</property>
++            <property name="height">1</property>
++          </packing>
 +        </child>
 +        <child>
-+          <object class="GtkLabel" id="description_label">
++          <object class="GtkImage" id="icon_image">
 +            <property name="visible">True</property>
 +            <property name="can_focus">False</property>
-+            <property name="max-width-chars">50</property>
-+            <property name="halign">center</property>
-+            <property name="margin_top">18</property>
-+            <property name="label" translatable="yes">Ubuntu can report information that helps developers improve it. This includes things like computer model, what software is installed, and the approximate location you chose.</property>
-+            <property name="wrap">True</property>
++            <property name="valign">start</property>
++            <property name="halign">start</property>
++            <property name="resource">/org/gnome/initial-setup/ubuntu-report.svg</property>
++            <style>
++              <class name="dim-label" />
++            </style>
 +          </object>
++          <packing>
++            <property name="left_attach">0</property>
++            <property name="top_attach">1</property>
++            <property name="width">1</property>
++            <property name="height">1</property>
++          </packing>
++        </child>
++        <child>
++          <object class="GtkLabel" id="right_padding_label">
++            <property name="visible">True</property>
++          </object>
++          <packing>
++            <property name="left_attach">2</property>
++            <property name="top_attach">1</property>
++            <property name="width">1</property>
++            <property name="height">1</property>
++          </packing>
 +        </child>
 +        <child>
 +          <object class="GtkBox">
 +            <property name="visible">True</property>
 +            <property name="can_focus">False</property>
-+            <property name="halign">center</property>
-+            <property name="orientation">horizontal</property>
-+            <property name="homogeneous">True</property>
-+            <property name="margin_top">18</property>
-+            <property name="spacing">18</property>
-+            <child>
-+              <object class="GtkButton">
-+                <property name="visible">True</property>
-+                <property name="label" translatable="yes">Show the First Report</property>
-+                <signal name="clicked" handler="show_report"/>
-+              </object>
-+            </child>
-+            <child>
-+              <object class="GtkButton">
-+                <property name="visible">True</property>
-+                <property name="label" translatable="yes">Show the Privacy Policy</property>
-+                <signal name="clicked" handler="show_policy"/>
-+              </object>
-+            </child>
-+          </object>
-+        </child>
-+        <child>
-+          <object class="GtkBox" id="question_box">
-+            <property name="visible">True</property>
-+            <property name="can_focus">False</property>
-+            <property name="halign">center</property>
++	    <property name="halign">center</property>
++	    <property name="hexpand">True</property>
++	    <property name="valign">start</property>
++	    <property name="vexpand">True</property>
 +            <property name="orientation">vertical</property>
 +            <child>
-+              <object class="GtkLabel">
++              <object class="GtkLabel" id="description_label">
 +                <property name="visible">True</property>
 +                <property name="can_focus">False</property>
-+                <property name="margin_top">18</property>
-+                <property name="xalign">0</property>
-+                <property name="label" translatable="yes">Would you like to send this information?</property>
++                <property name="max-width-chars">50</property>
++                <property name="halign">center</property>
 +                <property name="wrap">True</property>
 +              </object>
 +            </child>
 +            <child>
-+              <object class="GtkRadioButton" id="opt_in_radio">
++              <object class="GtkBox">
 +                <property name="visible">True</property>
 +                <property name="can_focus">False</property>
-+                <property name="margin_top">6</property>
-+                <property name="xalign">0</property>
-+                <property name="label" translatable="yes">Yes, send occasional system info to Canonical</property>
++                <property name="halign">start</property>
++                <property name="orientation">horizontal</property>
++                <property name="margin_top">18</property>
++                <property name="spacing">6</property>
++                <child>
++                  <object class="GtkButton">
++                    <property name="visible">True</property>
++                    <property name="label" translatable="yes">Show the First Report</property>
++                    <signal name="clicked" handler="show_report"/>
++                  </object>
++                </child>
++                <child>
++                  <object class="GtkButton">
++                    <property name="visible">True</property>
++                    <property name="label" translatable="yes">Legal notice</property>
++                    <signal name="clicked" handler="show_legal"/>
++                  </object>
++                </child>
 +              </object>
 +            </child>
 +            <child>
-+              <object class="GtkRadioButton" id="opt_out_radio">
++              <object class="GtkBox" id="question_box">
 +                <property name="visible">True</property>
 +                <property name="can_focus">False</property>
-+                <property name="margin_top">6</property>
-+                <property name="xalign">0</property>
-+                <property name="label" translatable="yes">No, don't send any info</property>
-+                <property name="group">opt_in_radio</property>
++                <property name="halign">center</property>
++                <property name="orientation">vertical</property>
++                <child>
++                  <object class="GtkLabel">
++                    <property name="visible">True</property>
++                    <property name="can_focus">False</property>
++                    <property name="margin_top">18</property>
++                    <property name="xalign">0</property>
++                    <property name="label" translatable="yes">Would you like to send this information?</property>
++                    <attributes>
++                      <attribute name="weight" value="bold"/>
++                    </attributes>
++                    <property name="wrap">True</property>
++                  </object>
++                </child>
++                <child>
++                  <object class="GtkRadioButton" id="opt_in_radio">
++                    <property name="visible">True</property>
++                    <property name="can_focus">False</property>
++                    <property name="margin_top">18</property>
++                    <property name="xalign">0</property>
++                    <property name="label" translatable="yes">Yes, send system info to Canonical</property>
++                  </object>
++                </child>
++                <child>
++                  <object class="GtkRadioButton" id="opt_out_radio">
++                    <property name="visible">True</property>
++                    <property name="can_focus">False</property>
++                    <property name="margin_top">6</property>
++                    <property name="xalign">0</property>
++                    <property name="label" translatable="yes">No, don't send system info</property>
++                    <property name="group">opt_in_radio</property>
++                  </object>
++                </child>
 +              </object>
 +            </child>
-+          </object>
-+        </child>
-+        <child>
-+          <object class="GtkLabel" id="footer_label">
-+            <property name="visible">False</property> <!-- Disabled for now as setting doesn't exist - remove if we decide it's not necessary -->
-+            <property name="can_focus">False</property>
-+            <property name="label" translatable="yes">You can change your mind later in Settings -> Privacy -> Diagnostics.</property>
-+            <property name="justify">center</property>
-+            <property name="wrap">True</property>
-+            <property name="margin_bottom">18</property>
-+            <style>
-+              <class name="dim-label"/>
-+            </style>
++            <child>
++              <object class="GtkLabel" id="footer_label">
++                <property name="visible">False</property> <!-- Disabled for now as setting doesn't exist - remove if we decide it's not necessary -->
++                <property name="can_focus">False</property>
++                <property name="label" translatable="yes">You can change your mind later in Settings -> Privacy -> Diagnostics.</property>
++                <property name="justify">center</property>
++                <property name="wrap">True</property>
++                <property name="margin_bottom">18</property>
++                <style>
++                  <class name="dim-label"/>
++                </style>
++              </object>
++              <packing>
++                <property name="expand">False</property>
++                <property name="fill">True</property>
++                <property name="pack_type">end</property>
++              </packing>
++            </child>
 +          </object>
 +          <packing>
-+            <property name="expand">False</property>
-+            <property name="fill">True</property>
-+            <property name="pack_type">end</property>
++            <property name="left_attach">1</property>
++            <property name="top_attach">1</property>
++            <property name="width">1</property>
++            <property name="height">1</property>
 +          </packing>
 +        </child>
 +      </object>
 +    </child>
 +  </template>
++  <object class="GtkSizeGroup">
++    <property name="mode">horizontal</property>
++    <widgets>
++      <widget name="icon_image"/>
++      <widget name="right_padding_label"/>
++    </widgets>
++  </object>
 +  <object class="GtkSizeGroup">
 +    <property name="mode">horizontal</property>
 +    <widgets>
@@ -2485,11 +2616,11 @@ index 0000000..6b28415
 +
 diff --git a/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
 new file mode 100644
-index 0000000..1e9b2fb
+index 0000000..fe3811c
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
 @@ -0,0 +1 @@
-+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="96px" height="96px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666;} </style> <g> <path class="st0" d="M301.4,372.4C271.7,390,237,400,200,400C89.5,400,0,310.5,0,200C0,89.5,89.5,0,200,0c110.5,0,200,89.5,200,200 c0,36.4-9.7,70.6-26.8,100l0,0L400,400l-100-26.8L301.4,372.4L301.4,372.4z"/> </g> </svg>
++<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666;} </style> <g> <path class="st0" d="M301.4,372.4C271.7,390,237,400,200,400C89.5,400,0,310.5,0,200C0,89.5,89.5,0,200,0c110.5,0,200,89.5,200,200 c0,36.4-9.7,70.6-26.8,100l0,0L400,400l-100-26.8L301.4,372.4L301.4,372.4z"/> </g> </svg>
 diff --git a/po/POTFILES.in b/po/POTFILES.in
 index 7af03af..5acf040 100644
 --- a/po/POTFILES.in
@@ -2512,5 +2643,5 @@ index 7af03af..5acf040 100644
 +gnome-initial-setup/pages/apps/gis-apps-page.c
 +[type: gettext/glade]gnome-initial-setup/pages/apps/gis-apps-page.ui
 -- 
-2.15.1
+2.17.0
 

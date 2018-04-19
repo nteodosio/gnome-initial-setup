@@ -1,3 +1,30 @@
+gnome-initial-setup (3.28.0-2ubuntu6) bionic; urgency=medium
+
+  [ Andrea Azzarone ]
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - Store goa account id in gsettings
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 19 Apr 2018 14:27:53 +1200
+
+gnome-initial-setup (3.28.0-2ubuntu5) bionic; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - Improve promoted apps navigation
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 19 Apr 2018 11:23:09 +1200
+
+gnome-initial-setup (3.28.0-2ubuntu4) bionic; urgency=medium
+
+  * debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
+  * debian/patches/0001-Make-summary-page-explicitly-request-navigation-butt.patch:
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - Don't run the "welcome tour" at the end
+    - Drop start / end pages
+    - Show graphic showing what's changed from older versions of Ubuntu
+    - Change layout to match updated design
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 19 Apr 2018 09:35:48 +1200
+
 gnome-initial-setup (3.28.0-2ubuntu3) bionic; urgency=medium
 
   * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:

@@ -1,0 +1,31 @@
+From 9ca313e66a9aea757be25f89df68a7c8fc001328 Mon Sep 17 00:00:00 2001
+From: Robert Ancell <robert.ancell@canonical.com>
+Date: Wed, 18 Apr 2018 12:24:51 +1200
+Subject: [PATCH 3/5] Don't run welcome tour at end
+
+---
+ gnome-initial-setup/gnome-initial-setup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
+index 5671cae..722c9ea 100644
+--- a/gnome-initial-setup/gnome-initial-setup.c
++++ b/gnome-initial-setup/gnome-initial-setup.c
+@@ -267,12 +267,12 @@ gis_ensure_stamp_files (void)
+   gchar *file;
+   GError *error = NULL;
+ 
+-  file = g_build_filename (g_get_user_config_dir (), "run-welcome-tour", NULL);
++  /*file = g_build_filename (g_get_user_config_dir (), "run-welcome-tour", NULL);
+   if (!g_file_set_contents (file, "yes", -1, &error)) {
+       g_warning ("Unable to create %s: %s", file, error->message);
+       g_clear_error (&error);
+   }
+-  g_free (file);
++  g_free (file);*/
+ 
+   file = g_build_filename (g_get_user_config_dir (), "gnome-initial-setup-done", NULL);
+   if (!g_file_set_contents (file, "yes", -1, &error)) {
+-- 
+2.17.0
+

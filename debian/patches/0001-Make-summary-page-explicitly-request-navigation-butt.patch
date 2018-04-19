@@ -1,0 +1,232 @@
+From b7cf2a2a540aaddcbe6c3d65244e47e2617978aa Mon Sep 17 00:00:00 2001
+From: Robert Ancell <robert.ancell@canonical.com>
+Date: Wed, 18 Apr 2018 12:38:11 +1200
+Subject: [PATCH 4/5] Make summary page explicitly request navigation buttons
+ to be hidden
+
+---
+ gnome-initial-setup/gis-assistant.c           | 20 ++++++++++---
+ gnome-initial-setup/gis-assistant.ui          |  9 ++++++
+ gnome-initial-setup/gis-page.c                | 28 ++++++++++++++++++-
+ gnome-initial-setup/gis-page.h                |  2 ++
+ .../pages/summary/gis-summary-page.c          |  2 ++
+ 5 files changed, 56 insertions(+), 5 deletions(-)
+
+diff --git a/gnome-initial-setup/gis-assistant.c b/gnome-initial-setup/gis-assistant.c
+index 37ed563..c6ba70a 100644
+--- a/gnome-initial-setup/gis-assistant.c
++++ b/gnome-initial-setup/gis-assistant.c
+@@ -45,6 +45,7 @@ static GParamSpec *obj_props[PROP_LAST];
+ struct _GisAssistantPrivate
+ {
+   GtkWidget *forward;
++  GtkWidget *done;
+   GtkWidget *accept;
+   GtkWidget *skip;
+   GtkWidget *back;
+@@ -108,17 +109,21 @@ static GisPage *
+ find_next_page (GisPage *page)
+ {
+   GList *l = page->assistant_priv->link->next;
+-  while (!should_show_page (l)) {
++  while (l != NULL && !should_show_page (l)) {
+     l = l->next;
+   }
+-  return GIS_PAGE (l->data);
++  return l == NULL ? NULL : GIS_PAGE (l->data);
+ }
+ 
+ static void
+ switch_to_next_page (GisAssistant *assistant)
+ {
+   GisAssistantPrivate *priv = gis_assistant_get_instance_private (assistant);
+-  switch_to (assistant, find_next_page (priv->current_page));
++  GisPage *page;
++
++  page = find_next_page (priv->current_page);
++  if (page)
++    switch_to (assistant, page);
+ }
+ 
+ static void
+@@ -178,6 +183,7 @@ set_navigation_button (GisAssistant *assistant,
+   GisAssistantPrivate *priv = gis_assistant_get_instance_private (assistant);
+ 
+   gtk_widget_set_visible (priv->forward, (widget == priv->forward));
++  gtk_widget_set_visible (priv->done, (widget == priv->done));
+   gtk_widget_set_visible (priv->accept, (widget == priv->accept));
+   gtk_widget_set_visible (priv->skip, (widget == priv->skip));
+ }
+@@ -197,7 +203,7 @@ update_navigation_buttons (GisAssistant *assistant)
+ 
+   is_last_page = (page_priv->link->next == NULL);
+ 
+-  if (is_last_page)
++  if (gis_page_get_hide_navigation (page))
+     {
+       gtk_widget_hide (priv->back);
+       gtk_widget_hide (priv->forward);
+@@ -217,6 +223,8 @@ update_navigation_buttons (GisAssistant *assistant)
+ 
+       if (gis_page_get_needs_accept (page))
+         next_widget = priv->accept;
++      else if (is_last_page)
++        next_widget = priv->done;
+       else
+         next_widget = priv->forward;
+ 
+@@ -240,6 +248,7 @@ update_applying_state (GisAssistant *assistant)
+   if (priv->current_page)
+     applying = gis_page_get_applying (priv->current_page);
+   gtk_widget_set_sensitive (priv->forward, !applying);
++  gtk_widget_set_sensitive (priv->done, !applying);
+   gtk_widget_set_visible (priv->back, !applying);
+   gtk_widget_set_visible (priv->cancel, applying);
+   gtk_widget_set_visible (priv->spinner, applying);
+@@ -401,6 +410,7 @@ gis_assistant_locale_changed (GisAssistant *assistant)
+   GList *l;
+ 
+   gtk_button_set_label (GTK_BUTTON (priv->forward), _("_Next"));
++  gtk_button_set_label (GTK_BUTTON (priv->done), _("_Done"));
+   gtk_button_set_label (GTK_BUTTON (priv->accept), _("_Accept"));
+   gtk_button_set_label (GTK_BUTTON (priv->skip), _("_Skip"));
+   gtk_button_set_label (GTK_BUTTON (priv->back), _("_Previous"));
+@@ -433,6 +443,7 @@ gis_assistant_init (GisAssistant *assistant)
+                     G_CALLBACK (current_page_changed), assistant);
+ 
+   g_signal_connect (priv->forward, "clicked", G_CALLBACK (go_forward), assistant);
++  g_signal_connect (priv->done, "clicked", G_CALLBACK (go_forward), assistant);
+   g_signal_connect (priv->accept, "clicked", G_CALLBACK (go_forward), assistant);
+   g_signal_connect (priv->skip, "clicked", G_CALLBACK (go_forward), assistant);
+ 
+@@ -471,6 +482,7 @@ gis_assistant_class_init (GisAssistantClass *klass)
+   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-assistant.ui");
+ 
+   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAssistant, forward);
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAssistant, done);
+   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAssistant, accept);
+   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAssistant, skip);
+   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAssistant, back);
+diff --git a/gnome-initial-setup/gis-assistant.ui b/gnome-initial-setup/gis-assistant.ui
+index 49a1a24..e413a0f 100644
+--- a/gnome-initial-setup/gis-assistant.ui
++++ b/gnome-initial-setup/gis-assistant.ui
+@@ -62,6 +62,15 @@
+         <property name="pack-type">end</property>
+       </packing>
+     </child>
++    <child>
++      <object class="GtkButton" id="done">
++        <property name="use-underline">True</property>
++        <property name="can-default">True</property>
++      </object>
++      <packing>
++        <property name="pack-type">end</property>
++      </packing>
++    </child>
+   </object>
+ 
+   <object class="GtkSizeGroup" id="headerheight">
+diff --git a/gnome-initial-setup/gis-page.c b/gnome-initial-setup/gis-page.c
+index e28f573..7fa631d 100644
+--- a/gnome-initial-setup/gis-page.c
++++ b/gnome-initial-setup/gis-page.c
+@@ -37,7 +37,8 @@ struct _GisPagePrivate
+   guint complete : 1;
+   guint skippable : 1;
+   guint needs_accept : 1;
+-  guint padding : 5;
++  guint hide_navigation : 1;
++  guint padding : 4;
+ };
+ typedef struct _GisPagePrivate GisPagePrivate;
+ 
+@@ -50,6 +51,7 @@ enum
+   PROP_TITLE,
+   PROP_COMPLETE,
+   PROP_SKIPPABLE,
++  PROP_HIDE_NAVIGATION,
+   PROP_NEEDS_ACCEPT,
+   PROP_APPLYING,
+   PROP_SMALL_SCREEN,
+@@ -80,6 +82,9 @@ gis_page_get_property (GObject    *object,
+     case PROP_SKIPPABLE:
+       g_value_set_boolean (value, priv->skippable);
+       break;
++    case PROP_HIDE_NAVIGATION:
++      g_value_set_boolean (value, priv->hide_navigation);
++      break;
+     case PROP_NEEDS_ACCEPT:
+       g_value_set_boolean (value, priv->needs_accept);
+       break;
+@@ -126,6 +131,9 @@ gis_page_set_property (GObject      *object,
+     case PROP_SKIPPABLE:
+       priv->skippable = g_value_get_boolean (value);
+       break;
++    case PROP_HIDE_NAVIGATION:
++      priv->hide_navigation = g_value_get_boolean (value);
++      break;
+     case PROP_NEEDS_ACCEPT:
+       priv->needs_accept = g_value_get_boolean (value);
+       break;
+@@ -211,6 +219,9 @@ gis_page_class_init (GisPageClass *klass)
+   obj_props[PROP_SKIPPABLE] =
+     g_param_spec_boolean ("skippable", "", "", FALSE,
+                           G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE);
++  obj_props[PROP_HIDE_NAVIGATION] =
++    g_param_spec_boolean ("hide-navigation", "", "", FALSE,
++                          G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE);
+   obj_props[PROP_NEEDS_ACCEPT] =
+     g_param_spec_boolean ("needs-accept", "", "", FALSE,
+                           G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE);
+@@ -282,6 +293,21 @@ gis_page_set_skippable (GisPage *page, gboolean skippable)
+   g_object_notify_by_pspec (G_OBJECT (page), obj_props[PROP_SKIPPABLE]);
+ }
+ 
++gboolean
++gis_page_get_hide_navigation (GisPage *page)
++{
++  GisPagePrivate *priv = gis_page_get_instance_private (page);
++  return priv->hide_navigation;
++}
++
++void
++gis_page_set_hide_navigation (GisPage *page, gboolean hide_navigation)
++{
++  GisPagePrivate *priv = gis_page_get_instance_private (page);
++  priv->hide_navigation = hide_navigation;
++  g_object_notify_by_pspec (G_OBJECT (page), obj_props[PROP_HIDE_NAVIGATION]);
++}
++
+ gboolean
+ gis_page_get_needs_accept (GisPage *page)
+ {
+diff --git a/gnome-initial-setup/gis-page.h b/gnome-initial-setup/gis-page.h
+index 02e3085..c9be18a 100644
+--- a/gnome-initial-setup/gis-page.h
++++ b/gnome-initial-setup/gis-page.h
+@@ -70,6 +70,8 @@ gboolean     gis_page_get_complete (GisPage *page);
+ void         gis_page_set_complete (GisPage *page, gboolean complete);
+ gboolean     gis_page_get_skippable (GisPage *page);
+ void         gis_page_set_skippable (GisPage *page, gboolean skippable);
++gboolean     gis_page_get_hide_navigation (GisPage *page);
++void         gis_page_set_hide_navigation (GisPage *page, gboolean hide_navigation);
+ gboolean     gis_page_get_needs_accept (GisPage *page);
+ void         gis_page_set_needs_accept (GisPage *page, gboolean needs_accept);
+ GtkWidget *  gis_page_get_action_widget (GisPage *page);
+diff --git a/gnome-initial-setup/pages/summary/gis-summary-page.c b/gnome-initial-setup/pages/summary/gis-summary-page.c
+index 4261b92..44bf3e6 100644
+--- a/gnome-initial-setup/pages/summary/gis-summary-page.c
++++ b/gnome-initial-setup/pages/summary/gis-summary-page.c
+@@ -320,6 +320,8 @@ gis_summary_page_constructed (GObject *object)
+ 
+   G_OBJECT_CLASS (gis_summary_page_parent_class)->constructed (object);
+ 
++  gis_page_set_hide_navigation (GIS_PAGE (page), TRUE);
++
+   update_distro_name (page);
+   g_signal_connect (priv->start_button, "clicked", G_CALLBACK (done_cb), page);
+ 
+-- 
+2.17.0
+
