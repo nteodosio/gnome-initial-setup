@@ -1,15 +1,14 @@
-From b7cf2a2a540aaddcbe6c3d65244e47e2617978aa Mon Sep 17 00:00:00 2001
 From: Robert Ancell <robert.ancell@canonical.com>
 Date: Wed, 18 Apr 2018 12:38:11 +1200
 Subject: [PATCH 4/5] Make summary page explicitly request navigation buttons
  to be hidden
 
 ---
- gnome-initial-setup/gis-assistant.c           | 20 ++++++++++---
- gnome-initial-setup/gis-assistant.ui          |  9 ++++++
- gnome-initial-setup/gis-page.c                | 28 ++++++++++++++++++-
- gnome-initial-setup/gis-page.h                |  2 ++
- .../pages/summary/gis-summary-page.c          |  2 ++
+ gnome-initial-setup/gis-assistant.c                | 20 ++++++++++++----
+ gnome-initial-setup/gis-assistant.ui               |  9 +++++++
+ gnome-initial-setup/gis-page.c                     | 28 +++++++++++++++++++++-
+ gnome-initial-setup/gis-page.h                     |  2 ++
+ .../pages/summary/gis-summary-page.c               |  2 ++
  5 files changed, 56 insertions(+), 5 deletions(-)
 
 diff --git a/gnome-initial-setup/gis-assistant.c b/gnome-initial-setup/gis-assistant.c
@@ -227,6 +226,3 @@ index 4261b92..44bf3e6 100644
    update_distro_name (page);
    g_signal_connect (priv->start_button, "clicked", G_CALLBACK (done_cb), page);
  
--- 
-2.17.0
-

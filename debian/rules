@@ -13,10 +13,6 @@ override_dh_auto_configure:
 		--disable-software-sources \
 		--with-vendor-conf-file=/usr/lib/gnome-initial-setup/vendor.conf
 
-override_dh_auto_build:
-	cp debian/ubuntu-changes.png gnome-initial-setup/pages/ubuntu-changes
-	dh_auto_build
-
 # Skip language chooser on Ubuntu since it doesn't work there
 override_dh_install:
 	dh_install

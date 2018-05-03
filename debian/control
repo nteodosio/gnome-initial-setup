@@ -5,7 +5,8 @@
 Source: gnome-initial-setup
 Section: gnome
 Priority: optional
-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
 Uploaders: Jeremy Bicha <jbicha@debian.org>, Jordi Mallach <jordi@debian.org>, Laurent Bigonville <bigon@debian.org>
 Build-Depends: debhelper (>= 11),
                geoclue-2.0 (>= 2.3.1),

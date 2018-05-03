@@ -1,3 +1,23 @@
+gnome-initial-setup (3.28.0-2ubuntu7) cosmic; urgency=medium
+
+  [ Robert Ancell ]
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - Fix crash on shutdown in ubuntu-report page (LP: #1767873)
+
+  [ Spencer Bygraves ]
+  * Update the "What's new" graphic to mention dock and notifications
+    (LP: #1768557)
+
+  [ Andrea Azzarone ]
+  * Don't autostart if user quits the wizard before completing it
+    (LP: #1768929) 
+
+  [ Jeremy Bicha ]
+  * Drop debian/ubuntu-changes.png to use the version included in
+    0001-Add-Ubuntu-mode-with-special-pages.patch
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Thu, 03 May 2018 14:06:19 -0400
+
 gnome-initial-setup (3.28.0-2ubuntu6) bionic; urgency=medium
 
   [ Andrea Azzarone ]
