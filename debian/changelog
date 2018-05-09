@@ -1,3 +1,16 @@
+gnome-initial-setup (3.28.0-2ubuntu8) cosmic; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - Remove some dead code
+    - Fix alignment of featured snaps (LP: #1769810)
+    - Update background images to be more transparent (LP: #1769811)
+    - Make changes page translatable (LP: #1766277)
+    - Fix crash handling errors in livepatch page (LP: #1768743)
+  * debian/patches/0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch:
+    - Split out of 0001-Add-Ubuntu-mode-with-special-pages.patch
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 09 May 2018 16:08:27 +1200
+
 gnome-initial-setup (3.28.0-2ubuntu7) cosmic; urgency=medium
 
   [ Robert Ancell ]

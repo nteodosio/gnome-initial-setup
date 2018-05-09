@@ -1,0 +1,39 @@
+From: Andrea Azzarone <andrea.azzarone@canonical.com>
+Date: Tue, 8 May 2018 17:16:03 +1200
+Subject: Ensure stamp file if the user quit the wizard
+
+---
+ gnome-initial-setup/gis-driver.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/gnome-initial-setup/gis-driver.c b/gnome-initial-setup/gis-driver.c
+index 989f47a..eeaf1b7 100644
+--- a/gnome-initial-setup/gis-driver.c
++++ b/gnome-initial-setup/gis-driver.c
+@@ -322,6 +322,18 @@ gis_driver_activate (GApplication *app)
+   gtk_window_present (GTK_WINDOW (priv->main_window));
+ }
+ 
++static void
++gis_driver_shutdown (GApplication *app)
++{
++  GisDriver *driver = GIS_DRIVER (app);
++  GisDriverPrivate *priv = gis_driver_get_instance_private (driver);
++
++  G_APPLICATION_CLASS (gis_driver_parent_class)->shutdown (app);
++
++  if (priv->mode == GIS_DRIVER_MODE_EXISTING_USER)
++    gis_ensure_stamp_files ();
++}
++
+ static gboolean
+ maximize (gpointer data)
+ {
+@@ -478,6 +490,7 @@ gis_driver_class_init (GisDriverClass *klass)
+   gobject_class->finalize = gis_driver_finalize;
+   application_class->startup = gis_driver_startup;
+   application_class->activate = gis_driver_activate;
++  application_class->shutdown = gis_driver_shutdown;
+   klass->locale_changed = gis_driver_real_locale_changed;
+ 
+   signals[REBUILD_PAGES] =
