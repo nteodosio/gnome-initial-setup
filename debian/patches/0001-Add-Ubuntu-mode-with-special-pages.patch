@@ -1999,7 +1999,7 @@ index 0000000..c42993b
 +#endif /* __GIS_UBUNTU_CHANGES_PAGE_H__ */
 diff --git a/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui
 new file mode 100644
-index 0000000..3dd4c71
+index 0000000..7210cc6
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.ui
 @@ -0,0 +1,118 @@
@@ -2065,7 +2065,7 @@ index 0000000..3dd4c71
 +              <object class="GtkLabel" id="launcher_label">
 +                <property name="visible">True</property>
 +                <property name="can_focus">False</property>
-+                <property name="label" translatable="yes">Launcher</property>
++                <property name="label" translatable="yes">Dock</property>
 +              </object>
 +            </child>
 +            <child>
@@ -2086,7 +2086,7 @@ index 0000000..3dd4c71
 +              <object class="GtkLabel" id="clock_calendar_label">
 +                <property name="visible">True</property>
 +                <property name="can_focus">False</property>
-+                <property name="label" translatable="yes">Clock and calendar</property>
++                <property name="label" translatable="yes">Calendar and notifications</property>
 +              </object>
 +            </child>
 +            <child>
