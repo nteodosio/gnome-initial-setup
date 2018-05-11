@@ -304,7 +304,7 @@ index 0000000..0d8dd94
 \ No newline at end of file
 diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.c b/gnome-initial-setup/pages/apps/gis-apps-page.c
 new file mode 100644
-index 0000000..725d9e5
+index 0000000..666d9f7
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.c
 @@ -0,0 +1,530 @@
@@ -799,7 +799,7 @@ index 0000000..725d9e5
 +      GtkWidget *tile, *icon;
 +
 +      /* Skip if already installed */
-+      if (contains_snap (installed_snaps, snapd_snap_get_name (snap)))
++      if (installed_snaps != NULL && contains_snap (installed_snaps, snapd_snap_get_name (snap)))
 +        continue;
 +
 +      /* Ignore common snaps that have default .debs */
@@ -1758,7 +1758,7 @@ index 0000000..f7da724
 +EXTRA_DIST = ubuntu-changes.gresource.xml $(resource_files)
 diff --git a/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.c b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.c
 new file mode 100644
-index 0000000..436388e
+index 0000000..e8764b3
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-changes/gis-ubuntu-changes-page.c
 @@ -0,0 +1,177 @@
@@ -1879,7 +1879,7 @@ index 0000000..436388e
 +  gtk_fixed_move (GTK_FIXED (fixed), priv->launcher_label, image_x - launcher_width, image_y + 138 - launcher_height / 2);
 +  gtk_fixed_move (GTK_FIXED (fixed), priv->apps_button_label, image_x - apps_button_width, image_y + 278 - apps_button_height / 2);
 +  gtk_fixed_move (GTK_FIXED (fixed), priv->app_menu_label, image_x + 139 - app_menu_width / 2, image_y - app_menu_height);
-+  gtk_fixed_move (GTK_FIXED (fixed), priv->clock_calendar_label, image_x + 285 - clock_calendar_width / 2, image_y - clock_calendar_height);
++  gtk_fixed_move (GTK_FIXED (fixed), priv->clock_calendar_label, image_x + 249, image_y - clock_calendar_height);
 +  gtk_fixed_move (GTK_FIXED (fixed), priv->system_menu_label, image_x + image_width, image_y + 46 - system_menu_height / 2);
 +  gtk_fixed_move (GTK_FIXED (fixed), priv->close_button_label, image_x + image_width, image_y + 125 - system_menu_height / 2);
 +}
