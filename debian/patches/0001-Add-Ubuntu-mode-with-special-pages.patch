@@ -2709,7 +2709,7 @@ index 0000000..68513a9
 +  description_text = g_strdup_printf (_("Ubuntu can report information that helps developers improve it. "
 +                                        "This includes things like the computer model, "
 +					"what software is installed, "
-+					"and the approximate location you choose (%s)."), g_strstrip (timezone_text));
++					"and the approximate location you chose (%s)."), g_strstrip (timezone_text));
 +  gtk_label_set_label (GTK_LABEL (priv->description_label), description_text);
 +}
 +

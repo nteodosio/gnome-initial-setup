@@ -1,3 +1,10 @@
+gnome-initial-setup (3.28.0-2ubuntu11) cosmic; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - typo fix in the "help improve ubuntu" page (lp: #1768549)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 25 May 2018 15:32:05 +0200
+
 gnome-initial-setup (3.28.0-2ubuntu10) cosmic; urgency=medium
 
   * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
