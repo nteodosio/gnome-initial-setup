@@ -7,6 +7,12 @@ export DEB_LDFLAGS_MAINT_APPEND = -Wl,-z,defs -Wl,--as-needed
 %:
 	dh $@ --with gnome
 
+override_dh_auto_clean:
+	# Fix for 0001-Make-summary-page-explicitly-request-navigation-butt.patch
+	# Should be fixed upstream in https://gitlab.gnome.org/GNOME/gnome-initial-setup/commit/896be51efb67f3cfd3f94b8bd9d65c8cb43755d2
+	rm gnome-initial-setup/gis-assistant-resources.[ch]
+	dh_auto_clean
+
 override_dh_auto_configure:
 	dh_auto_configure -- \
 		--libexecdir=/usr/lib/gnome-initial-setup \

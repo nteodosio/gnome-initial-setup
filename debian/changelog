@@ -1,3 +1,15 @@
+gnome-initial-setup (3.28.0-2ubuntu12) cosmic; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - Add legal notice for livepatch page (LP: #1773140)
+    - Hide livepatch page if it is not supported (LP: #1770694)
+    - Use sharper changes graphic
+    - Fix promoted apps layout
+  * debian/rules:
+    - Remove files to fix patch not being correctly applied
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 30 May 2018 17:15:39 +1200
+
 gnome-initial-setup (3.28.0-2ubuntu11) cosmic; urgency=medium
 
   * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
