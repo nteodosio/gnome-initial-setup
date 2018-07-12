@@ -2239,7 +2239,7 @@ index 0000000..d6a3093
 +                                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 +                                     GTK_MESSAGE_ERROR,
 +                                     GTK_BUTTONS_CLOSE,
-+                                     _("Failed to show Lipepatch policy: %s"), error->message);
++                                     _("Failed to show Livepatch policy: %s"), error->message);
 +    gtk_dialog_run (GTK_DIALOG (dialog));
 +    gtk_widget_destroy (dialog);
 +    return;

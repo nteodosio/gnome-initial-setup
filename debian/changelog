@@ -1,3 +1,13 @@
+gnome-initial-setup (3.28.0-2ubuntu13) cosmic; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - typo fix in an error string (lp: #1777468)
+  * debian/patches/0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch:
+    - Display the ubuntu welcome wizard in Unity, don't display the
+      "what's new" page though since Unity didn't change (lp: #1781417)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 12 Jul 2018 20:49:37 +0200
+
 gnome-initial-setup (3.28.0-2ubuntu12) cosmic; urgency=medium
 
   * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:

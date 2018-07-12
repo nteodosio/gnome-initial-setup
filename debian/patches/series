@@ -5,3 +5,4 @@ use-Ubuntu-icon-on-Ubuntu.patch
 0001-Make-summary-page-explicitly-request-navigation-butt.patch
 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
 0001-Add-Ubuntu-mode-with-special-pages.patch
+0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
