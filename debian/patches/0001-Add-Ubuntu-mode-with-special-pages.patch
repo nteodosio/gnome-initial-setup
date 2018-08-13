@@ -12,7 +12,7 @@ Subject: Add Ubuntu mode with special pages
  gnome-initial-setup/Makefile.am                    |   4 +
  gnome-initial-setup/gis-driver.c                   |  35 ++
  gnome-initial-setup/gis-driver.h                   |   6 +
- gnome-initial-setup/gnome-initial-setup.c          |  41 +-
+ gnome-initial-setup/gnome-initial-setup.c          |  42 +-
  gnome-initial-setup/meson.build                    |   3 +
  gnome-initial-setup/pages/Makefile.am              |   8 +-
  gnome-initial-setup/pages/apps/Makefile.am         |  23 +
@@ -51,7 +51,7 @@ Subject: Add Ubuntu mode with special pages
  .../pages/ubuntu-report/ubuntu-report.svg          |   1 +
  meson.build                                        |   3 +
  po/POTFILES.in                                     |  14 +
- 48 files changed, 3397 insertions(+), 8 deletions(-)
+ 48 files changed, 3398 insertions(+), 8 deletions(-)
  create mode 100644 data/com.ubuntu.welcome.policy.in
  create mode 100644 data/its/polkit.its
  create mode 100644 data/its/polkit.loc
@@ -323,7 +323,7 @@ index 9eb408e..c5261fa 100644
  
  G_END_DECLS
 diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index bfcc03c..84f3f90 100644
+index bfcc03c..8755875 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
 @@ -44,6 +44,10 @@
@@ -337,12 +337,13 @@ index bfcc03c..84f3f90 100644
  
  #define VENDOR_PAGES_GROUP "pages"
  #define VENDOR_SKIP_KEY "skip"
-@@ -82,6 +86,16 @@ static PageData page_table[] = {
+@@ -82,6 +86,17 @@ static PageData page_table[] = {
    { NULL },
  };
  
 +static PageData ubuntu_page_table[] = {
 +  PAGE (ubuntu_changes, FALSE),
++  PAGE (goa,            FALSE),
 +  PAGE (livepatch,      FALSE),
 +  PAGE (ubuntu_report,  FALSE),
 +  PAGE (account,        TRUE),
@@ -354,7 +355,7 @@ index bfcc03c..84f3f90 100644
  #undef PAGE
  
  static gboolean
-@@ -188,6 +202,25 @@ destroy_pages_after (GisAssistant *assistant,
+@@ -188,6 +203,25 @@ destroy_pages_after (GisAssistant *assistant,
    }
  }
  
@@ -380,7 +381,7 @@ index bfcc03c..84f3f90 100644
  static void
  rebuild_pages_cb (GisDriver *driver)
  {
-@@ -200,7 +233,11 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -200,7 +234,11 @@ rebuild_pages_cb (GisDriver *driver)
  
    assistant = gis_driver_get_assistant (driver);
    current_page = gis_assistant_get_current_page (assistant);
@@ -393,7 +394,7 @@ index bfcc03c..84f3f90 100644
  
    g_ptr_array_free (skipped_pages, TRUE);
    skipped_pages = g_ptr_array_new_with_free_func ((GDestroyNotify) gtk_widget_destroy);
-@@ -208,7 +245,7 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -208,7 +246,7 @@ rebuild_pages_cb (GisDriver *driver)
    if (current_page != NULL) {
      destroy_pages_after (assistant, current_page);
  

@@ -6,8 +6,8 @@ Subject: [PATCH] Display the ubuntu welcome wizard in Unity Don't display the
 
 ---
  data/gnome-initial-setup-first-login.desktop.in.in |  2 +-
- gnome-initial-setup/gnome-initial-setup.c          | 11 +++++++++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ gnome-initial-setup/gnome-initial-setup.c          | 12 ++++++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/data/gnome-initial-setup-first-login.desktop.in.in b/data/gnome-initial-setup-first-login.desktop.in.in
 index 8445e03..a5fb609 100644
@@ -23,14 +23,15 @@ index 8445e03..a5fb609 100644
  AutostartCondition=unless-exists gnome-initial-setup-done
  X-GNOME-Bugzilla-Bugzilla=GNOME
 diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index 84f3f90..9d0dc23 100644
+index 8755875..e184995 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -96,6 +96,15 @@ static PageData ubuntu_page_table[] = {
+@@ -97,6 +97,16 @@ static PageData ubuntu_page_table[] = {
    { NULL },
  };
  
 +static PageData unity_page_table[] = {
++  PAGE (goa,            FALSE),
 +  PAGE (livepatch,      FALSE),
 +  PAGE (ubuntu_report,  FALSE),
 +  PAGE (account,        TRUE),
@@ -42,7 +43,7 @@ index 84f3f90..9d0dc23 100644
  #undef PAGE
  
  static gboolean
-@@ -236,6 +245,8 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -237,6 +247,8 @@ rebuild_pages_cb (GisDriver *driver)
  
    if (is_desktop ("ubuntu"))
      page_data = ubuntu_page_table;

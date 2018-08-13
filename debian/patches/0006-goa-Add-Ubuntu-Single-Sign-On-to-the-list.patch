@@ -1,0 +1,23 @@
+From: Andrea Azzarone <andrea.azzarone@canonical.com>
+Date: Mon, 13 Aug 2018 17:38:57 +0000
+Subject: goa: Add Ubuntu Single Sign-On to the list
+
+Show "Ubuntu Single Sign-on" first in the list in online accounts page.
+
+Forwared: not-needed
+---
+ gnome-initial-setup/pages/goa/gis-goa-page.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/gnome-initial-setup/pages/goa/gis-goa-page.c b/gnome-initial-setup/pages/goa/gis-goa-page.c
+index 3ed4e98..65c1ae1 100644
+--- a/gnome-initial-setup/pages/goa/gis-goa-page.c
++++ b/gnome-initial-setup/pages/goa/gis-goa-page.c
+@@ -178,6 +178,7 @@ add_provider_to_list (GisGoaPage *page, const char *provider_type)
+ static void
+ populate_provider_list (GisGoaPage *page)
+ {
++  add_provider_to_list (page, "ubuntusso");
+   add_provider_to_list (page, "google");
+   add_provider_to_list (page, "owncloud");
+   add_provider_to_list (page, "windows_live");

@@ -10,11 +10,18 @@ gnome-initial-setup (3.29.1-1ubuntu1) UNRELEASED; urgency=medium
       - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
       - 0001-Add-Ubuntu-mode-with-special-pages.patch
       - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+      - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
   * d/p/0001-Add-Ubuntu-mode-with-special-pages.patch:
       - Support Meson build system
       - Show an dialog in case of error when enabling Livepatch (lp: #1764723)
+      - Enable online accounts page (lp: #1762192)
+  * d/p/0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch:
+      - Enable online accounts page (lp: #1762192)
+  * d/p/0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch:
+      - Show "Ubuntu Single Sign-on" first in the list in the online accounts
+        page.
 
- -- Andrea Azzarone <andrea.azzarone@canonical.com>  Fri, 10 Aug 2018 19:33:59 +0300
+ -- Andrea Azzarone <andrea.azzarone@canonical.com>  Mon, 13 Aug 2018 15:17:41 +0300
 
 gnome-initial-setup (3.29.1-1) experimental; urgency=medium
 
