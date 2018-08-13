@@ -7,10 +7,10 @@ Subject: [PATCH 3/5] Don't run welcome tour at end
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index 6cca10b..6bc5018 100644
+index 414ea94..bfcc03c 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -272,12 +272,12 @@ gis_ensure_stamp_files (void)
+@@ -306,12 +306,12 @@ gis_ensure_stamp_files (void)
    gchar *file;
    GError *error = NULL;
  

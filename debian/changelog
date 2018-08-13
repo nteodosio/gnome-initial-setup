@@ -1,6 +1,6 @@
 gnome-initial-setup (3.29.1-1ubuntu1) UNRELEASED; urgency=medium
 
-  * Merge from Debian experimental. Remaining changes:
+  * Merge from Debian experimental (lp: #1784617). Remaining changes:
     + debian/control.in:
       - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
       - Enable langpack usage
@@ -10,8 +10,11 @@ gnome-initial-setup (3.29.1-1ubuntu1) UNRELEASED; urgency=medium
       - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
       - 0001-Add-Ubuntu-mode-with-special-pages.patch
       - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+  * d/p/0001-Add-Ubuntu-mode-with-special-pages.patch:
+      - Support Meson build system
+      - Show an dialog in case of error when enabling Livepatch (lp: #1764723)
 
- -- Andrea Azzarone <andrea.azzarone@canonical.com>  Fri, 10 Aug 2018 18:28:25 +0300
+ -- Andrea Azzarone <andrea.azzarone@canonical.com>  Fri, 10 Aug 2018 19:33:59 +0300
 
 gnome-initial-setup (3.29.1-1) experimental; urgency=medium
 

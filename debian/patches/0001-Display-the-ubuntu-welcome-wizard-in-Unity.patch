@@ -1,4 +1,3 @@
-From 21891fda4d358be3286951fa93cb4ea50c88ee78 Mon Sep 17 00:00:00 2001
 From: Sebastien Bacher <seb128@ubuntu.com>
 Date: Thu, 12 Jul 2018 16:51:34 +0200
 Subject: [PATCH] Display the ubuntu welcome wizard in Unity Don't display the
@@ -11,10 +10,10 @@ Subject: [PATCH] Display the ubuntu welcome wizard in Unity Don't display the
  2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/data/gnome-initial-setup-first-login.desktop.in.in b/data/gnome-initial-setup-first-login.desktop.in.in
-index 83bbff2..cd8d709 100644
+index 8445e03..a5fb609 100644
 --- a/data/gnome-initial-setup-first-login.desktop.in.in
 +++ b/data/gnome-initial-setup-first-login.desktop.in.in
-@@ -6,7 +6,7 @@ Terminal=false
+@@ -7,7 +7,7 @@ Terminal=false
  Type=Application
  StartupNotify=true
  Categories=GNOME;GTK;System;
@@ -24,10 +23,10 @@ index 83bbff2..cd8d709 100644
  AutostartCondition=unless-exists gnome-initial-setup-done
  X-GNOME-Bugzilla-Bugzilla=GNOME
 diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index 8e38e9e..3fcff8c 100644
+index 84f3f90..9d0dc23 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -98,6 +98,15 @@ static PageData ubuntu_page_table[] = {
+@@ -96,6 +96,15 @@ static PageData ubuntu_page_table[] = {
    { NULL },
  };
  
@@ -43,7 +42,7 @@ index 8e38e9e..3fcff8c 100644
  #undef PAGE
  
  static gboolean
-@@ -238,6 +247,8 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -236,6 +245,8 @@ rebuild_pages_cb (GisDriver *driver)
  
    if (is_desktop ("ubuntu"))
      page_data = ubuntu_page_table;
@@ -52,6 +51,3 @@ index 8e38e9e..3fcff8c 100644
    else
      page_data = page_table;
  
--- 
-2.7.4
-
