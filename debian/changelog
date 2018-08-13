@@ -20,6 +20,8 @@ gnome-initial-setup (3.29.1-1ubuntu1) UNRELEASED; urgency=medium
   * d/p/0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch:
       - Show "Ubuntu Single Sign-on" first in the list in the online accounts
         page.
+  * d/p/0007-goa-adjust-description-to-not-mention-email-or-conta.patch:
+      - Adjust online account description to not mention email or contacts.
 
  -- Andrea Azzarone <andrea.azzarone@canonical.com>  Mon, 13 Aug 2018 15:17:41 +0300
 

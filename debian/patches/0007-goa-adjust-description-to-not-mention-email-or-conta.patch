@@ -1,0 +1,25 @@
+From: Jeremy Bicha <jbicha@ubuntu.com>
+Date: Sun, 8 Apr 2018 11:15:32 -0400
+Subject: goa: adjust description to not mention email or contacts
+
+GNOME doesn't have a core email app and Contacts might not be installed either
+
+Bug: https://bugzilla.gnome.org/show_bug.cgi?id=795077
+Forwared: https://gitlab.gnome.org/GNOME/gnome-initial-setup/merge_requests/13/
+---
+ gnome-initial-setup/pages/goa/gis-goa-page.ui | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gnome-initial-setup/pages/goa/gis-goa-page.ui b/gnome-initial-setup/pages/goa/gis-goa-page.ui
+index 8971b62..06325eb 100644
+--- a/gnome-initial-setup/pages/goa/gis-goa-page.ui
++++ b/gnome-initial-setup/pages/goa/gis-goa-page.ui
+@@ -55,7 +55,7 @@
+             <property name="halign">center</property>
+             <property name="valign">start</property>
+             <property name="margin_top">6</property>
+-            <property name="label" translatable="yes">Connect your accounts to easily access your email, online calendar, contacts, documents and photos.</property>
++            <property name="label" translatable="yes">Connect your accounts to easily access your online calendar, documents, photos and more.</property>
+             <property name="justify">left</property>
+             <property name="wrap">True</property>
+             <property name="max-width-chars">50</property>
