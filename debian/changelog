@@ -1,4 +1,4 @@
-gnome-initial-setup (3.29.1-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (3.29.1-1ubuntu1) cosmic; urgency=medium
 
   * Merge from Debian experimental (lp: #1784617). Remaining changes:
     + debian/control.in:
@@ -23,7 +23,7 @@ gnome-initial-setup (3.29.1-1ubuntu1) UNRELEASED; urgency=medium
   * d/p/0007-goa-adjust-description-to-not-mention-email-or-conta.patch:
       - Adjust online account description to not mention email or contacts.
 
- -- Andrea Azzarone <andrea.azzarone@canonical.com>  Mon, 13 Aug 2018 15:17:41 +0300
+ -- Andrea Azzarone <andrea.azzarone@canonical.com>  Tue, 14 Aug 2018 16:12:10 +0200
 
 gnome-initial-setup (3.29.1-1) experimental; urgency=medium
 
