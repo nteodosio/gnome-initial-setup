@@ -1,3 +1,9 @@
+gnome-initial-setup (3.29.92-1ubuntu1) cosmic; urgency=medium
+
+  * Update to 3.29.92
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 29 Aug 2018 11:08:58 +0200
+
 gnome-initial-setup (3.29.92-1) experimental; urgency=medium
 
   * New upstream version
