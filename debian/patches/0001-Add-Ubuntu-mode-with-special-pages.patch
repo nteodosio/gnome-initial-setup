@@ -2477,7 +2477,7 @@ index 0000000..4ef7d2e
 +  g_autoptr(GError) error = NULL;
 +
 +  if (!gtk_show_uri_on_window (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
-+                               "https://www.ubuntu.com/legal/dataprivacy",
++                               "https://www.ubuntu.com/legal/terms-and-policies/systems-information-notice",
 +                               GDK_CURRENT_TIME, &error)) {
 +    GtkWidget *dialog;
 +    dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
