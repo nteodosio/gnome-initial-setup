@@ -1,3 +1,10 @@
+gnome-initial-setup (3.29.92-1ubuntu3) UNRELEASED; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    Drop ubuntu-changes page (LP: #1790146).
+
+ -- Andrea Azzarone <andrea.azzarone@canonical.com>  Thu, 20 Sep 2018 13:38:11 +0000
+
 gnome-initial-setup (3.29.92-1ubuntu2) cosmic; urgency=medium
 
   * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
