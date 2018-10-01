@@ -1,3 +1,29 @@
+gnome-initial-setup (3.30.0-1ubuntu1) UNRELEASED; urgency=medium
+
+  * Merge frin debian unstable (LP: #1795373). Remaining changes:
+    + debian/control.in:
+      - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
+      - Enable langpack usage
+    + Ubuntu-specific patches:
+      - 0001-Don-t-run-welcome-tour-at-end.patch
+      - 0001-Make-summary-page-explicitly-request-navigation-butt.patch
+      - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
+      - 0001-Add-Ubuntu-mode-with-special-pages.patch
+      - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+      - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
+  * debian/rules:
+    - Drop the dh_auto_clean workaround, the required commit is upstream now.
+
+ -- Andrea Azzarone <andrea.azzarone@canonical.com>  Mon, 01 Oct 2018 12:48:03 +0100
+
+gnome-initial-setup (3.30.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bump Standards-Version to 4.2.1
+  * Release to unstable
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sat, 22 Sep 2018 19:09:38 -0400
+
 gnome-initial-setup (3.29.92-1ubuntu3) cosmic; urgency=medium
 
   * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
@@ -59,7 +85,7 @@ gnome-initial-setup (3.29.1-1) experimental; urgency=medium
   * d/p/use-Ubuntu-icon-on-Ubuntu.patch: Drop, this is already upstream
   * Standards-Version: 4.1.5 (no changes required)
   * Set Rules-Requires-Root to no
-  * Build with meson 
+  * Build with meson
 
  -- Andrea Azzarone <andrea.azzarone@canonical.com>  Wed, 01 Aug 2018 16:09:43 +0200
 

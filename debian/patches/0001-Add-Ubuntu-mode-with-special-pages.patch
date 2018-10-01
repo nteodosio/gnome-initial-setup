@@ -74,7 +74,7 @@ Subject: Add Ubuntu mode with special pages
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
 
 diff --git a/configure.ac b/configure.ac
-index e028226..1aa25b6 100644
+index 3511339..8cd63c7 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -59,7 +59,10 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
