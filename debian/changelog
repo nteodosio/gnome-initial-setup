@@ -1,4 +1,4 @@
-gnome-initial-setup (3.30.0-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (3.30.0-1ubuntu1) cosmic; urgency=medium
 
   * Merge frin debian unstable (LP: #1795373). Remaining changes:
     + debian/control.in:
