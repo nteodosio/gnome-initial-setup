@@ -1,3 +1,11 @@
+gnome-initial-setup (3.30.0-1ubuntu2) cosmic; urgency=medium
+
+  * Add Don-t-show-Facebook-in-Ubuntu.patch:
+    - Don't offer Facebook login in Welcome to Ubuntu wizard since
+      none of Ubuntu's default apps will use it. (LP: #1797736)
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Sat, 13 Oct 2018 22:28:02 -0400
+
 gnome-initial-setup (3.30.0-1ubuntu1) cosmic; urgency=medium
 
   * Merge frin debian unstable (LP: #1795373). Remaining changes:
