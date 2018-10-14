@@ -1,0 +1,52 @@
+From: Jeremy Bicha <jbicha@ubuntu.com>
+Date: Sat, 13 Oct 2018 22:25:22 -0400
+Subject: Don't show Facebook in Ubuntu
+
+Ubuntu 18.10 doesn't have any default apps that use Facebook
+integration with GNOME Online Accounts.
+
+LP: #1797736
+---
+ gnome-initial-setup/pages/goa/gis-goa-page.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/gnome-initial-setup/pages/goa/gis-goa-page.c b/gnome-initial-setup/pages/goa/gis-goa-page.c
+index 65c1ae1..33c1775 100644
+--- a/gnome-initial-setup/pages/goa/gis-goa-page.c
++++ b/gnome-initial-setup/pages/goa/gis-goa-page.c
+@@ -57,6 +57,25 @@ struct _ProviderWidget {
+ };
+ typedef struct _ProviderWidget ProviderWidget;
+ 
++static gboolean
++is_desktop (const gchar *name)
++{
++  const gchar *xdg_current_desktop;
++  g_auto(GStrv) tokens = NULL;
++  int i;
++
++  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
++  if (xdg_current_desktop == NULL)
++    return FALSE;
++
++  tokens = g_strsplit (xdg_current_desktop, ":", -1);
++  for (i = 0; tokens[i] != NULL; i++)
++    if (strcmp (tokens[i], name) == 0)
++      return TRUE;
++
++  return FALSE;
++}
++
+ static void
+ sync_provider_widget (ProviderWidget *provider_widget)
+ {
+@@ -182,7 +201,8 @@ populate_provider_list (GisGoaPage *page)
+   add_provider_to_list (page, "google");
+   add_provider_to_list (page, "owncloud");
+   add_provider_to_list (page, "windows_live");
+-  add_provider_to_list (page, "facebook");
++  if (!is_desktop ("ubuntu"))
++    add_provider_to_list (page, "facebook");
+ }
+ 
+ static void
