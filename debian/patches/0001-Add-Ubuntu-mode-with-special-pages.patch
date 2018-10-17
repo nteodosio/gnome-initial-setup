@@ -468,7 +468,7 @@ index 0000000..0d8dd94
 \ No newline at end of file
 diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.c b/gnome-initial-setup/pages/apps/gis-apps-page.c
 new file mode 100644
-index 0000000..bcd9462
+index 0000000..1230c61
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.c
 @@ -0,0 +1,528 @@
@@ -953,7 +953,7 @@ index 0000000..bcd9462
 +  installed_snaps = snapd_client_list_sync (client, NULL, &error);
 +  if (installed_snaps == NULL)
 +    g_warning ("Failed to get installed snaps: %s", error->message);
-+  featured_snaps = snapd_client_find_section_sync (client, SNAPD_FIND_FLAGS_NONE, "featured", NULL, NULL, NULL, &error);
++  featured_snaps = snapd_client_find_section_sync (client, SNAPD_FIND_FLAGS_NONE, "ubuntu-firstrun", NULL, NULL, NULL, &error);
 +  if (featured_snaps != NULL) {
 +    guint i, n_tiles = 0, n_extra = 0;
 +
