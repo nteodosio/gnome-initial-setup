@@ -1,4 +1,4 @@
-gnome-initial-setup (3.30.0-1ubuntu3) UNRELEASED; urgency=medium
+gnome-initial-setup (3.30.0-1ubuntu3) cosmic; urgency=medium
 
   * Populate featured snaps from ubuntu-firstrun category
 
