@@ -36,7 +36,7 @@ Subject: Add Ubuntu mode with special pages
  .../pages/privacy/gis-privacy-page.c               |   2 +-
  .../pages/summary/gis-summary-page.c               |   2 +-
  .../pages/ubuntu-report/Makefile.am                |  23 +
- .../pages/ubuntu-report/gis-ubuntu-report-page.c   | 241 ++++++++++
+ .../pages/ubuntu-report/gis-ubuntu-report-page.c   | 207 ++++++++
  .../pages/ubuntu-report/gis-ubuntu-report-page.h   |  52 ++
  .../pages/ubuntu-report/gis-ubuntu-report-page.ui  | 181 +++++++
  .../pages/ubuntu-report/meson.build                |  10 +
@@ -44,7 +44,7 @@ Subject: Add Ubuntu mode with special pages
  .../pages/ubuntu-report/ubuntu-report.svg          |   1 +
  meson.build                                        |   3 +
  po/POTFILES.in                                     |  12 +
- 41 files changed, 3003 insertions(+), 7 deletions(-)
+ 41 files changed, 2969 insertions(+), 7 deletions(-)
  create mode 100644 data/com.ubuntu.welcome.policy.in
  create mode 100644 data/its/polkit.its
  create mode 100644 data/its/polkit.loc
@@ -2895,10 +2895,10 @@ index 0000000..a19dedf
 +CLEANFILES = $(BUILT_SOURCES)
 diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
 new file mode 100644
-index 0000000..8e2c858
+index 0000000..2518e0e
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
-@@ -0,0 +1,241 @@
+@@ -0,0 +1,207 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
 + * Copyright (C) 2018 Canonical Ltd.
@@ -3006,44 +3006,10 @@ index 0000000..8e2c858
 +static void
 +show_legal (GtkButton *button, GisUbuntuReportPage *page)
 +{
-+  g_autofree gchar *data = NULL;
-+  g_auto(GStrv) lines = NULL;
-+  int i;
-+  g_autofree gchar *privacy_policy_url = NULL;
 +  g_autoptr(GError) error = NULL;
 +
-+  if (!g_file_get_contents ("/etc/os-release", &data, NULL, &error)) {
-+    g_warning ("Failed to get privacy policy URL from /etc/os-release: %s", error->message);
-+    return;
-+  }
-+  lines = g_strsplit (data, "\n", -1);
-+  for (i = 0; lines[i] != NULL; i++) {
-+    g_auto(GStrv) tokens = NULL;
-+    gchar *name, *value;
-+
-+    tokens = g_strsplit (lines[i], "=", 2);
-+    if (g_strv_length (tokens) != 2)
-+      continue;
-+
-+    name = g_strstrip (tokens[0]);
-+    value = g_strstrip (tokens[1]);
-+    if (value[0] == '"' && value[strlen (value) - 1] == '"') {
-+      value[strlen (value) - 1] = '\0';
-+      value = value + 1;
-+    }
-+
-+    if (strcmp (name, "PRIVACY_POLICY_URL") == 0) {
-+      privacy_policy_url = g_strdup (value);
-+      break;
-+    }
-+  }
-+  if (privacy_policy_url == NULL) {
-+    g_warning ("PRIVACY_POLICY_URL not defined in /etc/os-release");
-+    return;
-+  }
-+
 +  if (!gtk_show_uri_on_window (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
-+                               privacy_policy_url,
++                               "https://www.ubuntu.com/legal/terms-and-policies/systems-information-notice",
 +                               GDK_CURRENT_TIME, &error)) {
 +    GtkWidget *dialog;
 +    dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
