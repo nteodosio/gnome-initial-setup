@@ -1,3 +1,11 @@
+gnome-initial-setup (3.30.0-1ubuntu4) disco; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - update the "legal notice" URL to use the one which is specific about
+      ubuntu report (lp: #1789925)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 31 Oct 2018 15:41:49 +0100
+
 gnome-initial-setup (3.30.0-1ubuntu3) cosmic; urgency=medium
 
   * Populate featured snaps from ubuntu-firstrun category
