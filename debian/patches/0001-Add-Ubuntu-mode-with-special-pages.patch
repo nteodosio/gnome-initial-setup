@@ -26,7 +26,7 @@ Subject: Add Ubuntu mode with special pages
  .../pages/livepatch/gis-auth-dialog.c              | 528 ++++++++++++++++++++
  .../pages/livepatch/gis-auth-dialog.h              |  40 ++
  .../pages/livepatch/gis-auth-dialog.ui             | 231 +++++++++
- .../pages/livepatch/gis-livepatch-page.c           | 533 +++++++++++++++++++++
+ .../pages/livepatch/gis-livepatch-page.c           | 538 +++++++++++++++++++++
  .../pages/livepatch/gis-livepatch-page.h           |  52 ++
  .../pages/livepatch/gis-livepatch-page.ui          | 156 ++++++
  .../pages/livepatch/livepatch.gresource.xml        |   9 +
@@ -44,7 +44,7 @@ Subject: Add Ubuntu mode with special pages
  .../pages/ubuntu-report/ubuntu-report.svg          |   1 +
  meson.build                                        |   3 +
  po/POTFILES.in                                     |  12 +
- 41 files changed, 2969 insertions(+), 7 deletions(-)
+ 41 files changed, 2974 insertions(+), 7 deletions(-)
  create mode 100644 data/com.ubuntu.welcome.policy.in
  create mode 100644 data/its/polkit.its
  create mode 100644 data/its/polkit.loc
@@ -2025,10 +2025,10 @@ index 0000000..2f3c742
 +</interface>
 diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
 new file mode 100644
-index 0000000..e604819
+index 0000000..eab2fb6
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
-@@ -0,0 +1,533 @@
+@@ -0,0 +1,538 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
 + * Copyright (C) 2018 Canonical Ltd.
@@ -2452,10 +2452,15 @@ index 0000000..e604819
 +static void
 +show_legal (GtkButton *button, GisLivepatchPage *page)
 +{
++  g_autofree gchar *buffer = NULL;
++  g_autofree gchar *privacy_policy = NULL;
 +  g_autoptr(GError) error = NULL;
 +
++  if (g_file_get_contents ("/etc/os-release", &buffer, NULL, NULL))
++    privacy_policy = get_item (buffer, "PRIVACY_POLICY_URL");
++
 +  if (!gtk_show_uri_on_window (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
-+                               "https://www.ubuntu.com/legal/terms-and-policies/systems-information-notice",
++                               privacy_policy,
 +                               GDK_CURRENT_TIME, &error)) {
 +    GtkWidget *dialog;
 +    dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (page))),
