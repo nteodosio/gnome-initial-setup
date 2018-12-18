@@ -320,7 +320,7 @@ index bfcc03c..2676e1d 100644
  
  #define VENDOR_PAGES_GROUP "pages"
  #define VENDOR_SKIP_KEY "skip"
-@@ -82,6 +85,16 @@ static PageData page_table[] = {
+@@ -82,6 +85,17 @@ static PageData page_table[] = {
    { NULL },
  };
  
@@ -328,6 +328,7 @@ index bfcc03c..2676e1d 100644
 +  PAGE (goa,            FALSE),
 +  PAGE (livepatch,      FALSE),
 +  PAGE (ubuntu_report,  FALSE),
++  PAGE (privacy,        FALSE),
 +  PAGE (account,        TRUE),
 +  PAGE (password,       TRUE),
 +  PAGE (apps,           FALSE),

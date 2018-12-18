@@ -1,3 +1,14 @@
+gnome-initial-setup (3.30.0-1ubuntu5) UNRELEASED; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - enable the 'privacy' step in the Ubuntu first login wizard,
+      that way users can easily opt in for the location service
+      which also enable some of the desktop features to work without
+      having to go tweak the settings (like timezone changes)
+      (lp: #1809002)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 18 Dec 2018 17:07:17 +0100
+
 gnome-initial-setup (3.30.0-1ubuntu4) disco; urgency=medium
 
   * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
