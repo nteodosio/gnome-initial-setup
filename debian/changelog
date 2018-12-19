@@ -1,4 +1,4 @@
-gnome-initial-setup (3.30.0-1ubuntu5) UNRELEASED; urgency=medium
+gnome-initial-setup (3.30.0-1ubuntu5) disco; urgency=medium
 
   * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
     - enable the 'privacy' step in the Ubuntu first login wizard,
