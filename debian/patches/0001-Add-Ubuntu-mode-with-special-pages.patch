@@ -3295,7 +3295,7 @@ index 0000000..f8474a2
 +                <child>
 +                  <object class="GtkRadioButton" id="opt_in_radio">
 +                    <property name="visible">True</property>
-+                    <property name="can_focus">False</property>
++                    <property name="can_focus">True</property>
 +                    <property name="margin_top">18</property>
 +                    <property name="xalign">0</property>
 +                    <property name="label" translatable="yes">Yes, send system info to Canonical</property>
@@ -3304,7 +3304,7 @@ index 0000000..f8474a2
 +                <child>
 +                  <object class="GtkRadioButton" id="opt_out_radio">
 +                    <property name="visible">True</property>
-+                    <property name="can_focus">False</property>
++                    <property name="can_focus">True</property>
 +                    <property name="margin_top">6</property>
 +                    <property name="xalign">0</property>
 +                    <property name="label" translatable="yes">No, don't send system info</property>
