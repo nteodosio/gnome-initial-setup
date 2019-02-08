@@ -1,5 +1,6 @@
 gnome-initial-setup (3.31.90-1ubuntu1) UNRELEASED; urgency=medium
 
+  [ Jeremy Bicha ]
   * Sync with Debian. Remaining changes:
     + debian/control.in:
       - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
@@ -11,6 +12,10 @@ gnome-initial-setup (3.31.90-1ubuntu1) UNRELEASED; urgency=medium
       - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
       - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
       - Don-t-show-Facebook-in-Ubuntu.patch
+
+  [ Sebastien Bacher ]
+  * Set the ubuntu-report yes/no controls to accept focus for keyboard
+    accessibility
 
  -- Jeremy Bicha <jbicha@ubuntu.com>  Sat, 13 Oct 2018 22:28:02 -0400
 
