@@ -3,26 +3,20 @@ Date: Tue, 20 Mar 2018 11:51:30 +1300
 Subject: Add Ubuntu mode with special pages
 
 ---
- configure.ac                                       |   8 +-
- data/Makefile.am                                   |   8 +
  data/com.ubuntu.welcome.policy.in                  |  21 +
  data/its/polkit.its                                |   8 +
  data/its/polkit.loc                                |   6 +
  data/meson.build                                   |  23 +
- gnome-initial-setup/Makefile.am                    |   3 +
  gnome-initial-setup/gis-driver.c                   |  35 ++
  gnome-initial-setup/gis-driver.h                   |   6 +
- gnome-initial-setup/gnome-initial-setup.c          |  40 +-
+ gnome-initial-setup/gnome-initial-setup.c          |  41 +-
  gnome-initial-setup/meson.build                    |   3 +
- gnome-initial-setup/pages/Makefile.am              |   5 +-
- gnome-initial-setup/pages/apps/Makefile.am         |  23 +
  gnome-initial-setup/pages/apps/apps.gresource.xml  |   8 +
  .../pages/apps/default-snap-icon.svg               |   1 +
  gnome-initial-setup/pages/apps/gis-apps-page.c     | 528 ++++++++++++++++++++
  gnome-initial-setup/pages/apps/gis-apps-page.h     |  52 ++
  gnome-initial-setup/pages/apps/gis-apps-page.ui    |  96 ++++
  gnome-initial-setup/pages/apps/meson.build         |  10 +
- gnome-initial-setup/pages/livepatch/Makefile.am    |  24 +
  .../pages/livepatch/gis-auth-dialog.c              | 528 ++++++++++++++++++++
  .../pages/livepatch/gis-auth-dialog.h              |  40 ++
  .../pages/livepatch/gis-auth-dialog.ui             | 231 +++++++++
@@ -35,7 +29,6 @@ Subject: Add Ubuntu mode with special pages
  gnome-initial-setup/pages/meson.build              |   5 +-
  .../pages/privacy/gis-privacy-page.c               |   2 +-
  .../pages/summary/gis-summary-page.c               |   2 +-
- .../pages/ubuntu-report/Makefile.am                |  23 +
  .../pages/ubuntu-report/gis-ubuntu-report-page.c   | 207 ++++++++
  .../pages/ubuntu-report/gis-ubuntu-report-page.h   |  52 ++
  .../pages/ubuntu-report/gis-ubuntu-report-page.ui  | 181 +++++++
@@ -44,18 +37,16 @@ Subject: Add Ubuntu mode with special pages
  .../pages/ubuntu-report/ubuntu-report.svg          |   1 +
  meson.build                                        |   3 +
  po/POTFILES.in                                     |  12 +
- 41 files changed, 2974 insertions(+), 7 deletions(-)
+ 34 files changed, 2883 insertions(+), 5 deletions(-)
  create mode 100644 data/com.ubuntu.welcome.policy.in
  create mode 100644 data/its/polkit.its
  create mode 100644 data/its/polkit.loc
- create mode 100644 gnome-initial-setup/pages/apps/Makefile.am
  create mode 100644 gnome-initial-setup/pages/apps/apps.gresource.xml
  create mode 100644 gnome-initial-setup/pages/apps/default-snap-icon.svg
  create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.c
  create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.h
  create mode 100644 gnome-initial-setup/pages/apps/gis-apps-page.ui
  create mode 100644 gnome-initial-setup/pages/apps/meson.build
- create mode 100644 gnome-initial-setup/pages/livepatch/Makefile.am
  create mode 100644 gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
  create mode 100644 gnome-initial-setup/pages/livepatch/gis-auth-dialog.h
  create mode 100644 gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui
@@ -65,7 +56,6 @@ Subject: Add Ubuntu mode with special pages
  create mode 100644 gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
  create mode 100644 gnome-initial-setup/pages/livepatch/livepatch.svg
  create mode 100644 gnome-initial-setup/pages/livepatch/meson.build
- create mode 100644 gnome-initial-setup/pages/ubuntu-report/Makefile.am
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
@@ -73,65 +63,6 @@ Subject: Add Ubuntu mode with special pages
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
 
-diff --git a/configure.ac b/configure.ac
-index 3511339..8cd63c7 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -59,7 +59,10 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
-                   json-glib-1.0
-                   libsecret-1
-                   pwquality
--                  webkit2gtk-4.0)
-+                  webkit2gtk-4.0
-+                  snapd-glib
-+                  libsoup-2.4
-+                  sysmetrics)
- 
- INITIAL_SETUP_CFLAGS="$INITIAL_SETUP_CFLAGS -DNM_VERSION_MIN_REQUIRED=NM_VERSION_1_2"
- INITIAL_SETUP_CFLAGS="$INITIAL_SETUP_CFLAGS -DNM_VERSION_MAX_ALLOWED=NM_VERSION_1_2"
-@@ -149,6 +152,9 @@ gnome-initial-setup/pages/account/Makefile
- gnome-initial-setup/pages/password/Makefile
- gnome-initial-setup/pages/software/Makefile
- gnome-initial-setup/pages/summary/Makefile
-+gnome-initial-setup/pages/ubuntu-report/Makefile
-+gnome-initial-setup/pages/livepatch/Makefile
-+gnome-initial-setup/pages/apps/Makefile
- po/Makefile.in
- ])
- AC_OUTPUT
-diff --git a/data/Makefile.am b/data/Makefile.am
-index 3c5a8ec..4aaf7e3 100644
---- a/data/Makefile.am
-+++ b/data/Makefile.am
-@@ -13,6 +13,12 @@ edit = $(AM_V_GEN) sed \
- %.desktop: %.desktop.in
- 	$(AM_V_GEN) msgfmt --desktop -d $(top_srcdir)/po --template $< -o $@
- 
-+%.policy: %.policy.in
-+	$(AM_V_GEN) msgfmt --xml -d $(top_srcdir)/po --template $< -o $@
-+
-+actionsdir = $(datadir)/polkit-1/actions
-+actions_DATA = com.ubuntu.welcome.policy
-+
- rulesdir = $(datadir)/polkit-1/rules.d
- rules_DATA = 20-gnome-initial-setup.rules
- 
-@@ -30,6 +36,7 @@ desktop_DATA =						\
- 
- EXTRA_DIST =						\
- 	20-gnome-initial-setup.rules			\
-+	com.ubuntu.welcome.policy.in			\
- 	gnome-welcome-tour				\
- 	setup-shell.desktop				\
- 	gnome-welcome-tour.desktop.in.in		\
-@@ -42,6 +49,7 @@ EXTRA_DIST =						\
- 	$(NULL)
- 
- CLEANFILES =						\
-+	com.ubuntu.welcome.policy			\
- 	gnome-initial-setup.desktop.in			\
- 	gnome-initial-setup.desktop			\
- 	gnome-initial-setup-copy-worker.desktop.in	\
 diff --git a/data/com.ubuntu.welcome.policy.in b/data/com.ubuntu.welcome.policy.in
 new file mode 100644
 index 0000000..cf623d5
@@ -189,7 +120,7 @@ index 0000000..12c7bf0
 +</locatingRules>
 \ No newline at end of file
 diff --git a/data/meson.build b/data/meson.build
-index ac14976..84f517a 100644
+index 8fa6f29..27a19d5 100644
 --- a/data/meson.build
 +++ b/data/meson.build
 @@ -47,6 +47,29 @@ i18n.merge_file(
@@ -221,20 +152,6 @@ index ac14976..84f517a 100644
 +
  rules_dir = join_paths(data_dir, 'polkit-1', 'rules.d')
  install_data('20-gnome-initial-setup.rules', install_dir: rules_dir)
- 
-diff --git a/gnome-initial-setup/Makefile.am b/gnome-initial-setup/Makefile.am
-index 6b6d5fb..d8640a9 100644
---- a/gnome-initial-setup/Makefile.am
-+++ b/gnome-initial-setup/Makefile.am
-@@ -44,6 +44,9 @@ gnome_initial_setup_LDADD =	\
- 	pages/password/libgispassword.la \
- 	pages/software/libgissoftware.la \
- 	pages/summary/libgissummary.la \
-+	pages/ubuntu-report/libgisubuntu-report.la \
-+	pages/livepatch/libgislivepatch.la \
-+	pages/apps/libgisapps.la \
- 	$(INITIAL_SETUP_LIBS) \
- 	-lm
  
 diff --git a/gnome-initial-setup/gis-driver.c b/gnome-initial-setup/gis-driver.c
 index eeaf1b7..6267b32 100644
@@ -307,7 +224,7 @@ index 9eb408e..c5261fa 100644
  
  G_END_DECLS
 diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index bfcc03c..2676e1d 100644
+index db75787..93f0f6c 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
 @@ -44,6 +44,9 @@
@@ -338,7 +255,7 @@ index bfcc03c..2676e1d 100644
  #undef PAGE
  
  static gboolean
-@@ -188,6 +201,25 @@ destroy_pages_after (GisAssistant *assistant,
+@@ -187,6 +201,25 @@ destroy_pages_after (GisAssistant *assistant,
    }
  }
  
@@ -364,7 +281,7 @@ index bfcc03c..2676e1d 100644
  static void
  rebuild_pages_cb (GisDriver *driver)
  {
-@@ -200,7 +232,11 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -199,7 +232,11 @@ rebuild_pages_cb (GisDriver *driver)
  
    assistant = gis_driver_get_assistant (driver);
    current_page = gis_assistant_get_current_page (assistant);
@@ -377,7 +294,7 @@ index bfcc03c..2676e1d 100644
  
    g_ptr_array_free (skipped_pages, TRUE);
    skipped_pages = g_ptr_array_new_with_free_func ((GDestroyNotify) gtk_widget_destroy);
-@@ -208,7 +244,7 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -207,7 +244,7 @@ rebuild_pages_cb (GisDriver *driver)
    if (current_page != NULL) {
      destroy_pages_after (assistant, current_page);
  
@@ -400,51 +317,6 @@ index c461562..6bc8df9 100644
      cheese_dep,
      cheese_gtk_dep,
      pkgkit_dep,
-diff --git a/gnome-initial-setup/pages/Makefile.am b/gnome-initial-setup/pages/Makefile.am
-index 4ddf574..0928dd2 100644
---- a/gnome-initial-setup/pages/Makefile.am
-+++ b/gnome-initial-setup/pages/Makefile.am
-@@ -11,7 +11,10 @@ SUBDIRS = \
- 	account \
- 	password \
- 	summary \
--	software
-+	software \
-+	ubuntu-report \
-+	livepatch \
-+	apps
- 
- EXTRA_DIST =		\
- 	meson.build	\
-diff --git a/gnome-initial-setup/pages/apps/Makefile.am b/gnome-initial-setup/pages/apps/Makefile.am
-new file mode 100644
-index 0000000..a3d8992
---- /dev/null
-+++ b/gnome-initial-setup/pages/apps/Makefile.am
-@@ -0,0 +1,23 @@
-+
-+noinst_LTLIBRARIES = libgisapps.la
-+
-+BUILT_SOURCES =
-+
-+resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/apps.gresource.xml)
-+apps-resources.c: apps.gresource.xml $(resource_files)
-+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $<
-+apps-resources.h: apps.gresource.xml $(resource_files)
-+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-header $<
-+BUILT_SOURCES += apps-resources.c apps-resources.h
-+
-+libgisapps_la_SOURCES =	\
-+	gis-apps-page.c gis-apps-page.h	\
-+	$(BUILT_SOURCES)
-+
-+libgisapps_la_CFLAGS = $(INITIAL_SETUP_CFLAGS) -I "$(srcdir)/../.." -I "$(top_srcdir)" -I "$(top_builddir)"
-+libgisapps_la_LIBADD = $(INITIAL_SETUP_LIBS)
-+libgisapps_la_LDFLAGS = -export_dynamic -avoid-version -module -no-undefined
-+
-+EXTRA_DIST = apps.gresource.xml $(resource_files)
-+
-+CLEANFILES = $(BUILT_SOURCES)
 diff --git a/gnome-initial-setup/pages/apps/apps.gresource.xml b/gnome-initial-setup/pages/apps/apps.gresource.xml
 new file mode 100644
 index 0000000..e89e744
@@ -1177,36 +1049,6 @@ index 0000000..dec2b38
 +    'gis-apps-page.c',
 +    'gis-apps-page.h',
 +)
-diff --git a/gnome-initial-setup/pages/livepatch/Makefile.am b/gnome-initial-setup/pages/livepatch/Makefile.am
-new file mode 100644
-index 0000000..7486ee3
---- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/Makefile.am
-@@ -0,0 +1,24 @@
-+
-+noinst_LTLIBRARIES = libgislivepatch.la
-+
-+BUILT_SOURCES =
-+
-+resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/livepatch.gresource.xml)
-+livepatch-resources.c: livepatch.gresource.xml $(resource_files)
-+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $<
-+livepatch-resources.h: livepatch.gresource.xml $(resource_files)
-+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-header $<
-+BUILT_SOURCES += livepatch-resources.c livepatch-resources.h
-+
-+libgislivepatch_la_SOURCES =	\
-+	gis-livepatch-page.c gis-livepatch-page.h	\
-+	gis-auth-dialog.c gis-auth-dialog.h	\
-+	$(BUILT_SOURCES)
-+
-+libgislivepatch_la_CFLAGS = $(INITIAL_SETUP_CFLAGS) -I "$(srcdir)/../.." -I "$(top_srcdir)" -I "$(top_builddir)"
-+libgislivepatch_la_LIBADD = $(INITIAL_SETUP_LIBS)
-+libgislivepatch_la_LDFLAGS = -export_dynamic -avoid-version -module -no-undefined
-+
-+EXTRA_DIST = livepatch.gresource.xml $(resource_files)
-+
-+CLEANFILES = $(BUILT_SOURCES)
 diff --git a/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
 new file mode 100644
 index 0000000..8d88a93
@@ -2870,35 +2712,6 @@ index 150fe57..5b47be3 100644
      default:
        break;
      }
-diff --git a/gnome-initial-setup/pages/ubuntu-report/Makefile.am b/gnome-initial-setup/pages/ubuntu-report/Makefile.am
-new file mode 100644
-index 0000000..a19dedf
---- /dev/null
-+++ b/gnome-initial-setup/pages/ubuntu-report/Makefile.am
-@@ -0,0 +1,23 @@
-+
-+noinst_LTLIBRARIES = libgisubuntu-report.la
-+
-+BUILT_SOURCES =
-+
-+resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/ubuntu-report.gresource.xml)
-+ubuntu-report-resources.c: ubuntu-report.gresource.xml $(resource_files)
-+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $<
-+ubuntu-report-resources.h: ubuntu-report.gresource.xml $(resource_files)
-+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-header $<
-+BUILT_SOURCES += ubuntu-report-resources.c ubuntu-report-resources.h
-+
-+libgisubuntu_report_la_SOURCES =	\
-+	gis-ubuntu-report-page.c gis-ubuntu-report-page.h	\
-+	$(BUILT_SOURCES)
-+
-+libgisubuntu_report_la_CFLAGS = $(INITIAL_SETUP_CFLAGS) -I "$(srcdir)/../.." -I "$(top_srcdir)" -I "$(top_builddir)"
-+libgisubuntu_report_la_LIBADD = $(INITIAL_SETUP_LIBS)
-+libgisubuntu_report_la_LDFLAGS = -export_dynamic -avoid-version -module -no-undefined
-+
-+EXTRA_DIST = ubuntu-report.gresource.xml $(resource_files)
-+
-+CLEANFILES = $(BUILT_SOURCES)
 diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
 new file mode 100644
 index 0000000..2518e0e
@@ -3172,7 +2985,7 @@ index 0000000..9ba7500
 +#endif /* __GIS_UBUNTU_REPORT_PAGE_H__ */
 diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
 new file mode 100644
-index 0000000..f8474a2
+index 0000000..f5a40f8
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
 @@ -0,0 +1,181 @@
@@ -3395,7 +3208,7 @@ index 0000000..8c1d52c
 @@ -0,0 +1 @@
 +<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666; fill-opacity:0.25;} </style> <g> <path class="st0" d="M301.4,372.4C271.7,390,237,400,200,400C89.5,400,0,310.5,0,200C0,89.5,89.5,0,200,0c110.5,0,200,89.5,200,200 c0,36.4-9.7,70.6-26.8,100l0,0L400,400l-100-26.8L301.4,372.4L301.4,372.4z"/> </g> </svg>
 diff --git a/meson.build b/meson.build
-index 42160c9..1ec2bf6 100644
+index 14e9bde..fd984a9 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -51,6 +51,9 @@ ibus_dep = dependency ('ibus-1.0',

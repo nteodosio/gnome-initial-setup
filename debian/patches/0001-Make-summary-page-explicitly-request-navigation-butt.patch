@@ -166,10 +166,11 @@ index 8564935..64272ba 100644
    obj_props[PROP_NEEDS_ACCEPT] =
      g_param_spec_boolean ("needs-accept", "", "", FALSE,
                            G_PARAM_STATIC_STRINGS | G_PARAM_READWRITE);
-@@ -283,6 +294,21 @@ gis_page_set_skippable (GisPage *page, gboolean skippable)
+@@ -282,6 +293,21 @@ gis_page_set_skippable (GisPage *page, gboolean skippable)
+   g_object_notify_by_pspec (G_OBJECT (page), obj_props[PROP_SKIPPABLE]);
  }
  
- gboolean
++gboolean
 +gis_page_get_hide_navigation (GisPage *page)
 +{
 +  GisPagePrivate *priv = gis_page_get_instance_private (page);
@@ -184,10 +185,9 @@ index 8564935..64272ba 100644
 +  g_object_notify_by_pspec (G_OBJECT (page), obj_props[PROP_HIDE_NAVIGATION]);
 +}
 +
-+gboolean
+ gboolean
  gis_page_get_needs_accept (GisPage *page)
  {
-   GisPagePrivate *priv = gis_page_get_instance_private (page);
 diff --git a/gnome-initial-setup/gis-page.h b/gnome-initial-setup/gis-page.h
 index b9a3e9a..3862caf 100644
 --- a/gnome-initial-setup/gis-page.h

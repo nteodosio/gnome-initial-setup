@@ -23,10 +23,10 @@ index 8445e03..a5fb609 100644
  AutostartCondition=unless-exists gnome-initial-setup-done
  X-GNOME-Bugzilla-Bugzilla=GNOME
 diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index 2676e1d..a37dc6e 100644
+index 93f0f6c..ae5f70d 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -95,6 +95,16 @@ static PageData ubuntu_page_table[] = {
+@@ -96,6 +96,16 @@ static PageData ubuntu_page_table[] = {
    { NULL },
  };
  
