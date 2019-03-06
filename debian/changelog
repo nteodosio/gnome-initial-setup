@@ -1,6 +1,5 @@
-gnome-initial-setup (3.31.90-1ubuntu1) disco; urgency=medium
+gnome-initial-setup (3.31.92-1ubuntu1) UNRELEASED; urgency=medium
 
-  [ Jeremy Bicha ]
   * Sync with Debian. Remaining changes:
     + debian/control.in:
       - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
@@ -13,11 +12,13 @@ gnome-initial-setup (3.31.90-1ubuntu1) disco; urgency=medium
       - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
       - Don-t-show-Facebook-in-Ubuntu.patch
 
-  [ Sebastien Bacher ]
-  * Set the ubuntu-report yes/no controls to accept focus for keyboard
-    accessibility
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 06 Mar 2019 15:03:10 +0100
 
- -- Jeremy Bicha <jbicha@ubuntu.com>  Thu, 07 Feb 2019 21:36:38 -0500
+gnome-initial-setup (3.31.92-1) experimental; urgency=medium
+
+  * New upstream release
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 06 Mar 2019 14:43:25 +0100
 
 gnome-initial-setup (3.31.90-1) experimental; urgency=medium
 
