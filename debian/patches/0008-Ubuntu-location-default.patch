@@ -1,3 +1,9 @@
+# Description: change the default value of the location switch to false
+# which is what the Canonical legal team recommended us to do
+#
+# Ubuntu: https://bugs.launchpad.net/bugs/1821901
+# Upstream: not-needed(?)
+#
 Index: gnome-initial-setup/gnome-initial-setup/pages/privacy/gis-privacy-page.c
 ===================================================================
 --- gnome-initial-setup.orig/gnome-initial-setup/pages/privacy/gis-privacy-page.c
