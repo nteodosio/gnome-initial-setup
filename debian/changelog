@@ -1,4 +1,4 @@
-gnome-initial-setup (3.32.1-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (3.32.1-1ubuntu1) disco; urgency=medium
 
   * Sync with Debian. Remaining changes:
     + debian/control.in:
