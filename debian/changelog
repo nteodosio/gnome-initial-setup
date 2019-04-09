@@ -1,12 +1,4 @@
-gnome-initial-setup (3.32.0-1ubuntu2) disco; urgency=medium
-
-  * debian/patches/0008-Ubuntu-location-default.patch:
-    - default to have the location switch disabled by default, as recommend
-      by the Canonical legal team (lp: #1821901)
-
- -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 03 Apr 2019 11:16:07 +0200
-
-gnome-initial-setup (3.32.0-1ubuntu1) disco; urgency=medium
+gnome-initial-setup (3.32.1-1ubuntu1) UNRELEASED; urgency=medium
 
   * Sync with Debian. Remaining changes:
     + debian/control.in:
@@ -18,9 +10,16 @@ gnome-initial-setup (3.32.0-1ubuntu1) disco; urgency=medium
       - 0001-Add-Ubuntu-mode-with-special-pages.patch
       - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
       - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
+      - debian/patches/0008-Ubuntu-location-default.patch
       - Don-t-show-Facebook-in-Ubuntu.patch
 
  -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 12 Mar 2019 10:18:36 +0100
+
+gnome-initial-setup (3.32.1-1) experimental; urgency=medium
+
+  * New upstream release
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 09 Apr 2019 10:41:17 +0200
 
 gnome-initial-setup (3.32.0-1) experimental; urgency=medium
 
