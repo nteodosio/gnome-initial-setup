@@ -1,3 +1,14 @@
+gnome-initial-setup (3.32.1-1ubuntu2) UNRELEASED; urgency=medium
+
+  * d/p/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - Retry getting the list of featured snaps in case of failure. (LP: #1824188)
+  * d/p/0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch:
+  * d/p/0001-Make-summary-page-explicitly-request-navigation-butt.patch:
+  * d/p/0008-Ubuntu-location-default.patch:
+    - Patches refreshed automatically by gbp.
+
+ -- Andrea Azzarone <andrea.azzarone@canonical.com>  Fri, 12 Apr 2019 17:17:35 +0000
+
 gnome-initial-setup (3.32.1-1ubuntu1) disco; urgency=medium
 
   * Sync with Debian. Remaining changes:
