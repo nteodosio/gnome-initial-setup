@@ -202,10 +202,10 @@ index b9a3e9a..3862caf 100644
  void         gis_page_set_needs_accept (GisPage *page, gboolean needs_accept);
  void         gis_page_locale_changed (GisPage *page);
 diff --git a/gnome-initial-setup/pages/summary/gis-summary-page.c b/gnome-initial-setup/pages/summary/gis-summary-page.c
-index f510f2f..150fe57 100644
+index 8d17b7c..7e87a94 100644
 --- a/gnome-initial-setup/pages/summary/gis-summary-page.c
 +++ b/gnome-initial-setup/pages/summary/gis-summary-page.c
-@@ -320,6 +320,8 @@ gis_summary_page_constructed (GObject *object)
+@@ -287,6 +287,8 @@ gis_summary_page_constructed (GObject *object)
  
    G_OBJECT_CLASS (gis_summary_page_parent_class)->constructed (object);
  

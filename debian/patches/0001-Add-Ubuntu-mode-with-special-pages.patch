@@ -13,31 +13,31 @@ Subject: Add Ubuntu mode with special pages
  gnome-initial-setup/meson.build                    |   3 +
  gnome-initial-setup/pages/apps/apps.gresource.xml  |   8 +
  .../pages/apps/default-snap-icon.svg               |   1 +
- gnome-initial-setup/pages/apps/gis-apps-page.c     | 528 ++++++++++++++++++++
+ gnome-initial-setup/pages/apps/gis-apps-page.c     | 651 +++++++++++++++++++++
  gnome-initial-setup/pages/apps/gis-apps-page.h     |  52 ++
- gnome-initial-setup/pages/apps/gis-apps-page.ui    |  96 ++++
+ gnome-initial-setup/pages/apps/gis-apps-page.ui    | 112 ++++
  gnome-initial-setup/pages/apps/meson.build         |  10 +
- .../pages/livepatch/gis-auth-dialog.c              | 528 ++++++++++++++++++++
+ .../pages/livepatch/gis-auth-dialog.c              | 528 +++++++++++++++++
  .../pages/livepatch/gis-auth-dialog.h              |  40 ++
- .../pages/livepatch/gis-auth-dialog.ui             | 231 +++++++++
- .../pages/livepatch/gis-livepatch-page.c           | 538 +++++++++++++++++++++
+ .../pages/livepatch/gis-auth-dialog.ui             | 231 ++++++++
+ .../pages/livepatch/gis-livepatch-page.c           | 538 +++++++++++++++++
  .../pages/livepatch/gis-livepatch-page.h           |  52 ++
- .../pages/livepatch/gis-livepatch-page.ui          | 156 ++++++
+ .../pages/livepatch/gis-livepatch-page.ui          | 156 +++++
  .../pages/livepatch/livepatch.gresource.xml        |   9 +
  gnome-initial-setup/pages/livepatch/livepatch.svg  |   1 +
  gnome-initial-setup/pages/livepatch/meson.build    |  12 +
  gnome-initial-setup/pages/meson.build              |   5 +-
  .../pages/privacy/gis-privacy-page.c               |   2 +-
  .../pages/summary/gis-summary-page.c               |   2 +-
- .../pages/ubuntu-report/gis-ubuntu-report-page.c   | 207 ++++++++
+ .../pages/ubuntu-report/gis-ubuntu-report-page.c   | 207 +++++++
  .../pages/ubuntu-report/gis-ubuntu-report-page.h   |  52 ++
- .../pages/ubuntu-report/gis-ubuntu-report-page.ui  | 181 +++++++
+ .../pages/ubuntu-report/gis-ubuntu-report-page.ui  | 181 ++++++
  .../pages/ubuntu-report/meson.build                |  10 +
  .../ubuntu-report/ubuntu-report.gresource.xml      |   8 +
  .../pages/ubuntu-report/ubuntu-report.svg          |   1 +
  meson.build                                        |   3 +
  po/POTFILES.in                                     |  12 +
- 34 files changed, 2883 insertions(+), 5 deletions(-)
+ 34 files changed, 3022 insertions(+), 5 deletions(-)
  create mode 100644 data/com.ubuntu.welcome.policy.in
  create mode 100644 data/its/polkit.its
  create mode 100644 data/its/polkit.loc
@@ -154,10 +154,10 @@ index 8fa6f29..27a19d5 100644
  install_data('20-gnome-initial-setup.rules', install_dir: rules_dir)
  
 diff --git a/gnome-initial-setup/gis-driver.c b/gnome-initial-setup/gis-driver.c
-index eeaf1b7..6267b32 100644
+index a57be7d..5a2380e 100644
 --- a/gnome-initial-setup/gis-driver.c
 +++ b/gnome-initial-setup/gis-driver.c
-@@ -78,6 +78,9 @@ struct _GisDriverPrivate {
+@@ -83,6 +83,9 @@ struct _GisDriverPrivate {
    GisDriverMode mode;
    UmAccountMode account_mode;
    gboolean small_screen;
@@ -167,7 +167,7 @@ index eeaf1b7..6267b32 100644
  };
  typedef struct _GisDriverPrivate GisDriverPrivate;
  
-@@ -535,6 +538,38 @@ gis_driver_save_data (GisDriver *driver)
+@@ -593,6 +596,38 @@ gis_driver_save_data (GisDriver *driver)
    gis_assistant_save_data (priv->assistant);
  }
  
@@ -207,10 +207,10 @@ index eeaf1b7..6267b32 100644
  gis_driver_new (GisDriverMode mode)
  {
 diff --git a/gnome-initial-setup/gis-driver.h b/gnome-initial-setup/gis-driver.h
-index 9eb408e..c5261fa 100644
+index d3a52ec..8059910 100644
 --- a/gnome-initial-setup/gis-driver.h
 +++ b/gnome-initial-setup/gis-driver.h
-@@ -100,6 +100,12 @@ void gis_driver_hide_window (GisDriver *driver);
+@@ -105,6 +105,12 @@ void gis_driver_hide_window (GisDriver *driver);
  
  void gis_driver_save_data (GisDriver *driver);
  
@@ -341,10 +341,10 @@ index 0000000..0d8dd94
 \ No newline at end of file
 diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.c b/gnome-initial-setup/pages/apps/gis-apps-page.c
 new file mode 100644
-index 0000000..1230c61
+index 0000000..ca445de
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.c
-@@ -0,0 +1,528 @@
+@@ -0,0 +1,651 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
 + * Copyright (C) 2018 Canonical Ltd.
@@ -378,9 +378,19 @@ index 0000000..1230c61
 +
 +struct _GisAppsPagePrivate {
 +  SoupSession *soup_session;
++  SnapdClient *client;
++
++  GtkWidget *main_stack;
++  GtkWidget *spinner;
 +  GtkWidget *featured_stack;
 +  GtkWidget *prev_featured_button;
 +  GtkWidget *next_featured_button;
++
++  GCancellable *cancellable;
++  guint featured_snaps_timeout_id;
++
++  GPtrArray *installed_snaps;
++  GPtrArray *featured_snaps;
 +};
 +typedef struct _GisAppsPagePrivate GisAppsPagePrivate;
 +
@@ -436,7 +446,20 @@ index 0000000..1230c61
 +  GisAppsPage *page = GIS_APPS_PAGE (object);
 +  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
 +
++  g_clear_object (&priv->client);
 +  g_clear_object (&priv->soup_session);
++  g_clear_pointer (&priv->installed_snaps, g_ptr_array_unref);
++  g_clear_pointer (&priv->featured_snaps, g_ptr_array_unref);
++
++  if (priv->cancellable != NULL) {
++    g_cancellable_cancel (priv->cancellable);
++    g_clear_object (&priv->cancellable);
++  }
++
++  if (priv->featured_snaps_timeout_id != 0) {
++    g_source_remove (priv->featured_snaps_timeout_id);
++    priv->featured_snaps_timeout_id = 0;
++  }
 +
 +  G_OBJECT_CLASS (gis_apps_page_parent_class)->dispose (object);
 +}
@@ -546,6 +569,8 @@ index 0000000..1230c61
 +  GObjectClass *object_class = G_OBJECT_CLASS (klass);
 +
 +  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-apps-page.ui");
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, main_stack);
++  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, spinner);
 +  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, featured_stack);
 +  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, prev_featured_button);
 +  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisAppsPage, next_featured_button);
@@ -804,38 +829,20 @@ index 0000000..1230c61
 +}
 +
 +static void
-+gis_apps_page_init (GisAppsPage *page)
++gis_app_page_populate_featured_snaps (GisAppsPage *page)
 +{
-+  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
-+  g_autoptr(SnapdClient) client = NULL;
-+  GtkSizeGroup *size_group;
-+  g_autoptr(GPtrArray) installed_snaps = NULL;
-+  g_autoptr(GPtrArray) featured_snaps = NULL;
-+  g_autoptr(GError) error = NULL;
-+
-+  g_resources_register (apps_get_resource ());
-+
-+  gtk_widget_init_template (GTK_WIDGET (page));
-+
-+  priv->soup_session = soup_session_new ();
-+
-+  client = snapd_client_new ();
-+
-+  size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
-+
-+  installed_snaps = snapd_client_list_sync (client, NULL, &error);
-+  if (installed_snaps == NULL)
-+    g_warning ("Failed to get installed snaps: %s", error->message);
-+  featured_snaps = snapd_client_find_section_sync (client, SNAPD_FIND_FLAGS_NONE, "ubuntu-firstrun", NULL, NULL, NULL, &error);
-+  if (featured_snaps != NULL) {
++    GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++    GtkSizeGroup *size_group;
 +    guint i, n_tiles = 0, n_extra = 0;
 +
-+    for (i = 0; i < featured_snaps->len; i++) {
-+      SnapdSnap *snap = g_ptr_array_index (featured_snaps, i);
++    size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
++
++    for (i = 0; i < priv->featured_snaps->len; i++) {
++      SnapdSnap *snap = g_ptr_array_index (priv->featured_snaps, i);
 +      GtkWidget *tile;
 +
 +      /* Skip if already installed */
-+      if (installed_snaps != NULL && contains_snap (installed_snaps, snapd_snap_get_name (snap)))
++      if (priv->installed_snaps != NULL && contains_snap (priv->installed_snaps, snapd_snap_get_name (snap)))
 +        continue;
 +
 +      /* Ignore common snaps that have default .debs */
@@ -859,11 +866,127 @@ index 0000000..1230c61
 +      gtk_size_group_add_widget (size_group, spacer);
 +      add_tile (priv->featured_stack, spacer);
 +    }
++
++    gtk_widget_set_visible (priv->next_featured_button, g_list_length (gtk_container_get_children (GTK_CONTAINER (priv->featured_stack))) > 1);
++    gtk_widget_set_visible (priv->prev_featured_button, g_list_length (gtk_container_get_children (GTK_CONTAINER (priv->featured_stack))) > 1);
++}
++
++static void
++gis_apps_page_try_to_get_featured_snaps (GisAppsPage *page);
++
++static void
++gis_app_page_on_featured_snaps_ready (GObject *source_object,
++                                      GAsyncResult *res,
++                                      gpointer user_data)
++{
++  SnapdClient *client = SNAPD_CLIENT (source_object);
++  g_autoptr(GPtrArray) featured_snaps = NULL;
++  g_autoptr(GError) error = NULL;
++
++  featured_snaps = snapd_client_find_section_finish (client, res, NULL, &error);
++
++  if (featured_snaps == NULL) {
++    if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
++      g_warning ("Failed to get featured snaps: %s", error->message);
++      /* On a fresh boot interacting with snapd can fail (see LP: #1824188).
++       * In case of error, try to get the featured snaps again.*/
++      gis_apps_page_try_to_get_featured_snaps (GIS_APPS_PAGE (user_data));
++    }
++  } else {
++    GisAppsPage *page = GIS_APPS_PAGE (user_data);
++    GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++
++    priv->featured_snaps = g_steal_pointer (&featured_snaps);
++
++    gtk_spinner_stop (GTK_SPINNER (priv->spinner));
++    gtk_stack_set_visible_child_name (GTK_STACK (priv->main_stack), "page_snaps");
++
++    gis_app_page_populate_featured_snaps (page);
 +  }
-+  else
-+    g_warning ("Failed to get featured snaps: %s", error->message);
-+  gtk_widget_set_visible (priv->next_featured_button, g_list_length (gtk_container_get_children (GTK_CONTAINER (priv->featured_stack))) > 1);
-+  gtk_widget_set_visible (priv->prev_featured_button, g_list_length (gtk_container_get_children (GTK_CONTAINER (priv->featured_stack))) > 1);
++}
++
++static gboolean
++gis_app_page_get_featured_snaps_timeout (gpointer user_data)
++{
++  GisAppsPage *page = GIS_APPS_PAGE (user_data);
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++
++  priv->featured_snaps_timeout_id = 0;
++
++  snapd_client_find_section_async (priv->client,
++                                   SNAPD_FIND_FLAGS_NONE,
++                                   "ubuntu-firstrun",
++                                   NULL,
++                                   priv->cancellable,
++                                   gis_app_page_on_featured_snaps_ready,
++                                   page);
++
++  return G_SOURCE_REMOVE;
++}
++
++void
++gis_apps_page_try_to_get_featured_snaps (GisAppsPage *page)
++{
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++
++  g_return_if_fail (priv->featured_snaps == NULL);
++
++  if (priv->featured_snaps_timeout_id == 0)
++    priv->featured_snaps_timeout_id = g_timeout_add_seconds (1, gis_app_page_get_featured_snaps_timeout, page);
++}
++
++void
++gis_app_page_on_installed_snaps_ready (GObject *source_object,
++                                       GAsyncResult *res,
++                                       gpointer user_data)
++{
++  GisAppsPage *page;
++  GisAppsPagePrivate *priv;
++  SnapdClient *client = SNAPD_CLIENT (source_object);
++  g_autoptr(GPtrArray) installed_snaps = NULL;
++  g_autoptr(GError) error = NULL;
++
++  installed_snaps = snapd_client_get_snaps_finish (client, res, &error);
++  if (installed_snaps == NULL) {
++    if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
++      /* Discard errors in getting the list of installed snaps. Print out a
++       * warning here and avoid to use installed_snaps to filter the featured
++       * snaps. */
++      g_warning ("Failed to get installed snaps: %s", error->message);
++    } else {
++      return;
++    }
++  }
++
++  page = GIS_APPS_PAGE (user_data);
++  priv = gis_apps_page_get_instance_private (page);
++
++  priv->installed_snaps = g_steal_pointer (&installed_snaps);
++  gis_apps_page_try_to_get_featured_snaps (page);
++}
++
++static void
++gis_apps_page_init (GisAppsPage *page)
++{
++  GisAppsPagePrivate *priv = gis_apps_page_get_instance_private (page);
++
++  g_resources_register (apps_get_resource ());
++
++  gtk_widget_init_template (GTK_WIDGET (page));
++
++  priv->soup_session = soup_session_new ();
++  priv->client = snapd_client_new ();
++  priv->cancellable = g_cancellable_new ();
++
++  gtk_stack_set_visible_child_name (GTK_STACK (priv->main_stack), "page_spinner");
++  gtk_spinner_start (GTK_SPINNER (priv->spinner));
++
++  snapd_client_get_snaps_async (priv->client,
++                                SNAPD_GET_SNAPS_FLAGS_NONE,
++                                NULL,
++                                priv->cancellable,
++                                gis_app_page_on_installed_snaps_ready,
++                                page);
 +}
 +
 +GisPage *
@@ -933,10 +1056,10 @@ index 0000000..9494b9e
 +#endif /* __GIS_APPS_PAGE_H__ */
 diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.ui b/gnome-initial-setup/pages/apps/gis-apps-page.ui
 new file mode 100644
-index 0000000..e845c1f
+index 0000000..6c99d8f
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.ui
-@@ -0,0 +1,96 @@
+@@ -0,0 +1,112 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
 +  <!-- interface-requires gtk+ 3.0 -->
@@ -944,15 +1067,13 @@ index 0000000..e845c1f
 +    <child>
 +      <object class="GtkBox">
 +        <property name="visible">True</property>
-+        <property name="can_focus">False</property>
 +        <property name="halign">fill</property>
 +        <property name="valign">fill</property>
 +        <property name="orientation">vertical</property>
-+	<property name="border_width">20</property>
++        <property name="border_width">20</property>
 +        <child>
 +          <object class="GtkLabel" id="title">
 +            <property name="visible">True</property>
-+            <property name="can_focus">False</property>
 +            <property name="halign">start</property>
 +            <property name="valign">start</property>
 +            <property name="label" translatable="yes">You're ready to go!</property>
@@ -965,7 +1086,6 @@ index 0000000..e845c1f
 +        <child>
 +          <object class="GtkLabel">
 +            <property name="visible">True</property>
-+            <property name="can_focus">False</property>
 +            <property name="halign">start</property>
 +            <property name="margin_top">36</property>
 +            <property name="label" translatable="yes">You can use “Software” to install apps like these:</property>
@@ -976,47 +1096,63 @@ index 0000000..e845c1f
 +          </object>
 +        </child>
 +        <child>
-+	  <object class="GtkBox">
++          <object class="GtkStack" id="main_stack">
 +            <property name="visible">True</property>
-+            <property name="orientation">horizontal</property>
++            <property name="margin_top">18</property>
 +            <property name="hexpand">True</property>
-+            <property name="margin_top">36</property>
-+            <property name="spacing">10</property>
++            <property name="transition_type">crossfade</property>
 +            <child>
-+              <object class="GtkButton" id="prev_featured_button">
++              <object class="GtkSpinner" id="spinner">
 +                <property name="visible">True</property>
-+                <property name="sensitive">False</property>
-+                <property name="relief">none</property>
-+                <signal name="clicked" handler="prev_featured"/>
-+                <child>
-+                  <object class="GtkImage">
-+                    <property name="visible">True</property>
-+                    <property name="icon_name">go-previous-symbolic</property>
-+                  </object>
-+                </child>
++                <property name="vexpand">True</property>
 +              </object>
++              <packing>
++                <property name="name">page_spinner</property>
++              </packing>
 +            </child>
 +            <child>
-+              <object class="GtkStack" id="featured_stack">
++              <object class="GtkBox">
 +                <property name="visible">True</property>
-+                <property name="can_focus">False</property>
-+                <property name="margin_top">18</property>
++                <property name="orientation">horizontal</property>
 +                <property name="hexpand">True</property>
-+              </object>
-+            </child>
-+            <child>
-+              <object class="GtkButton" id="next_featured_button">
-+                <property name="visible">True</property>
-+                <property name="sensitive">True</property>
-+                <property name="relief">none</property>
-+                <signal name="clicked" handler="next_featured"/>
++                <property name="margin_top">36</property>
++                <property name="spacing">10</property>
 +                <child>
-+                  <object class="GtkImage">
++                  <object class="GtkButton" id="prev_featured_button">
++                    <property name="sensitive">False</property>
++                    <property name="relief">none</property>
++                    <signal name="clicked" handler="prev_featured"/>
++                    <child>
++                      <object class="GtkImage">
++                        <property name="visible">True</property>
++                        <property name="icon_name">go-previous-symbolic</property>
++                      </object>
++                    </child>
++                  </object>
++                </child>
++                <child>
++                  <object class="GtkStack" id="featured_stack">
 +                    <property name="visible">True</property>
-+                    <property name="icon_name">go-next-symbolic</property>
++                    <property name="hexpand">True</property>
++                  </object>
++                </child>
++                <child>
++                  <object class="GtkButton" id="next_featured_button">
++                    <property name="sensitive">True</property>
++                    <property name="relief">none</property>
++                    <signal name="clicked" handler="next_featured"/>
++                    <child>
++                      <object class="GtkImage">
++                        <property name="visible">True</property>
++                        <property name="icon_name">go-next-symbolic</property>
++                      </object>
++                    </child>
 +                  </object>
 +                </child>
 +              </object>
++              <packing>
++                <property name="name">page_snaps</property>
++              </packing>
 +            </child>
 +          </object>
 +        </child>
@@ -1028,6 +1164,9 @@ index 0000000..e845c1f
 +            <property name="label" translatable="yes">Open “Software” now</property>
 +            <signal name="clicked" handler="open_software"/>
 +          </object>
++          <packing>
++            <property name="pack-type">end</property>
++          </packing>
 +        </child>
 +      </object>
 +    </child>
@@ -2700,10 +2839,10 @@ index 7d83d62..4928ff2 100644
  
  static void
 diff --git a/gnome-initial-setup/pages/summary/gis-summary-page.c b/gnome-initial-setup/pages/summary/gis-summary-page.c
-index 150fe57..5b47be3 100644
+index 7e87a94..97ba574 100644
 --- a/gnome-initial-setup/pages/summary/gis-summary-page.c
 +++ b/gnome-initial-setup/pages/summary/gis-summary-page.c
-@@ -225,7 +225,7 @@ done_cb (GtkButton *button, GisSummaryPage *page)
+@@ -192,7 +192,7 @@ done_cb (GtkButton *button, GisSummaryPage *page)
        log_user_in (page);
        break;
      case GIS_DRIVER_MODE_EXISTING_USER:
@@ -3208,7 +3347,7 @@ index 0000000..8c1d52c
 @@ -0,0 +1 @@
 +<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666; fill-opacity:0.25;} </style> <g> <path class="st0" d="M301.4,372.4C271.7,390,237,400,200,400C89.5,400,0,310.5,0,200C0,89.5,89.5,0,200,0c110.5,0,200,89.5,200,200 c0,36.4-9.7,70.6-26.8,100l0,0L400,400l-100-26.8L301.4,372.4L301.4,372.4z"/> </g> </svg>
 diff --git a/meson.build b/meson.build
-index 14e9bde..fd984a9 100644
+index 7b41505..c379707 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -51,6 +51,9 @@ ibus_dep = dependency ('ibus-1.0',
