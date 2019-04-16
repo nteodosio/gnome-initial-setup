@@ -1,9 +1,9 @@
-gnome-initial-setup (3.32.1-1ubuntu3) UNRELEASED; urgency=medium
+gnome-initial-setup (3.32.1-1ubuntu3) disco; urgency=medium
 
   * d/p/0001-Add-Ubuntu-mode-with-special-pages.patch:
     - Don't set vexpand for the GtkSpinner in the apps page. (LP: #1824996)
 
- -- Andrea Azzarone <andrea.azzarone@canonical.com>  Tue, 16 Apr 2019 14:29:35 +0000
+ -- Andrea Azzarone <andrea.azzarone@canonical.com>  Tue, 16 Apr 2019 17:19:07 +0100
 
 gnome-initial-setup (3.32.1-1ubuntu2) disco; urgency=medium
 
