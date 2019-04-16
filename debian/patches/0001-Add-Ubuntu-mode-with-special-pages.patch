@@ -15,7 +15,7 @@ Subject: Add Ubuntu mode with special pages
  .../pages/apps/default-snap-icon.svg               |   1 +
  gnome-initial-setup/pages/apps/gis-apps-page.c     | 651 +++++++++++++++++++++
  gnome-initial-setup/pages/apps/gis-apps-page.h     |  52 ++
- gnome-initial-setup/pages/apps/gis-apps-page.ui    | 112 ++++
+ gnome-initial-setup/pages/apps/gis-apps-page.ui    | 111 ++++
  gnome-initial-setup/pages/apps/meson.build         |  10 +
  .../pages/livepatch/gis-auth-dialog.c              | 528 +++++++++++++++++
  .../pages/livepatch/gis-auth-dialog.h              |  40 ++
@@ -37,7 +37,7 @@ Subject: Add Ubuntu mode with special pages
  .../pages/ubuntu-report/ubuntu-report.svg          |   1 +
  meson.build                                        |   3 +
  po/POTFILES.in                                     |  12 +
- 34 files changed, 3022 insertions(+), 5 deletions(-)
+ 34 files changed, 3021 insertions(+), 5 deletions(-)
  create mode 100644 data/com.ubuntu.welcome.policy.in
  create mode 100644 data/its/polkit.its
  create mode 100644 data/its/polkit.loc
@@ -1056,10 +1056,10 @@ index 0000000..9494b9e
 +#endif /* __GIS_APPS_PAGE_H__ */
 diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.ui b/gnome-initial-setup/pages/apps/gis-apps-page.ui
 new file mode 100644
-index 0000000..6c99d8f
+index 0000000..5944539
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.ui
-@@ -0,0 +1,112 @@
+@@ -0,0 +1,111 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
 +  <!-- interface-requires gtk+ 3.0 -->
@@ -1104,7 +1104,6 @@ index 0000000..6c99d8f
 +            <child>
 +              <object class="GtkSpinner" id="spinner">
 +                <property name="visible">True</property>
-+                <property name="vexpand">True</property>
 +              </object>
 +              <packing>
 +                <property name="name">page_spinner</property>
