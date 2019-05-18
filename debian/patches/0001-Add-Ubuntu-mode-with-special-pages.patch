@@ -1288,7 +1288,7 @@ index 0000000..8d88a93
 +  } else {
 +    /* Reveal the error bar if text is not NULL */
 +    g_autofree gchar *markup = NULL;
-+    markup = g_strdup_printf (_("Failed to add un Ubuntu Single Sign-on account: %s."), text);
++    markup = g_strdup_printf (_("Failed to add an Ubuntu Single Sign-on account: %s."), text);
 +    gtk_label_set_markup (GTK_LABEL (self->label_error), markup);
 +    gtk_widget_set_visible (self->error_bar, TRUE);
 +    gtk_info_bar_set_revealed (GTK_INFO_BAR (self->error_bar), TRUE);

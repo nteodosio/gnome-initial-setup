@@ -1,3 +1,10 @@
+gnome-initial-setup (3.32.1-1ubuntu4) UNRELEASED; urgency=medium
+
+  * d/p/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - typo fixed in an error string (lp: #1824539)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Sat, 18 May 2019 13:09:47 +0200
+
 gnome-initial-setup (3.32.1-1ubuntu3) disco; urgency=medium
 
   * d/p/0001-Add-Ubuntu-mode-with-special-pages.patch:
