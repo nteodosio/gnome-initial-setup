@@ -120,12 +120,12 @@ index 0000000..12c7bf0
 +</locatingRules>
 \ No newline at end of file
 diff --git a/data/meson.build b/data/meson.build
-index 8fa6f29..27a19d5 100644
+index 9aa79bf..55f9c35 100644
 --- a/data/meson.build
 +++ b/data/meson.build
-@@ -47,6 +47,29 @@ i18n.merge_file(
-     type: 'desktop'
- )
+@@ -60,6 +60,29 @@ if enable_systemd
+ endif
+ 
  
 +#newer polkit has the ITS rules included
 +if polkit.version().version_compare('>0.113')
@@ -154,20 +154,20 @@ index 8fa6f29..27a19d5 100644
  install_data('20-gnome-initial-setup.rules', install_dir: rules_dir)
  
 diff --git a/gnome-initial-setup/gis-driver.c b/gnome-initial-setup/gis-driver.c
-index a57be7d..5a2380e 100644
+index 01bc389..076dbe4 100644
 --- a/gnome-initial-setup/gis-driver.c
 +++ b/gnome-initial-setup/gis-driver.c
-@@ -83,6 +83,9 @@ struct _GisDriverPrivate {
-   GisDriverMode mode;
-   UmAccountMode account_mode;
+@@ -87,6 +87,9 @@ struct _GisDriverPrivate {
    gboolean small_screen;
+ 
+   locale_t locale;
 +
 +  guint inhibit_count;
 +  gboolean quit_requested;
  };
  typedef struct _GisDriverPrivate GisDriverPrivate;
  
-@@ -593,6 +596,38 @@ gis_driver_save_data (GisDriver *driver)
+@@ -654,6 +657,38 @@ gis_driver_save_data (GisDriver *driver)
    gis_assistant_save_data (priv->assistant);
  }
  
@@ -207,7 +207,7 @@ index a57be7d..5a2380e 100644
  gis_driver_new (GisDriverMode mode)
  {
 diff --git a/gnome-initial-setup/gis-driver.h b/gnome-initial-setup/gis-driver.h
-index d3a52ec..8059910 100644
+index 1184582..07acadc 100644
 --- a/gnome-initial-setup/gis-driver.h
 +++ b/gnome-initial-setup/gis-driver.h
 @@ -105,6 +105,12 @@ void gis_driver_hide_window (GisDriver *driver);
@@ -304,10 +304,10 @@ index db75787..93f0f6c 100644
          break;
  
 diff --git a/gnome-initial-setup/meson.build b/gnome-initial-setup/meson.build
-index c461562..6bc8df9 100644
+index 927ae8a..d02de17 100644
 --- a/gnome-initial-setup/meson.build
 +++ b/gnome-initial-setup/meson.build
-@@ -45,6 +45,9 @@ dependencies = [
+@@ -48,6 +48,9 @@ dependencies = [
      dependency ('libsecret-1'),
      dependency ('pwquality'),
      dependency ('webkit2gtk-4.0'),
@@ -1189,7 +1189,7 @@ index 0000000..dec2b38
 +)
 diff --git a/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
 new file mode 100644
-index 0000000..8d88a93
+index 0000000..eceb26e
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
 @@ -0,0 +1,528 @@
@@ -2825,10 +2825,10 @@ index 7366385..2cc02aa 100644
  
  if get_option('region-page')
 diff --git a/gnome-initial-setup/pages/privacy/gis-privacy-page.c b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
-index 7d83d62..4928ff2 100644
+index dc2b03f..23e3367 100644
 --- a/gnome-initial-setup/pages/privacy/gis-privacy-page.c
 +++ b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
-@@ -289,7 +289,7 @@ activate_link (GtkLabel       *label,
+@@ -291,7 +291,7 @@ activate_link (GtkLabel       *label,
  static void
  gis_privacy_page_locale_changed (GisPage *page)
  {
@@ -2838,7 +2838,7 @@ index 7d83d62..4928ff2 100644
  
  static void
 diff --git a/gnome-initial-setup/pages/summary/gis-summary-page.c b/gnome-initial-setup/pages/summary/gis-summary-page.c
-index 7e87a94..97ba574 100644
+index 579ef7e..0a8b15d 100644
 --- a/gnome-initial-setup/pages/summary/gis-summary-page.c
 +++ b/gnome-initial-setup/pages/summary/gis-summary-page.c
 @@ -192,7 +192,7 @@ done_cb (GtkButton *button, GisSummaryPage *page)
@@ -3346,10 +3346,10 @@ index 0000000..8c1d52c
 @@ -0,0 +1 @@
 +<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666; fill-opacity:0.25;} </style> <g> <path class="st0" d="M301.4,372.4C271.7,390,237,400,200,400C89.5,400,0,310.5,0,200C0,89.5,89.5,0,200,0c110.5,0,200,89.5,200,200 c0,36.4-9.7,70.6-26.8,100l0,0L400,400l-100-26.8L301.4,372.4L301.4,372.4z"/> </g> </svg>
 diff --git a/meson.build b/meson.build
-index 7b41505..c379707 100644
+index 4bad799..3ccc1e6 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -51,6 +51,9 @@ ibus_dep = dependency ('ibus-1.0',
+@@ -64,6 +64,9 @@ ibus_dep = dependency ('ibus-1.0',
                         required: get_option('ibus'))
  conf.set('HAVE_IBUS', ibus_dep.found())
  
@@ -3360,14 +3360,14 @@ index 7b41505..c379707 100644
                 configuration: conf)
  config_h_dir = include_directories('.')
 diff --git a/po/POTFILES.in b/po/POTFILES.in
-index 649e667..0693817 100644
+index ba16a54..2f9db34 100644
 --- a/po/POTFILES.in
 +++ b/po/POTFILES.in
 @@ -1,3 +1,4 @@
 +data/com.ubuntu.welcome.policy.in
- data/gnome-initial-setup.desktop.in.in
  data/gnome-initial-setup-first-login.desktop.in.in
- gnome-initial-setup/gis-assistant.c
+ data/gnome-initial-setup.desktop.in.in
+ gnome-initial-setup/cc-common-language.c
 @@ -42,3 +43,14 @@ gnome-initial-setup/pages/summary/gis-summary-page.c
  gnome-initial-setup/pages/summary/gis-summary-page.ui
  gnome-initial-setup/pages/timezone/gis-timezone-page.c

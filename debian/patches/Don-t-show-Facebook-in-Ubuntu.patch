@@ -11,10 +11,10 @@ LP: #1797736
  1 file changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/gnome-initial-setup/pages/goa/gis-goa-page.c b/gnome-initial-setup/pages/goa/gis-goa-page.c
-index 65c1ae1..33c1775 100644
+index d42b1ca..e57f55d 100644
 --- a/gnome-initial-setup/pages/goa/gis-goa-page.c
 +++ b/gnome-initial-setup/pages/goa/gis-goa-page.c
-@@ -57,6 +57,25 @@ struct _ProviderWidget {
+@@ -59,6 +59,25 @@ struct _ProviderWidget {
  };
  typedef struct _ProviderWidget ProviderWidget;
  
@@ -40,7 +40,7 @@ index 65c1ae1..33c1775 100644
  static void
  sync_provider_widget (ProviderWidget *provider_widget)
  {
-@@ -182,7 +201,8 @@ populate_provider_list (GisGoaPage *page)
+@@ -184,7 +203,8 @@ populate_provider_list (GisGoaPage *page)
    add_provider_to_list (page, "google");
    add_provider_to_list (page, "owncloud");
    add_provider_to_list (page, "windows_live");

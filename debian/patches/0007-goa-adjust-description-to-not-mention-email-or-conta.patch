@@ -11,15 +11,15 @@ Forwared: https://gitlab.gnome.org/GNOME/gnome-initial-setup/merge_requests/13/
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/gnome-initial-setup/pages/goa/gis-goa-page.ui b/gnome-initial-setup/pages/goa/gis-goa-page.ui
-index 8971b62..06325eb 100644
+index 9ef1d95..f826da9 100644
 --- a/gnome-initial-setup/pages/goa/gis-goa-page.ui
 +++ b/gnome-initial-setup/pages/goa/gis-goa-page.ui
-@@ -55,7 +55,7 @@
-             <property name="halign">center</property>
-             <property name="valign">start</property>
-             <property name="margin_top">6</property>
--            <property name="label" translatable="yes">Connect your accounts to easily access your email, online calendar, contacts, documents and photos.</property>
-+            <property name="label" translatable="yes">Connect your accounts to easily access your online calendar, documents, photos and more.</property>
-             <property name="justify">left</property>
-             <property name="wrap">True</property>
-             <property name="max-width-chars">50</property>
+@@ -15,7 +15,7 @@
+             <property name="visible">True</property>
+             <property name="margin_top">24</property>
+             <property name="title" translatable="yes">Connect Your Online Accounts</property>
+-            <property name="subtitle" translatable="yes">Connect your accounts to easily access your email, online calendar, contacts, documents and photos.</property>
++            <property name="subtitle" translatable="yes">Connect your accounts to easily access your online calendar, documents, photos and more.</property>
+             <property name="icon_name">goa-panel-symbolic</property>
+             <property name="show_icon" bind-source="GisGoaPage" bind-property="small-screen" bind-flags="invert-boolean|sync-create"/>
+           </object>
