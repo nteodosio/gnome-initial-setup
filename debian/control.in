@@ -35,6 +35,7 @@ Build-Depends: debhelper-compat (= 12),
                libsnapd-glib-dev,
                libsoup2.4-dev,
                libsysmetrics-dev,
+               libsystemd-dev [linux-any],
                libwebkit2gtk-4.0-dev,
                meson (>= 0.47.0)
 Rules-Requires-Root: no
@@ -53,7 +54,8 @@ Depends: ${shlibs:Depends},
          gnome-settings-daemon (>= 3.24),
          ${logo:Depends},
          ${misc:Depends}
-Recommends: gnome-getting-started-docs
+Recommends: gnome-getting-started-docs,
+            gnome-keyring,
 Suggests: gdm3
 Description: Initial GNOME system setup helper
  After acquiring or installing a new system there are a few essential things
