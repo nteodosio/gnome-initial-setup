@@ -1,4 +1,4 @@
-gnome-initial-setup (3.34.0-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (3.34.0-1ubuntu1) eoan; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
