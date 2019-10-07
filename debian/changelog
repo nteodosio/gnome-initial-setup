@@ -1,4 +1,4 @@
-gnome-initial-setup (3.34.0-1ubuntu1) eoan; urgency=medium
+gnome-initial-setup (3.34.1-1ubuntu1) UNRELEASED; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
@@ -13,7 +13,19 @@ gnome-initial-setup (3.34.0-1ubuntu1) eoan; urgency=medium
       - debian/patches/0008-Ubuntu-location-default.patch
       - Don-t-show-Facebook-in-Ubuntu.patch
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 12 Sep 2019 16:10:30 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 07 Oct 2019 10:00:27 +0200
+
+gnome-initial-setup (3.34.1-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 06 Oct 2019 07:20:33 -0400
+
+gnome-initial-setup (3.34.0-2) unstable; urgency=medium
+
+  * Release to unstable
+
+ -- Jeremy Bicha <jbicha@debian.org>  Mon, 30 Sep 2019 20:48:57 -0400
 
 gnome-initial-setup (3.34.0-1) experimental; urgency=medium
 
