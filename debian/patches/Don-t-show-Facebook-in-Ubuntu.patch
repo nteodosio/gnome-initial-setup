@@ -10,11 +10,9 @@ LP: #1797736
  gnome-initial-setup/pages/goa/gis-goa-page.c | 22 +++++++++++++++++++++-
  1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/gnome-initial-setup/pages/goa/gis-goa-page.c b/gnome-initial-setup/pages/goa/gis-goa-page.c
-index d42b1ca..e57f55d 100644
 --- a/gnome-initial-setup/pages/goa/gis-goa-page.c
 +++ b/gnome-initial-setup/pages/goa/gis-goa-page.c
-@@ -59,6 +59,25 @@ struct _ProviderWidget {
+@@ -62,6 +62,25 @@ struct _ProviderWidget {
  };
  typedef struct _ProviderWidget ProviderWidget;
  
@@ -40,13 +38,15 @@ index d42b1ca..e57f55d 100644
  static void
  sync_provider_widget (ProviderWidget *provider_widget)
  {
-@@ -184,7 +203,8 @@ populate_provider_list (GisGoaPage *page)
-   add_provider_to_list (page, "google");
-   add_provider_to_list (page, "owncloud");
-   add_provider_to_list (page, "windows_live");
--  add_provider_to_list (page, "facebook");
-+  if (!is_desktop ("ubuntu"))
-+    add_provider_to_list (page, "facebook");
- }
+@@ -185,8 +204,10 @@ populate_provider_list (GisGoaPage *page
+ {
+   g_auto(GStrv) conf_providers =
+     gis_driver_conf_get_string_list (GIS_PAGE (page)->driver, VENDOR_GOA_GROUP, VENDOR_PROVIDERS_KEY, NULL);
+-  GStrv providers = conf_providers ? conf_providers :
++  GStrv default_providers = is_desktop ("ubuntu") ?
++    (gchar *[]) { "ubuntusso", "google", "owncloud", "windows_live", NULL } :
+     (gchar *[]) { "ubuntusso", "google", "owncloud", "windows_live", "facebook", NULL };
++  GStrv providers = conf_providers ? conf_providers : default_providers;
  
- static void
+   /* This code will read the keyfile containing vendor customization options and
+    * look for options under the "goa" group, and supports the following keys:

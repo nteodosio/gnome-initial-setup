@@ -3,41 +3,41 @@ Date: Tue, 20 Mar 2018 11:51:30 +1300
 Subject: Add Ubuntu mode with special pages
 
 ---
- data/com.ubuntu.welcome.policy.in                  |  21 +
- data/its/polkit.its                                |   8 +
- data/its/polkit.loc                                |   6 +
- data/meson.build                                   |  23 +
- gnome-initial-setup/gis-driver.c                   |  35 ++
- gnome-initial-setup/gis-driver.h                   |   6 +
- gnome-initial-setup/gnome-initial-setup.c          |  41 +-
- gnome-initial-setup/meson.build                    |   3 +
- gnome-initial-setup/pages/apps/apps.gresource.xml  |   8 +
- .../pages/apps/default-snap-icon.svg               |   1 +
- gnome-initial-setup/pages/apps/gis-apps-page.c     | 651 +++++++++++++++++++++
- gnome-initial-setup/pages/apps/gis-apps-page.h     |  52 ++
- gnome-initial-setup/pages/apps/gis-apps-page.ui    | 111 ++++
- gnome-initial-setup/pages/apps/meson.build         |  10 +
- .../pages/livepatch/gis-auth-dialog.c              | 528 +++++++++++++++++
- .../pages/livepatch/gis-auth-dialog.h              |  40 ++
- .../pages/livepatch/gis-auth-dialog.ui             | 231 ++++++++
- .../pages/livepatch/gis-livepatch-page.c           | 538 +++++++++++++++++
- .../pages/livepatch/gis-livepatch-page.h           |  52 ++
- .../pages/livepatch/gis-livepatch-page.ui          | 156 +++++
- .../pages/livepatch/livepatch.gresource.xml        |   9 +
- gnome-initial-setup/pages/livepatch/livepatch.svg  |   1 +
- gnome-initial-setup/pages/livepatch/meson.build    |  12 +
- gnome-initial-setup/pages/meson.build              |   5 +-
- .../pages/privacy/gis-privacy-page.c               |   2 +-
- .../pages/summary/gis-summary-page.c               |   2 +-
- .../pages/ubuntu-report/gis-ubuntu-report-page.c   | 207 +++++++
- .../pages/ubuntu-report/gis-ubuntu-report-page.h   |  52 ++
- .../pages/ubuntu-report/gis-ubuntu-report-page.ui  | 181 ++++++
- .../pages/ubuntu-report/meson.build                |  10 +
- .../ubuntu-report/ubuntu-report.gresource.xml      |   8 +
- .../pages/ubuntu-report/ubuntu-report.svg          |   1 +
- meson.build                                        |   3 +
- po/POTFILES.in                                     |  12 +
- 34 files changed, 3021 insertions(+), 5 deletions(-)
+ data/com.ubuntu.welcome.policy.in                                   |   21 
+ data/its/polkit.its                                                 |    8 
+ data/its/polkit.loc                                                 |    6 
+ data/meson.build                                                    |   23 
+ gnome-initial-setup/gis-driver.c                                    |   35 
+ gnome-initial-setup/gis-driver.h                                    |    6 
+ gnome-initial-setup/gnome-initial-setup.c                           |   41 
+ gnome-initial-setup/meson.build                                     |    3 
+ gnome-initial-setup/pages/apps/apps.gresource.xml                   |    8 
+ gnome-initial-setup/pages/apps/default-snap-icon.svg                |    1 
+ gnome-initial-setup/pages/apps/gis-apps-page.c                      |  651 ++++++++++
+ gnome-initial-setup/pages/apps/gis-apps-page.h                      |   52 
+ gnome-initial-setup/pages/apps/gis-apps-page.ui                     |  111 +
+ gnome-initial-setup/pages/apps/meson.build                          |   10 
+ gnome-initial-setup/pages/livepatch/gis-auth-dialog.c               |  528 ++++++++
+ gnome-initial-setup/pages/livepatch/gis-auth-dialog.h               |   40 
+ gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui              |  231 +++
+ gnome-initial-setup/pages/livepatch/gis-livepatch-page.c            |  538 ++++++++
+ gnome-initial-setup/pages/livepatch/gis-livepatch-page.h            |   52 
+ gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui           |  156 ++
+ gnome-initial-setup/pages/livepatch/livepatch.gresource.xml         |    9 
+ gnome-initial-setup/pages/livepatch/livepatch.svg                   |    1 
+ gnome-initial-setup/pages/livepatch/meson.build                     |   12 
+ gnome-initial-setup/pages/meson.build                               |    3 
+ gnome-initial-setup/pages/privacy/gis-privacy-page.c                |    2 
+ gnome-initial-setup/pages/summary/gis-summary-page.c                |    2 
+ gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c    |  207 +++
+ gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h    |   52 
+ gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui   |  181 ++
+ gnome-initial-setup/pages/ubuntu-report/meson.build                 |   10 
+ gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml |    8 
+ gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg           |    1 
+ meson.build                                                         |    3 
+ po/POTFILES.in                                                      |   12 
+ 34 files changed, 3020 insertions(+), 4 deletions(-)
  create mode 100644 data/com.ubuntu.welcome.policy.in
  create mode 100644 data/its/polkit.its
  create mode 100644 data/its/polkit.loc
@@ -63,9 +63,6 @@ Subject: Add Ubuntu mode with special pages
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
 
-diff --git a/data/com.ubuntu.welcome.policy.in b/data/com.ubuntu.welcome.policy.in
-new file mode 100644
-index 0000000..cf623d5
 --- /dev/null
 +++ b/data/com.ubuntu.welcome.policy.in
 @@ -0,0 +1,21 @@
@@ -91,9 +88,6 @@ index 0000000..cf623d5
 +
 +</policyconfig>
 \ No newline at end of file
-diff --git a/data/its/polkit.its b/data/its/polkit.its
-new file mode 100644
-index 0000000..c48ad3f
 --- /dev/null
 +++ b/data/its/polkit.its
 @@ -0,0 +1,8 @@
@@ -106,9 +100,6 @@ index 0000000..c48ad3f
 +                     translate="yes"/>
 +</its:rules>
 \ No newline at end of file
-diff --git a/data/its/polkit.loc b/data/its/polkit.loc
-new file mode 100644
-index 0000000..12c7bf0
 --- /dev/null
 +++ b/data/its/polkit.loc
 @@ -0,0 +1,6 @@
@@ -119,11 +110,9 @@ index 0000000..12c7bf0
 +  </locatingRule>
 +</locatingRules>
 \ No newline at end of file
-diff --git a/data/meson.build b/data/meson.build
-index 9aa79bf..55f9c35 100644
 --- a/data/meson.build
 +++ b/data/meson.build
-@@ -60,6 +60,29 @@ if enable_systemd
+@@ -64,6 +64,29 @@ if enable_systemd
  endif
  
  
@@ -153,21 +142,19 @@ index 9aa79bf..55f9c35 100644
  rules_dir = join_paths(data_dir, 'polkit-1', 'rules.d')
  install_data('20-gnome-initial-setup.rules', install_dir: rules_dir)
  
-diff --git a/gnome-initial-setup/gis-driver.c b/gnome-initial-setup/gis-driver.c
-index 01bc389..076dbe4 100644
 --- a/gnome-initial-setup/gis-driver.c
 +++ b/gnome-initial-setup/gis-driver.c
-@@ -87,6 +87,9 @@ struct _GisDriverPrivate {
-   gboolean small_screen;
- 
+@@ -88,6 +88,9 @@ struct _GisDriverPrivate {
    locale_t locale;
+ 
+   GKeyFile *vendor_conf_file;
 +
 +  guint inhibit_count;
 +  gboolean quit_requested;
  };
  typedef struct _GisDriverPrivate GisDriverPrivate;
  
-@@ -654,6 +657,38 @@ gis_driver_save_data (GisDriver *driver)
+@@ -749,6 +752,38 @@ gis_driver_save_data (GisDriver *driver)
    gis_assistant_save_data (priv->assistant);
  }
  
@@ -206,13 +193,11 @@ index 01bc389..076dbe4 100644
  GisDriver *
  gis_driver_new (GisDriverMode mode)
  {
-diff --git a/gnome-initial-setup/gis-driver.h b/gnome-initial-setup/gis-driver.h
-index 1184582..07acadc 100644
 --- a/gnome-initial-setup/gis-driver.h
 +++ b/gnome-initial-setup/gis-driver.h
-@@ -105,6 +105,12 @@ void gis_driver_hide_window (GisDriver *driver);
- 
- void gis_driver_save_data (GisDriver *driver);
+@@ -121,6 +121,12 @@ gchar *gis_driver_conf_get_string (GisDr
+                                    const gchar *group,
+                                    const gchar *key);
  
 +void gis_driver_inhibit_quit (GisDriver *driver);
 +
@@ -223,11 +208,9 @@ index 1184582..07acadc 100644
  GisDriver *gis_driver_new (GisDriverMode mode);
  
  G_END_DECLS
-diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index db75787..93f0f6c 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -44,6 +44,9 @@
+@@ -41,6 +41,9 @@
  #include "pages/account/gis-account-pages.h"
  #include "pages/password/gis-password-page.h"
  #include "pages/summary/gis-summary-page.h"
@@ -237,7 +220,7 @@ index db75787..93f0f6c 100644
  
  #define VENDOR_PAGES_GROUP "pages"
  #define VENDOR_SKIP_KEY "skip"
-@@ -82,6 +85,17 @@ static PageData page_table[] = {
+@@ -74,6 +77,17 @@ static PageData page_table[] = {
    { NULL },
  };
  
@@ -255,7 +238,7 @@ index db75787..93f0f6c 100644
  #undef PAGE
  
  static gboolean
-@@ -187,6 +201,25 @@ destroy_pages_after (GisAssistant *assistant,
+@@ -164,6 +178,25 @@ destroy_pages_after (GisAssistant *assis
    }
  }
  
@@ -281,7 +264,7 @@ index db75787..93f0f6c 100644
  static void
  rebuild_pages_cb (GisDriver *driver)
  {
-@@ -199,7 +232,11 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -176,7 +209,11 @@ rebuild_pages_cb (GisDriver *driver)
  
    assistant = gis_driver_get_assistant (driver);
    current_page = gis_assistant_get_current_page (assistant);
@@ -294,7 +277,7 @@ index db75787..93f0f6c 100644
  
    g_ptr_array_free (skipped_pages, TRUE);
    skipped_pages = g_ptr_array_new_with_free_func ((GDestroyNotify) gtk_widget_destroy);
-@@ -207,7 +244,7 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -184,7 +221,7 @@ rebuild_pages_cb (GisDriver *driver)
    if (current_page != NULL) {
      destroy_pages_after (assistant, current_page);
  
@@ -303,8 +286,6 @@ index db75787..93f0f6c 100644
        if (g_str_equal (page_data->page_id, GIS_PAGE_GET_CLASS (current_page)->page_id))
          break;
  
-diff --git a/gnome-initial-setup/meson.build b/gnome-initial-setup/meson.build
-index 927ae8a..d02de17 100644
 --- a/gnome-initial-setup/meson.build
 +++ b/gnome-initial-setup/meson.build
 @@ -48,6 +48,9 @@ dependencies = [
@@ -316,10 +297,7 @@ index 927ae8a..d02de17 100644
 +    dependency ('sysmetrics'),
      cheese_dep,
      cheese_gtk_dep,
-     pkgkit_dep,
-diff --git a/gnome-initial-setup/pages/apps/apps.gresource.xml b/gnome-initial-setup/pages/apps/apps.gresource.xml
-new file mode 100644
-index 0000000..e89e744
+     ibus_dep,
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/apps.gresource.xml
 @@ -0,0 +1,8 @@
@@ -331,17 +309,11 @@ index 0000000..e89e744
 +  </gresource>
 +</gresources>
 +
-diff --git a/gnome-initial-setup/pages/apps/default-snap-icon.svg b/gnome-initial-setup/pages/apps/default-snap-icon.svg
-new file mode 100644
-index 0000000..0d8dd94
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/default-snap-icon.svg
 @@ -0,0 +1 @@
 +<svg width="96" height="96" xmlns="http://www.w3.org/2000/svg"><circle fill="#F7F7F7" cx="48" cy="48" r="48"/><path d="M55.71 53.294V32.766l14.248 6.28L55.71 53.293zM28.901 80.102L46.049 47.74l7.728 7.486-24.875 24.876zM19 19l35.502 12.8v22.702L19 19zm58.204 12.8L83 43.634 56.675 31.8h20.529z" fill="#CDCDCD"/></svg>
 \ No newline at end of file
-diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.c b/gnome-initial-setup/pages/apps/gis-apps-page.c
-new file mode 100644
-index 0000000..ca445de
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.c
 @@ -0,0 +1,651 @@
@@ -996,9 +968,6 @@ index 0000000..ca445de
 +                       "driver", driver,
 +                       NULL);
 +}
-diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.h b/gnome-initial-setup/pages/apps/gis-apps-page.h
-new file mode 100644
-index 0000000..9494b9e
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.h
 @@ -0,0 +1,52 @@
@@ -1054,9 +1023,6 @@ index 0000000..9494b9e
 +G_END_DECLS
 +
 +#endif /* __GIS_APPS_PAGE_H__ */
-diff --git a/gnome-initial-setup/pages/apps/gis-apps-page.ui b/gnome-initial-setup/pages/apps/gis-apps-page.ui
-new file mode 100644
-index 0000000..5944539
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/gis-apps-page.ui
 @@ -0,0 +1,111 @@
@@ -1171,9 +1137,6 @@ index 0000000..5944539
 +    </child>
 +  </template>
 +</interface>
-diff --git a/gnome-initial-setup/pages/apps/meson.build b/gnome-initial-setup/pages/apps/meson.build
-new file mode 100644
-index 0000000..dec2b38
 --- /dev/null
 +++ b/gnome-initial-setup/pages/apps/meson.build
 @@ -0,0 +1,10 @@
@@ -1187,9 +1150,6 @@ index 0000000..dec2b38
 +    'gis-apps-page.c',
 +    'gis-apps-page.h',
 +)
-diff --git a/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
-new file mode 100644
-index 0000000..eceb26e
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
 @@ -0,0 +1,528 @@
@@ -1721,9 +1681,6 @@ index 0000000..eceb26e
 +  g_clear_object (&goa_account);
 +  return account_id;
 +}
-diff --git a/gnome-initial-setup/pages/livepatch/gis-auth-dialog.h b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.h
-new file mode 100644
-index 0000000..09bfb69
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.h
 @@ -0,0 +1,40 @@
@@ -1767,9 +1724,6 @@ index 0000000..09bfb69
 +G_END_DECLS
 +
 +#endif /* __GIS_AUTH_DIALOG_H__ */
-diff --git a/gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui
-new file mode 100644
-index 0000000..2f3c742
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui
 @@ -0,0 +1,231 @@
@@ -2004,9 +1958,6 @@ index 0000000..2f3c742
 +    </child>
 +  </template>
 +</interface>
-diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
-new file mode 100644
-index 0000000..eab2fb6
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
 @@ -0,0 +1,538 @@
@@ -2548,9 +2499,6 @@ index 0000000..eab2fb6
 +                       "driver", driver,
 +                       NULL);
 +}
-diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h
-new file mode 100644
-index 0000000..3356dbe
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h
 @@ -0,0 +1,52 @@
@@ -2606,9 +2554,6 @@ index 0000000..3356dbe
 +G_END_DECLS
 +
 +#endif /* __GIS_LIVEPATCH_PAGE_H__ */
-diff --git a/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
-new file mode 100644
-index 0000000..c877ff5
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
 @@ -0,0 +1,156 @@
@@ -2768,9 +2713,6 @@ index 0000000..c877ff5
 +    </widgets>
 +  </object>
 +</interface>
-diff --git a/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml b/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
-new file mode 100644
-index 0000000..5678958
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
 @@ -0,0 +1,9 @@
@@ -2783,16 +2725,10 @@ index 0000000..5678958
 +  </gresource>
 +</gresources>
 +
-diff --git a/gnome-initial-setup/pages/livepatch/livepatch.svg b/gnome-initial-setup/pages/livepatch/livepatch.svg
-new file mode 100644
-index 0000000..a84bcd6
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/livepatch.svg
 @@ -0,0 +1 @@
 +<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666; fill-opacity:0.25;} </style> <g> <path class="st0" d="M73.7,168.4c0-69.7,56.7-126.3,126.3-126.3c69.7,0,126.3,56.7,126.3,126.3h42.1C368.4,75.6,292.9,0,200,0 C107.1,0,31.6,75.6,31.6,168.4v63.7h0C31.9,324.8,107.3,400,200,400c92.9,0,168.4-75.6,168.4-168.4v-21.1H73.7V168.4L73.7,168.4z M200,242.1c17.4,0,31.6,14.1,31.6,31.6c0,13.7-8.8,25.4-21,29.7v54.4c0,5.8-4.7,10.5-10.5,10.5s-10.5-4.7-10.5-10.5v-54.4 c-12.3-4.3-21.1-16-21.1-29.8C168.4,256.3,182.6,242.1,200,242.1L200,242.1z"/> </g> </svg>
-diff --git a/gnome-initial-setup/pages/livepatch/meson.build b/gnome-initial-setup/pages/livepatch/meson.build
-new file mode 100644
-index 0000000..14d89ed
 --- /dev/null
 +++ b/gnome-initial-setup/pages/livepatch/meson.build
 @@ -0,0 +1,12 @@
@@ -2808,24 +2744,18 @@ index 0000000..14d89ed
 +    'gis-auth-dialog.c',
 +    'gis-auth-dialog.h',
 +)
-diff --git a/gnome-initial-setup/pages/meson.build b/gnome-initial-setup/pages/meson.build
-index 7366385..2cc02aa 100644
 --- a/gnome-initial-setup/pages/meson.build
 +++ b/gnome-initial-setup/pages/meson.build
-@@ -9,7 +9,10 @@ pages = [
+@@ -8,6 +8,9 @@ pages = [
     'goa',
     'password',
     'summary',
--   'software'
-+   'software',
 +   'ubuntu-report',
 +   'livepatch',
 +   'apps'
  ]
  
- if get_option('region-page')
-diff --git a/gnome-initial-setup/pages/privacy/gis-privacy-page.c b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
-index dc2b03f..23e3367 100644
+ foreach page: pages
 --- a/gnome-initial-setup/pages/privacy/gis-privacy-page.c
 +++ b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
 @@ -291,7 +291,7 @@ activate_link (GtkLabel       *label,
@@ -2837,11 +2767,9 @@ index dc2b03f..23e3367 100644
  }
  
  static void
-diff --git a/gnome-initial-setup/pages/summary/gis-summary-page.c b/gnome-initial-setup/pages/summary/gis-summary-page.c
-index 579ef7e..0a8b15d 100644
 --- a/gnome-initial-setup/pages/summary/gis-summary-page.c
 +++ b/gnome-initial-setup/pages/summary/gis-summary-page.c
-@@ -192,7 +192,7 @@ done_cb (GtkButton *button, GisSummaryPage *page)
+@@ -190,7 +190,7 @@ done_cb (GtkButton *button, GisSummaryPa
        log_user_in (page);
        break;
      case GIS_DRIVER_MODE_EXISTING_USER:
@@ -2850,9 +2778,6 @@ index 579ef7e..0a8b15d 100644
      default:
        break;
      }
-diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
-new file mode 100644
-index 0000000..2518e0e
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
 @@ -0,0 +1,207 @@
@@ -3063,9 +2988,6 @@ index 0000000..2518e0e
 +                       "driver", driver,
 +                       NULL);
 +}
-diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
-new file mode 100644
-index 0000000..9ba7500
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
 @@ -0,0 +1,52 @@
@@ -3121,9 +3043,6 @@ index 0000000..9ba7500
 +G_END_DECLS
 +
 +#endif /* __GIS_UBUNTU_REPORT_PAGE_H__ */
-diff --git a/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
-new file mode 100644
-index 0000000..f5a40f8
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
 @@ -0,0 +1,181 @@
@@ -3308,9 +3227,6 @@ index 0000000..f5a40f8
 +    </widgets>
 +  </object>
 +</interface>
-diff --git a/gnome-initial-setup/pages/ubuntu-report/meson.build b/gnome-initial-setup/pages/ubuntu-report/meson.build
-new file mode 100644
-index 0000000..a0f949b
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/meson.build
 @@ -0,0 +1,10 @@
@@ -3324,9 +3240,6 @@ index 0000000..a0f949b
 +    'gis-ubuntu-report-page.c',
 +    'gis-ubuntu-report-page.h',
 +)
-diff --git a/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
-new file mode 100644
-index 0000000..6b28415
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
 @@ -0,0 +1,8 @@
@@ -3338,18 +3251,13 @@ index 0000000..6b28415
 +  </gresource>
 +</gresources>
 +
-diff --git a/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
-new file mode 100644
-index 0000000..8c1d52c
 --- /dev/null
 +++ b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
 @@ -0,0 +1 @@
 +<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666; fill-opacity:0.25;} </style> <g> <path class="st0" d="M301.4,372.4C271.7,390,237,400,200,400C89.5,400,0,310.5,0,200C0,89.5,89.5,0,200,0c110.5,0,200,89.5,200,200 c0,36.4-9.7,70.6-26.8,100l0,0L400,400l-100-26.8L301.4,372.4L301.4,372.4z"/> </g> </svg>
-diff --git a/meson.build b/meson.build
-index 4bad799..3ccc1e6 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -64,6 +64,9 @@ ibus_dep = dependency ('ibus-1.0',
+@@ -57,6 +57,9 @@ ibus_dep = dependency ('ibus-1.0',
                         required: get_option('ibus'))
  conf.set('HAVE_IBUS', ibus_dep.found())
  
@@ -3359,8 +3267,6 @@ index 4bad799..3ccc1e6 100644
  configure_file(output: 'config.h',
                 configuration: conf)
  config_h_dir = include_directories('.')
-diff --git a/po/POTFILES.in b/po/POTFILES.in
-index ba16a54..2f9db34 100644
 --- a/po/POTFILES.in
 +++ b/po/POTFILES.in
 @@ -1,3 +1,4 @@
@@ -3368,7 +3274,7 @@ index ba16a54..2f9db34 100644
  data/gnome-initial-setup-first-login.desktop.in.in
  data/gnome-initial-setup.desktop.in.in
  gnome-initial-setup/cc-common-language.c
-@@ -42,3 +43,14 @@ gnome-initial-setup/pages/summary/gis-summary-page.c
+@@ -34,3 +35,14 @@ gnome-initial-setup/pages/summary/gis-su
  gnome-initial-setup/pages/summary/gis-summary-page.ui
  gnome-initial-setup/pages/timezone/gis-timezone-page.c
  gnome-initial-setup/pages/timezone/gis-timezone-page.ui
