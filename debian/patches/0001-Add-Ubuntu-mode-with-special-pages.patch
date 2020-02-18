@@ -63,8 +63,10 @@ Subject: Add Ubuntu mode with special pages
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
  create mode 100644 gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
 
+Index: gnome-initial-setup-3.35.91/data/com.ubuntu.welcome.policy.in
+===================================================================
 --- /dev/null
-+++ b/data/com.ubuntu.welcome.policy.in
++++ gnome-initial-setup-3.35.91/data/com.ubuntu.welcome.policy.in
 @@ -0,0 +1,21 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<!DOCTYPE policyconfig PUBLIC
@@ -88,8 +90,10 @@ Subject: Add Ubuntu mode with special pages
 +
 +</policyconfig>
 \ No newline at end of file
+Index: gnome-initial-setup-3.35.91/data/its/polkit.its
+===================================================================
 --- /dev/null
-+++ b/data/its/polkit.its
++++ gnome-initial-setup-3.35.91/data/its/polkit.its
 @@ -0,0 +1,8 @@
 +<?xml version="1.0"?>
 +<its:rules xmlns:its="http://www.w3.org/2005/11/its"
@@ -100,8 +104,10 @@ Subject: Add Ubuntu mode with special pages
 +                     translate="yes"/>
 +</its:rules>
 \ No newline at end of file
+Index: gnome-initial-setup-3.35.91/data/its/polkit.loc
+===================================================================
 --- /dev/null
-+++ b/data/its/polkit.loc
++++ gnome-initial-setup-3.35.91/data/its/polkit.loc
 @@ -0,0 +1,6 @@
 +<?xml version="1.0"?>
 +<locatingRules>
@@ -110,8 +116,10 @@ Subject: Add Ubuntu mode with special pages
 +  </locatingRule>
 +</locatingRules>
 \ No newline at end of file
---- a/data/meson.build
-+++ b/data/meson.build
+Index: gnome-initial-setup-3.35.91/data/meson.build
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/data/meson.build
++++ gnome-initial-setup-3.35.91/data/meson.build
 @@ -64,6 +64,29 @@ if enable_systemd
  endif
  
@@ -142,9 +150,11 @@ Subject: Add Ubuntu mode with special pages
  rules_dir = join_paths(data_dir, 'polkit-1', 'rules.d')
  install_data('20-gnome-initial-setup.rules', install_dir: rules_dir)
  
---- a/gnome-initial-setup/gis-driver.c
-+++ b/gnome-initial-setup/gis-driver.c
-@@ -88,6 +88,9 @@ struct _GisDriverPrivate {
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/gis-driver.c
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/gis-driver.c
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/gis-driver.c
+@@ -97,6 +97,9 @@ struct _GisDriverPrivate {
    locale_t locale;
  
    GKeyFile *vendor_conf_file;
@@ -154,7 +164,7 @@ Subject: Add Ubuntu mode with special pages
  };
  typedef struct _GisDriverPrivate GisDriverPrivate;
  
-@@ -749,6 +752,38 @@ gis_driver_save_data (GisDriver *driver)
+@@ -1017,6 +1020,38 @@ gis_driver_save_data (GisDriver *driver)
    gis_assistant_save_data (priv->assistant);
  }
  
@@ -193,9 +203,11 @@ Subject: Add Ubuntu mode with special pages
  GisDriver *
  gis_driver_new (GisDriverMode mode)
  {
---- a/gnome-initial-setup/gis-driver.h
-+++ b/gnome-initial-setup/gis-driver.h
-@@ -121,6 +121,12 @@ gchar *gis_driver_conf_get_string (GisDr
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/gis-driver.h
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/gis-driver.h
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/gis-driver.h
+@@ -142,6 +142,12 @@ gchar *gis_driver_conf_get_string (GisDr
                                     const gchar *group,
                                     const gchar *key);
  
@@ -208,10 +220,12 @@ Subject: Add Ubuntu mode with special pages
  GisDriver *gis_driver_new (GisDriverMode mode);
  
  G_END_DECLS
---- a/gnome-initial-setup/gnome-initial-setup.c
-+++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -41,6 +41,9 @@
- #include "pages/account/gis-account-pages.h"
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/gnome-initial-setup.c
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/gnome-initial-setup.c
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/gnome-initial-setup.c
+@@ -42,6 +42,9 @@
+ #include "pages/parental-controls/gis-parental-controls-page.h"
  #include "pages/password/gis-password-page.h"
  #include "pages/summary/gis-summary-page.h"
 +#include "pages/ubuntu-report/gis-ubuntu-report-page.h"
@@ -220,7 +234,7 @@ Subject: Add Ubuntu mode with special pages
  
  #define VENDOR_PAGES_GROUP "pages"
  #define VENDOR_SKIP_KEY "skip"
-@@ -74,6 +77,17 @@ static PageData page_table[] = {
+@@ -79,6 +82,17 @@ static PageData page_table[] = {
    { NULL },
  };
  
@@ -238,7 +252,7 @@ Subject: Add Ubuntu mode with special pages
  #undef PAGE
  
  static gboolean
-@@ -164,6 +178,25 @@ destroy_pages_after (GisAssistant *assis
+@@ -169,6 +183,25 @@ destroy_pages_after (GisAssistant *assis
    }
  }
  
@@ -264,7 +278,7 @@ Subject: Add Ubuntu mode with special pages
  static void
  rebuild_pages_cb (GisDriver *driver)
  {
-@@ -176,7 +209,11 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -181,7 +214,11 @@ rebuild_pages_cb (GisDriver *driver)
  
    assistant = gis_driver_get_assistant (driver);
    current_page = gis_assistant_get_current_page (assistant);
@@ -277,7 +291,7 @@ Subject: Add Ubuntu mode with special pages
  
    g_ptr_array_free (skipped_pages, TRUE);
    skipped_pages = g_ptr_array_new_with_free_func ((GDestroyNotify) gtk_widget_destroy);
-@@ -184,7 +221,7 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -189,7 +226,7 @@ rebuild_pages_cb (GisDriver *driver)
    if (current_page != NULL) {
      destroy_pages_after (assistant, current_page);
  
@@ -286,9 +300,11 @@ Subject: Add Ubuntu mode with special pages
        if (g_str_equal (page_data->page_id, GIS_PAGE_GET_CLASS (current_page)->page_id))
          break;
  
---- a/gnome-initial-setup/meson.build
-+++ b/gnome-initial-setup/meson.build
-@@ -48,6 +48,9 @@ dependencies = [
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/meson.build
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/meson.build
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/meson.build
+@@ -49,6 +49,9 @@ dependencies = [
      dependency ('libsecret-1'),
      dependency ('pwquality'),
      dependency ('webkit2gtk-4.0'),
@@ -298,8 +314,10 @@ Subject: Add Ubuntu mode with special pages
      cheese_dep,
      cheese_gtk_dep,
      ibus_dep,
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/apps.gresource.xml
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/apps/apps.gresource.xml
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/apps.gresource.xml
 @@ -0,0 +1,8 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<gresources>
@@ -309,13 +327,17 @@ Subject: Add Ubuntu mode with special pages
 +  </gresource>
 +</gresources>
 +
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/default-snap-icon.svg
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/apps/default-snap-icon.svg
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/default-snap-icon.svg
 @@ -0,0 +1 @@
 +<svg width="96" height="96" xmlns="http://www.w3.org/2000/svg"><circle fill="#F7F7F7" cx="48" cy="48" r="48"/><path d="M55.71 53.294V32.766l14.248 6.28L55.71 53.293zM28.901 80.102L46.049 47.74l7.728 7.486-24.875 24.876zM19 19l35.502 12.8v22.702L19 19zm58.204 12.8L83 43.634 56.675 31.8h20.529z" fill="#CDCDCD"/></svg>
 \ No newline at end of file
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/gis-apps-page.c
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/apps/gis-apps-page.c
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/gis-apps-page.c
 @@ -0,0 +1,651 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -968,8 +990,10 @@ Subject: Add Ubuntu mode with special pages
 +                       "driver", driver,
 +                       NULL);
 +}
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/gis-apps-page.h
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/apps/gis-apps-page.h
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/gis-apps-page.h
 @@ -0,0 +1,52 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -1023,8 +1047,10 @@ Subject: Add Ubuntu mode with special pages
 +G_END_DECLS
 +
 +#endif /* __GIS_APPS_PAGE_H__ */
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/gis-apps-page.ui
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/apps/gis-apps-page.ui
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/gis-apps-page.ui
 @@ -0,0 +1,111 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
@@ -1137,8 +1163,10 @@ Subject: Add Ubuntu mode with special pages
 +    </child>
 +  </template>
 +</interface>
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/meson.build
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/apps/meson.build
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/apps/meson.build
 @@ -0,0 +1,10 @@
 +sources += gnome.compile_resources(
 +    'apps-resources',
@@ -1150,8 +1178,10 @@ Subject: Add Ubuntu mode with special pages
 +    'gis-apps-page.c',
 +    'gis-apps-page.h',
 +)
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
 @@ -0,0 +1,528 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -1681,8 +1711,10 @@ Subject: Add Ubuntu mode with special pages
 +  g_clear_object (&goa_account);
 +  return account_id;
 +}
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-auth-dialog.h
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.h
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-auth-dialog.h
 @@ -0,0 +1,40 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -1724,8 +1756,10 @@ Subject: Add Ubuntu mode with special pages
 +G_END_DECLS
 +
 +#endif /* __GIS_AUTH_DIALOG_H__ */
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui
 @@ -0,0 +1,231 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<!-- Generated with glade 3.22.1 -->
@@ -1958,8 +1992,10 @@ Subject: Add Ubuntu mode with special pages
 +    </child>
 +  </template>
 +</interface>
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
 @@ -0,0 +1,538 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -2499,8 +2535,10 @@ Subject: Add Ubuntu mode with special pages
 +                       "driver", driver,
 +                       NULL);
 +}
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-livepatch-page.h
 @@ -0,0 +1,52 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -2554,8 +2592,10 @@ Subject: Add Ubuntu mode with special pages
 +G_END_DECLS
 +
 +#endif /* __GIS_LIVEPATCH_PAGE_H__ */
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
 @@ -0,0 +1,156 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
@@ -2713,8 +2753,10 @@ Subject: Add Ubuntu mode with special pages
 +    </widgets>
 +  </object>
 +</interface>
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/livepatch.gresource.xml
 @@ -0,0 +1,9 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<gresources>
@@ -2725,12 +2767,16 @@ Subject: Add Ubuntu mode with special pages
 +  </gresource>
 +</gresources>
 +
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/livepatch.svg
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/livepatch.svg
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/livepatch.svg
 @@ -0,0 +1 @@
 +<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666; fill-opacity:0.25;} </style> <g> <path class="st0" d="M73.7,168.4c0-69.7,56.7-126.3,126.3-126.3c69.7,0,126.3,56.7,126.3,126.3h42.1C368.4,75.6,292.9,0,200,0 C107.1,0,31.6,75.6,31.6,168.4v63.7h0C31.9,324.8,107.3,400,200,400c92.9,0,168.4-75.6,168.4-168.4v-21.1H73.7V168.4L73.7,168.4z M200,242.1c17.4,0,31.6,14.1,31.6,31.6c0,13.7-8.8,25.4-21,29.7v54.4c0,5.8-4.7,10.5-10.5,10.5s-10.5-4.7-10.5-10.5v-54.4 c-12.3-4.3-21.1-16-21.1-29.8C168.4,256.3,182.6,242.1,200,242.1L200,242.1z"/> </g> </svg>
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/meson.build
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/livepatch/meson.build
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/livepatch/meson.build
 @@ -0,0 +1,12 @@
 +sources += gnome.compile_resources(
 +    'livepatch-resources',
@@ -2744,8 +2790,10 @@ Subject: Add Ubuntu mode with special pages
 +    'gis-auth-dialog.c',
 +    'gis-auth-dialog.h',
 +)
---- a/gnome-initial-setup/pages/meson.build
-+++ b/gnome-initial-setup/pages/meson.build
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/meson.build
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/pages/meson.build
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/meson.build
 @@ -8,6 +8,9 @@ pages = [
     'goa',
     'password',
@@ -2755,10 +2803,12 @@ Subject: Add Ubuntu mode with special pages
 +   'apps'
  ]
  
- foreach page: pages
---- a/gnome-initial-setup/pages/privacy/gis-privacy-page.c
-+++ b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
-@@ -291,7 +291,7 @@ activate_link (GtkLabel       *label,
+ if libmalcontent_dep.found() and libmalcontent_ui_dep.found()
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/privacy/gis-privacy-page.c
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/pages/privacy/gis-privacy-page.c
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/privacy/gis-privacy-page.c
+@@ -243,7 +243,7 @@ activate_link (GtkLabel       *label,
  static void
  gis_privacy_page_locale_changed (GisPage *page)
  {
@@ -2767,8 +2817,10 @@ Subject: Add Ubuntu mode with special pages
  }
  
  static void
---- a/gnome-initial-setup/pages/summary/gis-summary-page.c
-+++ b/gnome-initial-setup/pages/summary/gis-summary-page.c
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/summary/gis-summary-page.c
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/pages/summary/gis-summary-page.c
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/summary/gis-summary-page.c
 @@ -190,7 +190,7 @@ done_cb (GtkButton *button, GisSummaryPa
        log_user_in (page);
        break;
@@ -2778,8 +2830,10 @@ Subject: Add Ubuntu mode with special pages
      default:
        break;
      }
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
 @@ -0,0 +1,207 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -2988,8 +3042,10 @@ Subject: Add Ubuntu mode with special pages
 +                       "driver", driver,
 +                       NULL);
 +}
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.h
 @@ -0,0 +1,52 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -3043,8 +3099,10 @@ Subject: Add Ubuntu mode with special pages
 +G_END_DECLS
 +
 +#endif /* __GIS_UBUNTU_REPORT_PAGE_H__ */
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
 @@ -0,0 +1,181 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<interface>
@@ -3227,8 +3285,10 @@ Subject: Add Ubuntu mode with special pages
 +    </widgets>
 +  </object>
 +</interface>
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/meson.build
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/ubuntu-report/meson.build
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/meson.build
 @@ -0,0 +1,10 @@
 +sources += gnome.compile_resources(
 +    'ubuntu-report-resources',
@@ -3240,8 +3300,10 @@ Subject: Add Ubuntu mode with special pages
 +    'gis-ubuntu-report-page.c',
 +    'gis-ubuntu-report-page.h',
 +)
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.gresource.xml
 @@ -0,0 +1,8 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<gresources>
@@ -3251,15 +3313,19 @@ Subject: Add Ubuntu mode with special pages
 +  </gresource>
 +</gresources>
 +
+Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
+===================================================================
 --- /dev/null
-+++ b/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
++++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/ubuntu-report/ubuntu-report.svg
 @@ -0,0 +1 @@
 +<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve"> <style type="text/css"> .st0{fill:#666666; fill-opacity:0.25;} </style> <g> <path class="st0" d="M301.4,372.4C271.7,390,237,400,200,400C89.5,400,0,310.5,0,200C0,89.5,89.5,0,200,0c110.5,0,200,89.5,200,200 c0,36.4-9.7,70.6-26.8,100l0,0L400,400l-100-26.8L301.4,372.4L301.4,372.4z"/> </g> </svg>
---- a/meson.build
-+++ b/meson.build
-@@ -57,6 +57,9 @@ ibus_dep = dependency ('ibus-1.0',
-                        required: get_option('ibus'))
- conf.set('HAVE_IBUS', ibus_dep.found())
+Index: gnome-initial-setup-3.35.91/meson.build
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/meson.build
++++ gnome-initial-setup-3.35.91/meson.build
+@@ -77,6 +77,9 @@ libmalcontent_ui_dep = dependency ('malc
+                                    required: get_option('parental_controls'))
+ conf.set('HAVE_PARENTAL_CONTROLS', libmalcontent_dep.found() and libmalcontent_ui_dep.found())
  
 +# Needed for the 'livepatch' page
 +polkit = dependency('polkit-gobject-1', version : '>= 0.103')
@@ -3267,14 +3333,16 @@ Subject: Add Ubuntu mode with special pages
  configure_file(output: 'config.h',
                 configuration: conf)
  config_h_dir = include_directories('.')
---- a/po/POTFILES.in
-+++ b/po/POTFILES.in
+Index: gnome-initial-setup-3.35.91/po/POTFILES.in
+===================================================================
+--- gnome-initial-setup-3.35.91.orig/po/POTFILES.in
++++ gnome-initial-setup-3.35.91/po/POTFILES.in
 @@ -1,3 +1,4 @@
 +data/com.ubuntu.welcome.policy.in
  data/gnome-initial-setup-first-login.desktop.in.in
  data/gnome-initial-setup.desktop.in.in
  gnome-initial-setup/cc-common-language.c
-@@ -34,3 +35,14 @@ gnome-initial-setup/pages/summary/gis-su
+@@ -36,3 +37,14 @@ gnome-initial-setup/pages/summary/gis-su
  gnome-initial-setup/pages/summary/gis-summary-page.ui
  gnome-initial-setup/pages/timezone/gis-timezone-page.c
  gnome-initial-setup/pages/timezone/gis-timezone-page.ui

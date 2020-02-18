@@ -1,4 +1,4 @@
-gnome-initial-setup (3.35.90-1ubuntu1) focal; urgency=medium
+gnome-initial-setup (3.35.91-1ubuntu1) UNRELEASED; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
@@ -14,7 +14,20 @@ gnome-initial-setup (3.35.90-1ubuntu1) focal; urgency=medium
       - Don-t-show-Facebook-in-Ubuntu.patch
       - 0008-Ubuntu-location-default.patch
 
- -- Olivier Tilloy <olivier.tilloy@canonical.com>  Wed, 12 Feb 2020 17:47:26 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 18 Feb 2020 20:23:03 +0100
+
+gnome-initial-setup (3.35.91-1) experimental; urgency=medium
+
+  [ Will Thompson ]
+  * New upstream release
+  * debian/control:
+    - build without parental controls, it has depends not yet in Debian
+    - depend on GLib >= 2.63.1
+  * debian/rules:
+    - drop obsolete build option
+    - build without parental controls
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 18 Feb 2020 11:24:03 +0100
 
 gnome-initial-setup (3.35.90-1) experimental; urgency=medium
 
