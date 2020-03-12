@@ -1,3 +1,11 @@
+gnome-initial-setup (3.35.91-1ubuntu3) UNRELEASED; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - don't add non existant sources to the translation template,
+      should fix the translations import (lp: #1859960)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 12 Mar 2020 17:30:26 +0100
+
 gnome-initial-setup (3.35.91-1ubuntu2) focal; urgency=medium
 
   * Rebuild with the new gnome-desktop soname
