@@ -1,18 +1,4 @@
-gnome-initial-setup (3.35.91-1ubuntu3) UNRELEASED; urgency=medium
-
-  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
-    - don't add non existant sources to the translation template,
-      should fix the translations import (lp: #1859960)
-
- -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 12 Mar 2020 17:30:26 +0100
-
-gnome-initial-setup (3.35.91-1ubuntu2) focal; urgency=medium
-
-  * Rebuild with the new gnome-desktop soname
-
- -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 25 Feb 2020 11:10:35 +0100
-
-gnome-initial-setup (3.35.91-1ubuntu1) focal; urgency=medium
+gnome-initial-setup (3.36.0-1ubuntu1) UNRELEASED; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
@@ -27,8 +13,17 @@ gnome-initial-setup (3.35.91-1ubuntu1) focal; urgency=medium
       - 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
       - Don-t-show-Facebook-in-Ubuntu.patch
       - 0008-Ubuntu-location-default.patch
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - don't add non existant sources to the translation template,
+      should fix the translations import (lp: #1859960)
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 18 Feb 2020 20:23:03 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 12 Mar 2020 20:37:23 +0100
+
+gnome-initial-setup (3.36.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Will Thompson <wjt@endlessm.com>  Tue, 10 Mar 2020 16:46:31 +0000
 
 gnome-initial-setup (3.35.91-1) experimental; urgency=medium
 

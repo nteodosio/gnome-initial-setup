@@ -6,11 +6,11 @@ Subject: [PATCH 3/5] Don't run welcome tour at end
  gnome-initial-setup/gnome-initial-setup.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index e2136de..db75787 100644
---- a/gnome-initial-setup/gnome-initial-setup.c
-+++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -305,12 +305,12 @@ gis_ensure_stamp_files (void)
+Index: gnome-initial-setup-3.36.0/gnome-initial-setup/gnome-initial-setup.c
+===================================================================
+--- gnome-initial-setup-3.36.0.orig/gnome-initial-setup/gnome-initial-setup.c
++++ gnome-initial-setup-3.36.0/gnome-initial-setup/gnome-initial-setup.c
+@@ -293,12 +293,12 @@ gis_ensure_stamp_files (void)
    gchar *file;
    GError *error = NULL;
  
