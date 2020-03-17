@@ -1,3 +1,13 @@
+gnome-initial-setup (3.36.0-1ubuntu2) UNRELEASED; urgency=medium
+
+  * debian/control.in,
+     d/p/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - simplify the meson gettext handling of the polkit file, our package
+      handles its rules even if it's version is older. Build-Depends on
+      libxml2-utils and polkit.
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 17 Mar 2020 12:38:32 +0100
+
 gnome-initial-setup (3.36.0-1ubuntu1) focal; urgency=medium
 
   * Merge with Debian. Remaining changes:
