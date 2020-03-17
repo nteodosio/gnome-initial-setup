@@ -1,3 +1,9 @@
+gnome-initial-setup (3.36.0-1ubuntu3) UNRELEASED; urgency=medium
+
+  * Refresh the control...
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 17 Mar 2020 16:27:34 +0100
+
 gnome-initial-setup (3.36.0-1ubuntu2) focal; urgency=medium
 
   * debian/control.in,
