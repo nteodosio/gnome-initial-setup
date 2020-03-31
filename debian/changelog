@@ -1,3 +1,11 @@
+gnome-initial-setup (3.36.0-1ubuntu4) UNRELEASED; urgency=medium
+
+  * debian/patches/0001-Add-Ubuntu-mode-with-special-pages.patch:
+    - use ubuntu-software to browse available softwares, fallback
+      to using gnome-software if it's missing (lp: #1869591)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 31 Mar 2020 16:57:42 +0200
+
 gnome-initial-setup (3.36.0-1ubuntu3) focal; urgency=medium
 
   * Refresh the control...

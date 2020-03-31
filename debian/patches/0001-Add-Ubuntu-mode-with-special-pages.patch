@@ -323,7 +323,7 @@ Index: gnome-initial-setup-3.36.0/gnome-initial-setup/pages/apps/gis-apps-page.c
 ===================================================================
 --- /dev/null
 +++ gnome-initial-setup-3.36.0/gnome-initial-setup/pages/apps/gis-apps-page.c
-@@ -0,0 +1,651 @@
+@@ -0,0 +1,661 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
 + * Copyright (C) 2018 Canonical Ltd.
@@ -452,7 +452,17 @@ Index: gnome-initial-setup-3.36.0/gnome-initial-setup/pages/apps/gis-apps-page.c
 +  g_autoptr(GAppInfo) info = NULL;
 +  g_autoptr(GError) error = NULL;
 +
-+  info = g_app_info_create_from_commandline ("gnome-software", NULL, G_APP_INFO_CREATE_NONE, &error);
++  g_autofree gchar *storecmd = NULL;
++
++  storecmd = g_find_program_in_path ("snap-store.ubuntu-software");
++  if (storecmd == NULL)
++    storecmd = g_find_program_in_path ("gnome-software");
++  if (storecmd == NULL) {
++    g_warning ("Failed to find snap-store or gnome-software");
++    return;
++  }
++
++  info = g_app_info_create_from_commandline (storecmd, NULL, G_APP_INFO_CREATE_NONE, &error);
 +  if (info == NULL) {
 +     g_warning ("Failed to get launch information from gnome-software: %s", error->message);
 +     return;
