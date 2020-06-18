@@ -1,6 +1,6 @@
-gnome-initial-setup (3.36.2-1ubuntu1) groovy; urgency=medium
+gnome-initial-setup (3.36.3-1ubuntu1) UNRELEASED; urgency=medium
 
-  * Merge with Debian. Remaining changes: (lp: #1875608)
+  * Merge with Debian. Remaining changes:
     + debian/control.in:
       - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
     + Add Ubuntu-specific patches:
@@ -14,7 +14,13 @@ gnome-initial-setup (3.36.2-1ubuntu1) groovy; urgency=medium
       - Don-t-show-Facebook-in-Ubuntu.patch
       - 0008-Ubuntu-location-default.patch
 
- -- Sebastien Bacher <seb128@debian.org>  Tue, 28 Apr 2020 12:03:09 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 18 Jun 2020 21:53:20 +0200
+
+gnome-initial-setup (3.36.3-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 18 Jun 2020 21:50:34 +0200
 
 gnome-initial-setup (3.36.2-1) unstable; urgency=medium
 
