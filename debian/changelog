@@ -1,4 +1,4 @@
-gnome-initial-setup (3.36.3-1ubuntu1) groovy; urgency=medium
+gnome-initial-setup (3.36.4-1ubuntu1) UNRELEASED; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
@@ -13,8 +13,25 @@ gnome-initial-setup (3.36.3-1ubuntu1) groovy; urgency=medium
       - 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
       - Don-t-show-Facebook-in-Ubuntu.patch
       - 0008-Ubuntu-location-default.patch
+  * debian/control.in, debian/rules:
+    - build without malcontent for now since it's in universe
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 18 Jun 2020 21:53:20 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 06 Jul 2020 15:39:50 +0200
+
+gnome-initial-setup (3.36.4-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/control.in: Recommends accountsservice, this is used by gis
+  * debian/control.in: Bump malcontent to Recommends
+
+ -- Laurent Bigonville <bigon@debian.org>  Mon, 06 Jul 2020 14:38:00 +0200
+
+gnome-initial-setup (3.36.3-2) unstable; urgency=medium
+
+  * debian/control.in: Bump Standards-Version to 4.5.0 (no further changes)
+  * Enable malcontent on supported architectures
+
+ -- Laurent Bigonville <bigon@debian.org>  Mon, 06 Jul 2020 12:11:29 +0200
 
 gnome-initial-setup (3.36.3-1) unstable; urgency=medium
 

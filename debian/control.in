@@ -6,7 +6,6 @@ XSBC-Original-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.
 Uploaders: @GNOME_TEAM@
 Build-Depends: debhelper-compat (= 12),
                dh-sequence-gnome,
-               geoclue-2.0 (>= 2.3.1),
                itstool,
                libaccountsservice-dev,
                libcheese-gtk-dev (>= 3.28),
@@ -39,7 +38,7 @@ Build-Depends: debhelper-compat (= 12),
                meson (>= 0.47.0),
                policykit-1,
 Rules-Requires-Root: no
-Standards-Version: 4.3.0
+Standards-Version: 4.5.0
 XS-Debian-Vcs-Git: https://salsa.debian.org/gnome-team/gnome-initial-setup.git
 XS-Debian-Vcs-Browser: https://salsa.debian.org/gnome-team/gnome-initial-setup
 Vcs-Git: https://salsa.debian.org/gnome-team/gnome-initial-setup.git -b ubuntu/master
@@ -54,9 +53,11 @@ Depends: ${shlibs:Depends},
          gnome-settings-daemon (>= 3.24),
          ${logo:Depends},
          ${misc:Depends}
-Recommends: gnome-getting-started-docs,
+Recommends: accountsservice,
+            geoclue-2.0 (>= 2.3.1),
+            gnome-getting-started-docs,
             gnome-keyring,
-Suggests: gdm3
+Suggests: gdm3,
 Description: Initial GNOME system setup helper
  After acquiring or installing a new system there are a few essential things
  to set up before use. GNOME Initial Setup aims to provide a simple, easy,
