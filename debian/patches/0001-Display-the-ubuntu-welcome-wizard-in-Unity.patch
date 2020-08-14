@@ -9,10 +9,10 @@ Subject: [PATCH] Display the ubuntu welcome wizard in Unity Don't display the
  gnome-initial-setup/gnome-initial-setup.c          | 12 ++++++++++++
  2 files changed, 13 insertions(+), 1 deletion(-)
 
-Index: gnome-initial-setup-3.35.91/data/gnome-initial-setup-first-login.desktop.in.in
+Index: gnome-initial-setup-3.37.91/data/gnome-initial-setup-first-login.desktop.in.in
 ===================================================================
---- gnome-initial-setup-3.35.91.orig/data/gnome-initial-setup-first-login.desktop.in.in
-+++ gnome-initial-setup-3.35.91/data/gnome-initial-setup-first-login.desktop.in.in
+--- gnome-initial-setup-3.37.91.orig/data/gnome-initial-setup-first-login.desktop.in.in
++++ gnome-initial-setup-3.37.91/data/gnome-initial-setup-first-login.desktop.in.in
 @@ -7,7 +7,7 @@ Terminal=false
  Type=Application
  StartupNotify=true
@@ -22,11 +22,11 @@ Index: gnome-initial-setup-3.35.91/data/gnome-initial-setup-first-login.desktop.
  NoDisplay=true
  AutostartCondition=unless-exists gnome-initial-setup-done
  X-GNOME-HiddenUnderSystemd=@systemd_hidden@
-Index: gnome-initial-setup-3.35.91/gnome-initial-setup/gnome-initial-setup.c
+Index: gnome-initial-setup-3.37.91/gnome-initial-setup/gnome-initial-setup.c
 ===================================================================
---- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/gnome-initial-setup.c
-+++ gnome-initial-setup-3.35.91/gnome-initial-setup/gnome-initial-setup.c
-@@ -93,6 +93,16 @@ static PageData ubuntu_page_table[] = {
+--- gnome-initial-setup-3.37.91.orig/gnome-initial-setup/gnome-initial-setup.c
++++ gnome-initial-setup-3.37.91/gnome-initial-setup/gnome-initial-setup.c
+@@ -95,6 +95,16 @@ static PageData ubuntu_page_table[] = {
    { NULL },
  };
  
@@ -43,7 +43,7 @@ Index: gnome-initial-setup-3.35.91/gnome-initial-setup/gnome-initial-setup.c
  #undef PAGE
  
  static gboolean
-@@ -217,6 +227,8 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -226,6 +236,8 @@ rebuild_pages_cb (GisDriver *driver)
  
    if (is_desktop ("ubuntu"))
      page_data = ubuntu_page_table;
