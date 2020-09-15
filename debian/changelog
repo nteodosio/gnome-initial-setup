@@ -1,10 +1,9 @@
-gnome-initial-setup (3.38.0-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (3.38.0-1ubuntu1) groovy; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
       - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
     + Add Ubuntu-specific patches:
-      - 0001-Don-t-run-welcome-tour-at-end.patch
       - 0001-Make-summary-page-explicitly-request-navigation-butt.patch
       - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
       - 0001-Add-Ubuntu-mode-with-special-pages.patch
@@ -15,6 +14,9 @@ gnome-initial-setup (3.38.0-1ubuntu1) UNRELEASED; urgency=medium
       - 0008-Ubuntu-location-default.patch
   * debian/control.in, debian/rules:
     - build without malcontent for now since it's in universe
+  * debian/vendor.conf,
+    debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
+    - use the new vendor configuration instead of a patch
 
  -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 15 Sep 2020 16:32:07 +0200
 
