@@ -6,10 +6,10 @@ Subject: Ensure stamp file if the user quit the wizard
  gnome-initial-setup/gis-driver.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-Index: gnome-initial-setup-3.37.91/gnome-initial-setup/gis-driver.c
+Index: gnome-initial-setup/gnome-initial-setup/gis-driver.c
 ===================================================================
---- gnome-initial-setup-3.37.91.orig/gnome-initial-setup/gis-driver.c
-+++ gnome-initial-setup-3.37.91/gnome-initial-setup/gis-driver.c
+--- gnome-initial-setup.orig/gnome-initial-setup/gis-driver.c
++++ gnome-initial-setup/gnome-initial-setup/gis-driver.c
 @@ -723,6 +723,18 @@ gis_driver_activate (GApplication *app)
    gtk_window_present (GTK_WINDOW (priv->main_window));
  }
@@ -23,13 +23,13 @@ Index: gnome-initial-setup-3.37.91/gnome-initial-setup/gis-driver.c
 +  G_APPLICATION_CLASS (gis_driver_parent_class)->shutdown (app);
 +
 +  if (priv->mode == GIS_DRIVER_MODE_EXISTING_USER)
-+    gis_ensure_stamp_files ();
++    gis_ensure_stamp_files (driver);
 +}
 +
  static gboolean
  maximize (gpointer data)
  {
-@@ -943,6 +955,7 @@ gis_driver_class_init (GisDriverClass *k
+@@ -944,6 +956,7 @@ gis_driver_class_init (GisDriverClass *k
    gobject_class->finalize = gis_driver_finalize;
    application_class->startup = gis_driver_startup;
    application_class->activate = gis_driver_activate;
