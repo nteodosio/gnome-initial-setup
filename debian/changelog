@@ -18,7 +18,7 @@ gnome-initial-setup (3.38.0-1ubuntu1) groovy; urgency=medium
     debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
     - use the new vendor configuration instead of a patch
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 15 Sep 2020 16:32:07 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 15 Sep 2020 16:58:10 +0200
 
 gnome-initial-setup (3.38.0-1) unstable; urgency=medium
 
