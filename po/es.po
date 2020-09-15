@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-initial-setup master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-initial-setup/"
 "issues\n"
-"POT-Creation-Date: 2020-06-26 13:14+0000\n"
-"PO-Revision-Date: 2020-06-29 12:17+0200\n"
+"POT-Creation-Date: 2020-08-24 10:06+0000\n"
+"PO-Revision-Date: 2020-08-24 11:50+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -24,31 +24,31 @@ msgstr ""
 msgid "Initial Setup"
 msgstr "Configuración inicial"
 
-#: gnome-initial-setup/gis-assistant.c:419
+#: gnome-initial-setup/gis-assistant.c:423
 msgid "_Next"
 msgstr "Siguie_nte"
 
-#: gnome-initial-setup/gis-assistant.c:420
+#: gnome-initial-setup/gis-assistant.c:424
 msgid "_Accept"
 msgstr "_Aceptar"
 
-#: gnome-initial-setup/gis-assistant.c:421
+#: gnome-initial-setup/gis-assistant.c:425
 msgid "_Skip"
 msgstr "_Omitir"
 
-#: gnome-initial-setup/gis-assistant.c:422
+#: gnome-initial-setup/gis-assistant.c:426
 msgid "_Previous"
 msgstr "_Anterior"
 
-#: gnome-initial-setup/gis-assistant.c:423
+#: gnome-initial-setup/gis-assistant.c:427
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: gnome-initial-setup/gnome-initial-setup.c:241
+#: gnome-initial-setup/gnome-initial-setup.c:253
 msgid "Force existing user mode"
 msgstr "Forzar el modo del nuevo existente"
 
-#: gnome-initial-setup/gnome-initial-setup.c:247
+#: gnome-initial-setup/gnome-initial-setup.c:259
 msgid "— GNOME initial setup"
 msgstr "— Configuración inicial de GNOME"
 
@@ -286,7 +286,7 @@ msgstr "Más…"
 msgid "No inputs found"
 msgstr "No se han encontrado fuentes de entrada"
 
-#: gnome-initial-setup/pages/keyboard/gis-keyboard-page.c:505
+#: gnome-initial-setup/pages/keyboard/gis-keyboard-page.c:504
 #: gnome-initial-setup/pages/keyboard/gis-keyboard-page.ui:15
 msgid "Typing"
 msgstr "Escritura"
@@ -334,13 +334,12 @@ msgstr "Wi-Fi"
 
 #: gnome-initial-setup/pages/network/gis-network-page.ui:19
 msgid ""
-"Connecting to the Internet will enable you to set the time, add your "
-"details, and enable you to access your email, calendar, and contacts. It is "
-"also necessary for enterprise login accounts."
+"Connecting to the internet helps you get new apps, information, and other "
+"upgrades. It also helps set the time and your location automatically."
 msgstr ""
-"Conectarse a Internet le permitirá establecer la hora, añadir detalles y "
-"activar su acceso a su correo, su calendario y sus contactos. También es "
-"necesario para las cuentas con inicio de sesión empresarial."
+"Conectarse a Internet le ayuda a obtener nuevas aplicaciones, información y "
+"otras actualizaciones. También le ayuda a establecer la hora y su ubicación "
+"automáticamente."
 
 #: gnome-initial-setup/pages/network/gis-network-page.ui:76
 msgid "No wireless available"
@@ -668,6 +667,44 @@ msgstr ""
 #: gnome-initial-setup/pages/timezone/gis-timezone-page.ui:56
 msgid "Please search for a nearby city"
 msgstr "Busque una ciudad cercana"
+
+#. Translators: This is meant to be a warm, engaging welcome message,
+#. * like greeting somebody at the door. If the exclamation mark is not
+#. * suitable for this in your language you may replace it. The space
+#. * before the exclamation mark in this string is a typographical thin
+#. * space (U200a) to improve the spacing in the title, which you can
+#. * keep or remove. The %s is getting replaced with the name and version
+#. * of the OS, e.g. "GNOME 3.38"
+#.
+#: gnome-initial-setup/pages/welcome/gis-welcome-page.c:209
+#, c-format
+msgid "Welcome to %s !"
+msgstr "Bienvenido/a a %s"
+
+#: gnome-initial-setup/pages/welcome/gis-welcome-page.ui:5
+msgid "Setup"
+msgstr "Configuración"
+
+#: gnome-initial-setup/pages/welcome/gis-welcome-page.ui:43
+msgid ""
+"Setup will guide you through making an account and enabling some features. "
+"We’ll have you up and running in no time."
+msgstr ""
+"La configuración le guiará para crear una cuenta y activar algunas "
+"características. Estará todo listo y funcionando en poco tiempo."
+
+#: gnome-initial-setup/pages/welcome/gis-welcome-page.ui:54
+msgid "_Start Setup"
+msgstr "_Iniciar configuración"
+
+#~ msgid ""
+#~ "Connecting to the Internet will enable you to set the time, add your "
+#~ "details, and enable you to access your email, calendar, and contacts. It "
+#~ "is also necessary for enterprise login accounts."
+#~ msgstr ""
+#~ "Conectarse a Internet le permitirá establecer la hora, añadir detalles y "
+#~ "activar su acceso a su correo, su calendario y sus contactos. También es "
+#~ "necesario para las cuentas con inicio de sesión empresarial."
 
 #~ msgid "preferences-system"
 #~ msgstr "preferences-system"
