@@ -48,6 +48,7 @@
 #define VENDOR_SKIP_KEY "skip"
 #define VENDOR_NEW_USER_ONLY_KEY "new_user_only"
 #define VENDOR_EXISTING_USER_ONLY_KEY "existing_user_only"
+#define VENDOR_RUN_WELCOME_TOUR_KEY "run_welcome_tour"
 
 static gboolean force_existing_user_mode;
 
@@ -239,6 +240,24 @@ get_mode (void)
     return GIS_DRIVER_MODE_NEW_USER;
 }
 
+static gboolean
+initial_setup_disabled_by_anaconda (void)
+{
+  const gchar *file_name = SYSCONFDIR "/sysconfig/anaconda";
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GKeyFile) key_file = g_key_file_new ();
+
+  if (!g_key_file_load_from_file (key_file, file_name, G_KEY_FILE_NONE, &error)) {
+    if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT) &&
+        !g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_NOT_FOUND)) {
+      g_warning ("Could not read %s: %s", file_name, error->message);
+    }
+    return FALSE;
+  }
+
+  return g_key_file_get_boolean (key_file, "General", "post_install_tools_disabled", NULL);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -288,6 +307,16 @@ main (int argc, char *argv[])
     gis_ensure_login_keyring ();
 
   driver = gis_driver_new (mode);
+
+  /* We only do this in existing-user mode, because if gdm launches us
+   * in new-user mode and we just exit, gdm's special g-i-s session
+   * never terminates. */
+  if (initial_setup_disabled_by_anaconda () &&
+      mode == GIS_DRIVER_MODE_EXISTING_USER) {
+    gis_ensure_stamp_files (driver);
+    exit (EXIT_SUCCESS);
+  }
+
   g_signal_connect (driver, "rebuild-pages", G_CALLBACK (rebuild_pages_cb), NULL);
   status = g_application_run (G_APPLICATION (driver), argc, argv);
 
@@ -299,24 +328,28 @@ main (int argc, char *argv[])
 }
 
 void
-gis_ensure_stamp_files (void)
+gis_ensure_stamp_files (GisDriver *driver)
 {
-  gchar *file;
-  GError *error = NULL;
+  g_autofree gchar *welcome_file = NULL;
+  g_autofree gchar *done_file = NULL;
+  g_autoptr(GError) error = NULL;
 
-  file = g_build_filename (g_get_user_config_dir (), "run-welcome-tour", NULL);
-  if (!g_file_set_contents (file, "yes", -1, &error)) {
-      g_warning ("Unable to create %s: %s", file, error->message);
+  if (gis_driver_conf_get_boolean (driver,
+                                   VENDOR_PAGES_GROUP,
+                                   VENDOR_RUN_WELCOME_TOUR_KEY,
+                                   TRUE)) {
+      welcome_file = g_build_filename (g_get_user_config_dir (), "run-welcome-tour", NULL);
+      if (!g_file_set_contents (welcome_file, "yes", -1, &error)) {
+          g_warning ("Unable to create %s: %s", welcome_file, error->message);
+          g_clear_error (&error);
+      }
+  }
+
+  done_file = g_build_filename (g_get_user_config_dir (), "gnome-initial-setup-done", NULL);
+  if (!g_file_set_contents (done_file, "yes", -1, &error)) {
+      g_warning ("Unable to create %s: %s", done_file, error->message);
       g_clear_error (&error);
   }
-  g_free (file);
-
-  file = g_build_filename (g_get_user_config_dir (), "gnome-initial-setup-done", NULL);
-  if (!g_file_set_contents (file, "yes", -1, &error)) {
-      g_warning ("Unable to create %s: %s", file, error->message);
-      g_clear_error (&error);
-  }
-  g_free (file);
 }
 
 /**
