@@ -1,4 +1,4 @@
-gnome-initial-setup (3.37.91-1ubuntu1) groovy; urgency=medium
+gnome-initial-setup (3.38.0-1ubuntu1) UNRELEASED; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
@@ -16,7 +16,13 @@ gnome-initial-setup (3.37.91-1ubuntu1) groovy; urgency=medium
   * debian/control.in, debian/rules:
     - build without malcontent for now since it's in universe
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 14 Aug 2020 15:38:27 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 15 Sep 2020 16:32:07 +0200
+
+gnome-initial-setup (3.38.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 15 Sep 2020 16:27:03 +0200
 
 gnome-initial-setup (3.37.91-1) experimental; urgency=medium
 

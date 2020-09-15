@@ -1,6 +1,6 @@
 project('gnome-initial-setup',
         ['c'],
-        version: '3.37.91',
+        version: '3.38.0',
         license: 'GPLv2',
         meson_version: '>= 0.47.0',
 )
@@ -25,6 +25,7 @@ conf.set_quoted('GNOMELOCALEDIR', locale_dir)
 conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('DATADIR', data_dir)
 conf.set_quoted('PKGSYSCONFDIR', pkgsysconf_dir)
+conf.set_quoted('SYSCONFDIR', sysconf_dir)
 conf.set('SECRET_API_SUBJECT_TO_CHANGE', true)
 conf.set_quoted('G_LOG_DOMAIN', 'InitialSetup')
 conf.set('GLIB_VERSION_MIN_REQUIRED', 'GLIB_VERSION_2_64')
