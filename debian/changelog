@@ -1,4 +1,4 @@
-gnome-initial-setup (3.38.0-1ubuntu1) groovy; urgency=medium
+gnome-initial-setup (3.38.1-1ubuntu1) UNRELEASED; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
@@ -18,7 +18,15 @@ gnome-initial-setup (3.38.0-1ubuntu1) groovy; urgency=medium
     debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
     - use the new vendor configuration instead of a patch
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 15 Sep 2020 16:58:10 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 05 Oct 2020 11:24:49 +0200
+
+gnome-initial-setup (3.38.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/control.in:
+    - updated meson requirement
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 05 Oct 2020 11:15:01 +0200
 
 gnome-initial-setup (3.38.0-1) unstable; urgency=medium
 
