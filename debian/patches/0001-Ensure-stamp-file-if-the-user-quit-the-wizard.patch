@@ -6,11 +6,11 @@ Subject: Ensure stamp file if the user quit the wizard
  gnome-initial-setup/gis-driver.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-Index: gnome-initial-setup-3.38.1/gnome-initial-setup/gis-driver.c
-===================================================================
---- gnome-initial-setup-3.38.1.orig/gnome-initial-setup/gis-driver.c
-+++ gnome-initial-setup-3.38.1/gnome-initial-setup/gis-driver.c
-@@ -634,6 +634,18 @@ gis_driver_is_small_screen (GisDriver *d
+diff --git a/gnome-initial-setup/gis-driver.c b/gnome-initial-setup/gis-driver.c
+index 4ecf313..3b59bcc 100644
+--- a/gnome-initial-setup/gis-driver.c
++++ b/gnome-initial-setup/gis-driver.c
+@@ -634,6 +634,18 @@ gis_driver_is_small_screen (GisDriver *driver)
    return priv->small_screen;
  }
  
@@ -29,7 +29,7 @@ Index: gnome-initial-setup-3.38.1/gnome-initial-setup/gis-driver.c
  static gboolean
  monitor_is_small (GdkMonitor *monitor)
  {
-@@ -924,6 +936,7 @@ gis_driver_class_init (GisDriverClass *k
+@@ -924,6 +936,7 @@ gis_driver_class_init (GisDriverClass *klass)
    gobject_class->finalize = gis_driver_finalize;
    application_class->startup = gis_driver_startup;
    application_class->activate = gis_driver_activate;

@@ -6,12 +6,14 @@ Show "Ubuntu Single Sign-on" first in the list in online accounts page.
 
 Forwared: not-needed
 ---
- gnome-initial-setup/pages/goa/gis-goa-page.c | 1 +
- 1 file changed, 1 insertion(+)
+ gnome-initial-setup/pages/goa/gis-goa-page.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/gnome-initial-setup/pages/goa/gis-goa-page.c b/gnome-initial-setup/pages/goa/gis-goa-page.c
+index 87341c4..bc135fc 100644
 --- a/gnome-initial-setup/pages/goa/gis-goa-page.c
 +++ b/gnome-initial-setup/pages/goa/gis-goa-page.c
-@@ -186,7 +186,7 @@ populate_provider_list (GisGoaPage *page
+@@ -186,7 +186,7 @@ populate_provider_list (GisGoaPage *page)
    g_auto(GStrv) conf_providers =
      gis_driver_conf_get_string_list (GIS_PAGE (page)->driver, VENDOR_GOA_GROUP, VENDOR_PROVIDERS_KEY, NULL);
    GStrv providers = conf_providers ? conf_providers :

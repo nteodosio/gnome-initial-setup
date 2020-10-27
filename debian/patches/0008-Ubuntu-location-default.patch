@@ -13,11 +13,11 @@ Subject: Ubuntu-location-default
  gnome-initial-setup/pages/privacy/gis-privacy-page.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: gnome-initial-setup-3.35.91/gnome-initial-setup/pages/privacy/gis-privacy-page.c
-===================================================================
---- gnome-initial-setup-3.35.91.orig/gnome-initial-setup/pages/privacy/gis-privacy-page.c
-+++ gnome-initial-setup-3.35.91/gnome-initial-setup/pages/privacy/gis-privacy-page.c
-@@ -127,7 +127,7 @@ gis_privacy_page_constructed (GObject *o
+diff --git a/gnome-initial-setup/pages/privacy/gis-privacy-page.c b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
+index 0774ec4..1dfd95c 100644
+--- a/gnome-initial-setup/pages/privacy/gis-privacy-page.c
++++ b/gnome-initial-setup/pages/privacy/gis-privacy-page.c
+@@ -127,7 +127,7 @@ gis_privacy_page_constructed (GObject *object)
    priv->location_settings = g_settings_new ("org.gnome.system.location");
    priv->privacy_settings = g_settings_new ("org.gnome.desktop.privacy");
  

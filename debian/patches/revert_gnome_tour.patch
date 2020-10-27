@@ -1,5 +1,13 @@
+From: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Date: Tue, 27 Oct 2020 17:55:25 +0000
+Subject: revert_gnome_tour
+
+---
+ data/gnome-welcome-tour | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
 diff --git a/data/gnome-welcome-tour b/data/gnome-welcome-tour
-index 51c9b599..c4792962 100755
+index 51c9b59..c479296 100755
 --- a/data/gnome-welcome-tour
 +++ b/data/gnome-welcome-tour
 @@ -2,12 +2,20 @@
