@@ -1,3 +1,9 @@
+gnome-initial-setup (3.38.3-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 20 Jan 2021 16:46:38 +0100
+
 gnome-initial-setup (3.38.1-1) unstable; urgency=medium
 
   * New upstream release
