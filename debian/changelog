@@ -1,3 +1,31 @@
+gnome-initial-setup (3.38.3-1ubuntu1) UNRELEASED; urgency=medium
+
+  * Merge with Debian. Remaining changes:
+    + debian/control.in:
+      - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
+    + Add Ubuntu-specific patches:
+      - 0001-Make-summary-page-explicitly-request-navigation-butt.patch
+      - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
+      - 0001-Add-Ubuntu-mode-with-special-pages.patch
+      - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+      - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
+      - 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
+      - Don-t-show-Facebook-in-Ubuntu.patch
+      - 0008-Ubuntu-location-default.patch
+  * debian/control.in, debian/rules:
+    - build without malcontent for now since it's in universe
+  * debian/vendor.conf,
+    debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
+    - use the new vendor configuration instead of a patch
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 20 Jan 2021 16:50:28 +0100
+
+gnome-initial-setup (3.38.3-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 20 Jan 2021 16:46:38 +0100
+
 gnome-initial-setup (3.38.1-1ubuntu2) hirsute; urgency=medium
 
   * Don't cast a GtkLabel into a GisSnapTile.
