@@ -1,4 +1,4 @@
-gnome-initial-setup (3.38.4-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (3.38.4-1ubuntu1) hirsute; urgency=medium
 
   * Merge with Debian. Remaining changes:
     + debian/control.in:
@@ -18,7 +18,7 @@ gnome-initial-setup (3.38.4-1ubuntu1) UNRELEASED; urgency=medium
     debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
     - use the new vendor configuration instead of a patch
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 19 Feb 2021 11:50:33 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 19 Feb 2021 11:51:06 +0100
 
 gnome-initial-setup (3.38.4-1) unstable; urgency=medium
 
