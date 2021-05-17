@@ -1,3 +1,11 @@
+gnome-initial-setup (3.38.5-2) UNRELEASED; urgency=medium
+
+  * debian/control.in:
+    - Build-Depends on systemd, some other required package used to pull
+      it in but isn't anymore which is failing the build
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 17 May 2021 21:53:11 +0200
+
 gnome-initial-setup (3.38.5-1) experimental; urgency=medium
 
   * New upstream release
