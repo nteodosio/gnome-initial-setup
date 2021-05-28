@@ -1,7 +1,6 @@
 autostart_files = [
     'gnome-initial-setup-copy-worker.desktop',
     'gnome-initial-setup-first-login.desktop',
-    'gnome-welcome-tour.desktop'
 ]
 
 gis_shell_component = 'org.gnome.Shell'
@@ -54,7 +53,7 @@ i18n.merge_file(
         configuration: desktop_conf
     ),
     output: 'gnome-initial-setup.desktop',
-    install_dir: join_paths(data_dir, 'gdm', 'greeter', 'applications'),
+    install_dir: join_paths(data_dir, 'applications'),
     po_dir: po_dir,
     install: true,
     type: 'desktop'
@@ -67,7 +66,6 @@ if enable_systemd
     unit_files = {
         'gnome-initial-setup-first-login.service' : [ 'gnome-session.target.wants/' ],
         'gnome-initial-setup-copy-worker.service' : [ 'gnome-session.target.wants/' ],
-        'gnome-welcome-tour.service' : [ 'gnome-session.target.wants/' ],
     }
 
     foreach unit, wants: unit_files
@@ -123,5 +121,3 @@ configure_file(
 
 mode_dir = join_paths(data_dir, 'gnome-shell', 'modes')
 install_data('initial-setup.json', install_dir: mode_dir)
-
-install_data('gnome-welcome-tour', install_dir: get_option('libexecdir'))
