@@ -9,10 +9,10 @@ Subject: [PATCH] Display the ubuntu welcome wizard in Unity Don't display the
  gnome-initial-setup/gnome-initial-setup.c          | 12 ++++++++++++
  2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/data/gnome-initial-setup-first-login.desktop.in.in b/data/gnome-initial-setup-first-login.desktop.in.in
-index f3d0df7..38f86cf 100644
---- a/data/gnome-initial-setup-first-login.desktop.in.in
-+++ b/data/gnome-initial-setup-first-login.desktop.in.in
+Index: gnome-initial-setup/data/gnome-initial-setup-first-login.desktop.in.in
+===================================================================
+--- gnome-initial-setup.orig/data/gnome-initial-setup-first-login.desktop.in.in
++++ gnome-initial-setup/data/gnome-initial-setup-first-login.desktop.in.in
 @@ -7,7 +7,7 @@ Terminal=false
  Type=Application
  StartupNotify=true
@@ -22,11 +22,11 @@ index f3d0df7..38f86cf 100644
  NoDisplay=true
  AutostartCondition=unless-exists gnome-initial-setup-done
  X-GNOME-HiddenUnderSystemd=@systemd_hidden@
-diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index 128eb2c..772a7a3 100644
---- a/gnome-initial-setup/gnome-initial-setup.c
-+++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -96,6 +96,16 @@ static PageData ubuntu_page_table[] = {
+Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
+===================================================================
+--- gnome-initial-setup.orig/gnome-initial-setup/gnome-initial-setup.c
++++ gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
+@@ -95,6 +95,16 @@ static PageData ubuntu_page_table[] = {
    { NULL },
  };
  
@@ -43,7 +43,7 @@ index 128eb2c..772a7a3 100644
  #undef PAGE
  
  static gboolean
-@@ -227,6 +237,8 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -226,6 +236,8 @@ rebuild_pages_cb (GisDriver *driver)
  
    if (is_desktop ("ubuntu"))
      page_data = ubuntu_page_table;

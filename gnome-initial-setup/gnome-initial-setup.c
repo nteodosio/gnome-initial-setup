@@ -48,7 +48,6 @@
 #define VENDOR_SKIP_KEY "skip"
 #define VENDOR_NEW_USER_ONLY_KEY "new_user_only"
 #define VENDOR_EXISTING_USER_ONLY_KEY "existing_user_only"
-#define VENDOR_RUN_WELCOME_TOUR_KEY "run_welcome_tour"
 
 static gboolean force_existing_user_mode;
 
@@ -308,6 +307,20 @@ main (int argc, char *argv[])
 
   driver = gis_driver_new (mode);
 
+  /* On first login, GNOME Shell offers to run a tour. If we also run Initial
+   * Setup, the two immovable, centred windows will sit atop one another.
+   * Until we have the ability to run Initial Setup in the "kiosk" mode, like
+   * it does in new-user mode, disable Initial Setup for existing users.
+   *
+   * https://gitlab.gnome.org/GNOME/gnome-initial-setup/-/issues/120#note_1019004
+   * https://gitlab.gnome.org/GNOME/gnome-initial-setup/-/issues/12
+   */
+  if (mode == GIS_DRIVER_MODE_EXISTING_USER) {
+    g_message ("Skipping gnome-initial-setup for existing user");
+    gis_ensure_stamp_files (driver);
+    exit (EXIT_SUCCESS);
+  }
+
   /* We only do this in existing-user mode, because if gdm launches us
    * in new-user mode and we just exit, gdm's special g-i-s session
    * never terminates. */
@@ -333,17 +346,6 @@ gis_ensure_stamp_files (GisDriver *driver)
   g_autofree gchar *welcome_file = NULL;
   g_autofree gchar *done_file = NULL;
   g_autoptr(GError) error = NULL;
-
-  if (gis_driver_conf_get_boolean (driver,
-                                   VENDOR_PAGES_GROUP,
-                                   VENDOR_RUN_WELCOME_TOUR_KEY,
-                                   TRUE)) {
-      welcome_file = g_build_filename (g_get_user_config_dir (), "run-welcome-tour", NULL);
-      if (!g_file_set_contents (welcome_file, "yes", -1, &error)) {
-          g_warning ("Unable to create %s: %s", welcome_file, error->message);
-          g_clear_error (&error);
-      }
-  }
 
   done_file = g_build_filename (g_get_user_config_dir (), "gnome-initial-setup-done", NULL);
   if (!g_file_set_contents (done_file, "yes", -1, &error)) {

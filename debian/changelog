@@ -1,3 +1,42 @@
+gnome-initial-setup (40.1-1ubuntu1) UNRELEASED; urgency=medium
+
+  * Resynchronize with Debian. Remaining changes:
+    + debian/control.in:
+      - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
+    + Add Ubuntu-specific patches:
+      - 0001-Make-summary-page-explicitly-request-navigation-butt.patch
+      - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
+      - 0001-Add-Ubuntu-mode-with-special-pages.patch
+      - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+      - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
+      - 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
+      - Don-t-show-Facebook-in-Ubuntu.patch
+      - 0008-Ubuntu-location-default.patch
+  * debian/control.in, debian/rules:
+    - build without malcontent for now since it's in universe
+  * debian/vendor.conf,
+    debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
+    - use the new vendor configuration instead of a patch
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 May 2021 13:05:07 +0200
+
+gnome-initial-setup (40.1-1) experimental; urgency=medium
+
+  * New upstream release
+  * Remove .desktop symlink hack, the issue is fixed upstream now
+  * debian/patches/revert_gnome_tour.patch:
+    - removed, the code it was patching has been deprecated
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 May 2021 12:56:59 +0200
+
+gnome-initial-setup (3.38.5-2) experimental; urgency=medium
+
+  * debian/control.in:
+    - Build-Depends on systemd, some other required package used to pull
+      it in but isn't anymore which is failing the build
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 17 May 2021 21:56:29 +0200
+
 gnome-initial-setup (3.38.5-1ubuntu1) impish; urgency=medium
 
   * Merge with Debian. Remaining changes:
