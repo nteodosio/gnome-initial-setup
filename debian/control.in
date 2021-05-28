@@ -57,7 +57,6 @@ Depends: ${shlibs:Depends},
          ${misc:Depends}
 Recommends: accountsservice,
             geoclue-2.0 (>= 2.3.1),
-            gnome-getting-started-docs,
             gnome-keyring,
 Suggests: gdm3,
 Description: Initial GNOME system setup helper
