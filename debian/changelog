@@ -2,6 +2,8 @@ gnome-initial-setup (40.1-1) UNRELEASED; urgency=medium
 
   * New upstream release
   * Remove .desktop symlink hack, the issue is fixed upstream now
+  * debian/patches/revert_gnome_tour.patch:
+    - removed, the code it was patching has been deprecated
 
  -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 May 2021 12:35:53 +0200
 
