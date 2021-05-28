@@ -1,4 +1,4 @@
-gnome-initial-setup (40.1-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (40.1-1ubuntu1) impish; urgency=medium
 
   * debian/patches/ubuntu_newuser_wizard.patch:
     - revert the new upstream behaviour of not using the wizard for
@@ -22,7 +22,7 @@ gnome-initial-setup (40.1-1ubuntu1) UNRELEASED; urgency=medium
     - use the new vendor configuration instead of a patch
 
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 May 2021 13:08:54 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 May 2021 13:47:01 +0200
 
 gnome-initial-setup (40.1-1) experimental; urgency=medium
 
