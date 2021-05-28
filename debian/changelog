@@ -1,3 +1,10 @@
+gnome-initial-setup (40.1-1ubuntu1) UNRELEASED; urgency=medium
+
+  * debian/gnome-initial-setup.maintscript:
+    - remove obsolete gnome-welcome-tour.desktop
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 May 2021 13:56:09 +0200
+
 gnome-initial-setup (40.1-1) experimental; urgency=medium
 
   * New upstream release
