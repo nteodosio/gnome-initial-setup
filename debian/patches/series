@@ -6,3 +6,4 @@
 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
 Don-t-show-Facebook-in-Ubuntu.patch
 0008-Ubuntu-location-default.patch
+ubuntu_newuser_wizard.patch

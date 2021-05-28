@@ -1,5 +1,8 @@
 gnome-initial-setup (40.1-1ubuntu1) UNRELEASED; urgency=medium
 
+  * debian/patches/ubuntu_newuser_wizard.patch:
+    - revert the new upstream behaviour of not using the wizard for
+      existing users since it has a purpose in Ubuntu
   * Resynchronize with Debian. Remaining changes:
     + debian/control.in:
       - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
@@ -18,7 +21,8 @@ gnome-initial-setup (40.1-1ubuntu1) UNRELEASED; urgency=medium
     debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
     - use the new vendor configuration instead of a patch
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 May 2021 13:05:07 +0200
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 May 2021 13:08:54 +0200
 
 gnome-initial-setup (40.1-1) experimental; urgency=medium
 
