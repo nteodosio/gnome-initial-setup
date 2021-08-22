@@ -1,3 +1,15 @@
+40.4
+----
+
+* Bugs fixed:
+ - !119 timezone: fix critical on startup when geoclue is disabled
+
+40.3
+----
+
+* Translation updates:
+ - Occitan
+
 40.2
 ----
 
