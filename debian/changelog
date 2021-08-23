@@ -1,3 +1,42 @@
+gnome-initial-setup (40.4-1ubuntu1) UNRELEASED; urgency=medium
+
+  * Resynchronize with Debian. Remaining changes:
+    + debian/control.in:
+      - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
+    + Add Ubuntu-specific patches:
+      - 0001-Make-summary-page-explicitly-request-navigation-butt.patch
+      - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
+      - 0001-Add-Ubuntu-mode-with-special-pages.patch
+      - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+      - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
+      - 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
+      - Don-t-show-Facebook-in-Ubuntu.patch
+      - 0008-Ubuntu-location-default.patch
+  * debian/control.in, debian/rules:
+    - build without malcontent for now since it's in universe
+  * debian/vendor.conf,
+    debian/patches/0001-Don-t-run-welcome-tour-at-end.patch:
+    - use the new vendor configuration instead of a patch
+  * debian/patches/ubuntu_newuser_wizard.patch:
+    - revert the new upstream behaviour of not using the wizard for
+      existing users since it has a purpose in Ubuntu
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 23 Aug 2021 10:17:03 +0200
+
+gnome-initial-setup (40.4-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 22 Aug 2021 09:34:06 -0400
+
+gnome-initial-setup (40.2-2) unstable; urgency=medium
+
+  * Bump debhelper-compat to 13
+  * debian/rules: minor cleanup
+  * Release to unstable
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 22 Aug 2021 09:00:43 -0400
+
 gnome-initial-setup (40.2-1ubuntu1) impish; urgency=medium
 
   * debian/patches/ubuntu_newuser_wizard.patch:
