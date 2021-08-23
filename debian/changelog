@@ -1,4 +1,4 @@
-gnome-initial-setup (40.4-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (40.4-1ubuntu1) impish; urgency=medium
 
   * Resynchronize with Debian. Remaining changes:
     + debian/control.in:
@@ -21,7 +21,7 @@ gnome-initial-setup (40.4-1ubuntu1) UNRELEASED; urgency=medium
     - revert the new upstream behaviour of not using the wizard for
       existing users since it has a purpose in Ubuntu
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 23 Aug 2021 10:17:03 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 23 Aug 2021 10:23:07 +0200
 
 gnome-initial-setup (40.4-1) unstable; urgency=medium
 
