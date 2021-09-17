@@ -1,8 +1,11 @@
-gnome-initial-setup (41.0-1) UNRELEASED; urgency=medium
+gnome-initial-setup (41.0-1) unstable; urgency=medium
 
   * New upstream release
+  * Bump minimum meson to 0.50.0
+  * Install Ubuntu's vendor.conf in upstream recommended /usr/share/
+  * Don't build with malcontent on Ubuntu since it's not in Ubuntu main
 
- -- Jeremy Bicha <jbicha@debian.org>  Fri, 17 Sep 2021 05:57:48 -0400
+ -- Jeremy Bicha <jbicha@debian.org>  Fri, 17 Sep 2021 07:05:14 -0400
 
 gnome-initial-setup (40.4-1) unstable; urgency=medium
 
