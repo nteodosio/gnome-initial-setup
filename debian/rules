@@ -15,13 +15,12 @@ endif
 override_dh_auto_configure:
 	dh_auto_configure -- \
 		-Dauto_features=enabled \
-		$(PARENTAL_CONTROL) \
-		-Dvendor-conf-file=/usr/lib/gnome-initial-setup/vendor.conf
+		$(PARENTAL_CONTROL)
 
 # Skip language chooser on Ubuntu since it doesn't work there
 ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
 execute_after_dh_install:
-	dh_install debian/vendor.conf /usr/lib/gnome-initial-setup
+	dh_install debian/vendor.conf /usr/share/gnome-initial-setup/
 endif
 
 # Depend on the appropriate package for the Welcome logo
