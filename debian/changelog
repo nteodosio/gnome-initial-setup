@@ -1,4 +1,4 @@
-gnome-initial-setup (41.0-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (41.0-1ubuntu1) jammy; urgency=medium
 
   * Resynchronize with Debian. Remaining changes:
     + debian/control.in:
@@ -22,7 +22,7 @@ gnome-initial-setup (41.0-1ubuntu1) UNRELEASED; urgency=medium
     * debian/control.in, debian/rules:
       - build without malcontent for now since it's in universe
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Nov 2021 11:07:16 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Nov 2021 12:46:05 +0100
 
 gnome-initial-setup (41.0-1) unstable; urgency=medium
 
