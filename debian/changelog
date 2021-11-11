@@ -1,3 +1,38 @@
+gnome-initial-setup (41.0-1ubuntu1) UNRELEASED; urgency=medium
+
+  * Resynchronize with Debian. Remaining changes:
+    + debian/control.in:
+      - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
+    + Add Ubuntu-specific patches:
+      - 0001-Make-summary-page-explicitly-request-navigation-butt.patch
+      - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
+      - 0001-Add-Ubuntu-mode-with-special-pages.patch
+      - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+      - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
+      - 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
+      - Don-t-show-Facebook-in-Ubuntu.patch
+      - 0008-Ubuntu-location-default.patch
+    + debian/vendor.conf,
+      - we don't do the upstream welcome tour on Ubuntu, it's not packaged
+        and not adapted to our customized desktop configuration
+  * debian/patches/ubuntu_newuser_wizard.patch:
+    - revert the new upstream behaviour of not using the wizard for
+      existing users since it has a purpose in Ubuntu
+  * Removed delta since it's included in Debian now
+    * debian/control.in, debian/rules:
+      - build without malcontent for now since it's in universe
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Nov 2021 11:07:16 +0100
+
+gnome-initial-setup (41.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bump minimum meson to 0.50.0
+  * Install Ubuntu's vendor.conf in upstream recommended /usr/share/
+  * Don't build with malcontent on Ubuntu since it's not in Ubuntu main
+
+ -- Jeremy Bicha <jbicha@debian.org>  Fri, 17 Sep 2021 07:05:14 -0400
+
 gnome-initial-setup (40.4-1ubuntu1) impish; urgency=medium
 
   * Resynchronize with Debian. Remaining changes:

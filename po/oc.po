@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: gnome-initial-setup\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-initial-setup/"
 "issues\n"
-"POT-Creation-Date: 2021-05-13 14:49+0000\n"
-"PO-Revision-Date: 2021-07-04 18:53+0200\n"
+"POT-Creation-Date: 2021-08-14 10:48+0000\n"
+"PO-Revision-Date: 2021-08-18 11:09+0200\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -24,51 +24,51 @@ msgstr ""
 msgid "Initial Setup"
 msgstr "Configuracion iniciala"
 
-#: gnome-initial-setup/gis-assistant.c:423
+#: gnome-initial-setup/gis-assistant.c:407
 msgid "_Next"
 msgstr "_Seguent"
 
-#: gnome-initial-setup/gis-assistant.c:424
+#: gnome-initial-setup/gis-assistant.c:408
 msgid "_Accept"
 msgstr "_Acceptar"
 
-#: gnome-initial-setup/gis-assistant.c:425
+#: gnome-initial-setup/gis-assistant.c:409
 msgid "_Skip"
 msgstr "Pa_ssar"
 
-#: gnome-initial-setup/gis-assistant.c:426
+#: gnome-initial-setup/gis-assistant.c:410
 msgid "_Previous"
 msgstr "_Precedent"
 
-#: gnome-initial-setup/gis-assistant.c:427
+#: gnome-initial-setup/gis-assistant.c:411
 msgid "_Cancel"
 msgstr "_Anullar"
 
-#: gnome-initial-setup/gnome-initial-setup.c:270
+#: gnome-initial-setup/gnome-initial-setup.c:272
 msgid "Force existing user mode"
 msgstr "Forçar lo mòde utilizaire existent"
 
-#: gnome-initial-setup/gnome-initial-setup.c:276
+#: gnome-initial-setup/gnome-initial-setup.c:278
 msgid "— GNOME initial setup"
 msgstr "— Configuracion iniciala de GNOME"
 
 #: gnome-initial-setup/pages/account/gis-account-avatar-chooser.ui:36
 msgid "Take a Picture…"
-msgstr "Prene un imatge…"
+msgstr "Prendre un imatge…"
 
-#: gnome-initial-setup/pages/account/gis-account-page-enterprise.c:184
+#: gnome-initial-setup/pages/account/gis-account-page-enterprise.c:185
 msgid "Failed to register account"
 msgstr "Fracàs al moment de l'enregistrament del compte"
 
-#: gnome-initial-setup/pages/account/gis-account-page-enterprise.c:378
+#: gnome-initial-setup/pages/account/gis-account-page-enterprise.c:379
 msgid "No supported way to authenticate with this domain"
 msgstr "Cap de metòde pas pres en carga per autentificar amb aqueste domeni"
 
-#: gnome-initial-setup/pages/account/gis-account-page-enterprise.c:418
+#: gnome-initial-setup/pages/account/gis-account-page-enterprise.c:419
 msgid "Failed to join domain"
 msgstr "Fracàs al moment de la presa de contacte amb lo domeni"
 
-#: gnome-initial-setup/pages/account/gis-account-page-enterprise.c:486
+#: gnome-initial-setup/pages/account/gis-account-page-enterprise.c:487
 msgid "Failed to log into domain"
 msgstr "Fracàs al moment de la connexion al domeni"
 
@@ -153,7 +153,7 @@ msgstr "Administrator"
 #: gnome-initial-setup/pages/account/gis-account-page-local.c:608
 #, c-format
 msgid "Failed to create user '%s': "
-msgstr "Impossible de crear l'utilizaire « %s » : "
+msgstr "Impossible de crear l'utilizaire « %s » : "
 
 #: gnome-initial-setup/pages/account/gis-account-page-local.ui:21
 msgid "Avatar image"
@@ -181,7 +181,8 @@ msgstr "Configurar lo contraròtle parental per aqueste utilizaire"
 #: gnome-initial-setup/pages/account/gis-account-page-local.ui:156
 msgid "For use by a parent or supervisor, who must set up their own password."
 msgstr ""
-"Per usatge d’un parent o responsable, que deu configurar lor pròpri senhal."
+"A destinacion d'un parent o supervisor, qu'an mestièr de definir lor pròpri "
+"senhal."
 
 #: gnome-initial-setup/pages/account/gis-account-page.ui:43
 msgid "_Enterprise Login"
@@ -213,7 +214,7 @@ msgstr "Senhal invalid, ensajatz tornamai"
 #: gnome-initial-setup/pages/account/um-realm-manager.c:801
 #, c-format
 msgid "Couldn’t connect to the %s domain: %s"
-msgstr "Impossible de se connectar al domeni %s : %s"
+msgstr "Impossible de se connectar al domeni %s : %s"
 
 #: gnome-initial-setup/pages/account/um-utils.c:248
 msgid "Sorry, that user name isn’t available. Please try another."
@@ -227,7 +228,7 @@ msgstr "Lo nom d'utilizaire es tròp long."
 
 #: gnome-initial-setup/pages/account/um-utils.c:254
 msgid "The username cannot start with a “-”."
-msgstr "Lo nom d'utilizaire pòt pas començar per « - »."
+msgstr "Lo nom d'utilizaire pòt pas començar per « - »."
 
 #: gnome-initial-setup/pages/account/um-utils.c:257
 msgid "That username isn’t available. Please try another."
@@ -239,7 +240,7 @@ msgid ""
 "digits and the following characters: . - _"
 msgstr ""
 "Lo nom d'utilizaire deu èsser unicament compausat de letras majusculas e "
-"minusculas de a a z, de nombres e dels caractèrs seguents : . - _"
+"minusculas de a a z, de nombres e dels caractèrs seguents : . - _"
 
 #: gnome-initial-setup/pages/account/um-utils.c:264
 msgid "This will be used to name your home folder and can’t be changed."
@@ -313,7 +314,7 @@ msgstr "Benvenguda"
 #.
 #: gnome-initial-setup/pages/language/gis-welcome-widget.c:136
 msgid "Welcome!"
-msgstr "Benvenguda !"
+msgstr "Benvenguda !"
 
 #: gnome-initial-setup/pages/network/gis-network-page.c:318
 msgctxt "Wireless access point"
@@ -341,9 +342,9 @@ msgid ""
 "Connecting to the internet helps you get new apps, information, and other "
 "upgrades. It also helps set the time and your location automatically."
 msgstr ""
-"La connexion Internet vos ajuda a obténer de novèlas aplicacions, "
-"informacions e d’autras mesas a jorn. Ajuda tanben a reglar l’ora e a vos "
-"localizar automaticament."
+"Se connectar a l'internet vos permet d'obténer d'aplicacions novèlas, "
+"d'informacions e d'autras mesas a nivèl. Vos ajuda tanben a reglar l'ora e "
+"vòstra posicion geografica automaticament."
 
 #: gnome-initial-setup/pages/network/gis-network-page.ui:76
 msgid "No wireless available"
@@ -362,8 +363,7 @@ msgstr "Contraròtle parental per %s"
 #: gnome-initial-setup/pages/parental-controls/gis-parental-controls-page.c:104
 msgid "Set restrictions on what this user can run or install."
 msgstr ""
-"Definir las restriccions de çò que pòt executar o installar aqueste "
-"utilizaire."
+"Definir las restriccions tocant çò que l'utilizaire pòt executar o installar."
 
 #: gnome-initial-setup/pages/parental-controls/gis-parental-controls-page.c:199
 msgid "Parental Controls"
@@ -393,7 +393,7 @@ msgstr "Definir un senhal pel contraròtle parent"
 #: gnome-initial-setup/pages/password/gis-password-page.c:97
 #, c-format
 msgid "This password will control access to the parental controls for %s."
-msgstr "Aqueste senhal contrarotlarà l’accès al contraròtle parent de %s."
+msgstr "Aqueste senhal contrarotlarà l'accès al contraròtle parent per %s."
 
 #: gnome-initial-setup/pages/password/gis-password-page.c:228
 msgid "This is a weak password."
@@ -511,7 +511,7 @@ msgid ""
 "you need to mix up letters, numbers and punctuation."
 msgstr ""
 "Aqueste senhal es feble. Evitatz de repetir los meteisses tipes de "
-"caractèrs : mesclatz de letras, de chifras e de la pontuacion."
+"caractèrs : mesclatz de letras, de chifras e de la pontuacion."
 
 #: gnome-initial-setup/pages/password/pw-utils.c:113
 msgctxt "Password hint"
@@ -560,7 +560,7 @@ msgstr ""
 #: gnome-initial-setup/pages/privacy/gis-privacy-page.c:78
 #, c-format
 msgid "Problem data will be collected by %s:"
-msgstr "Las donadas dels problèmas seràn collectadas per %s :"
+msgstr "Las donadas dels problèmas seràn collectadas per %s :"
 
 #: gnome-initial-setup/pages/privacy/gis-privacy-page.c:79
 #: gnome-initial-setup/pages/privacy/gis-privacy-page.c:135
@@ -570,7 +570,7 @@ msgstr "Politica de confidencialitat"
 
 #: gnome-initial-setup/pages/privacy/gis-privacy-page.c:135
 msgid "Uses Mozilla Location Service:"
-msgstr "Utiliza los servicis de geolocalizacion de Mozilla :"
+msgstr "Utiliza los servicis de geolocalizacion de Mozilla :"
 
 #: gnome-initial-setup/pages/privacy/gis-privacy-page.c:246
 #: gnome-initial-setup/pages/privacy/gis-privacy-page.ui:16
@@ -599,6 +599,23 @@ msgid ""
 msgstr ""
 "Los paramètres de confidencialitat son modificables a tot moment dins "
 "Paramètres."
+
+#: gnome-initial-setup/pages/software/gis-software-page.c:112
+#: gnome-initial-setup/pages/software/gis-software-page.ui:16
+#: gnome-initial-setup/pages/software/gis-software-page.ui:31
+msgid "Third-Party Repositories"
+msgstr "Depauses tèrces"
+
+#: gnome-initial-setup/pages/software/gis-software-page.c:113
+msgid ""
+"Third-party repositories provide access to additional software from selected "
+"external sources. They include popular apps, as well as firmware that is "
+"important for some devices. Some proprietary software is included."
+msgstr ""
+"Los depauses tèrces fornisson un accès a de logicials addicionals a partir "
+"de fonts extèrnas selecionadas. Aquò inclutz d’aplicacions popularas e "
+"tanben de micrologicials que son importants per d’unes periferics. Qualques "
+"logicials proprietaris son incluses."
 
 #. Translators: the parameter here is the name of a distribution,
 #. * like "Fedora" or "Ubuntu". It falls back to "GNOME 3" if we can't
@@ -694,8 +711,9 @@ msgid ""
 "Setup will guide you through making an account and enabling some features. "
 "We’ll have you up and running in no time."
 msgstr ""
-"La configuracion vos guidarà a travèrs la creacion d’un compte e "
-"l’activacion d’unas foncionalitats. Vos preparem d’aquí res."
+"L'assistent de configuracion vos guidarà per la creacion d'un compte e "
+"l'activacion d'unas foncionalitats. Vos prepararem abans que lo diable ne "
+"fume."
 
 #: gnome-initial-setup/pages/welcome/gis-welcome-page.ui:54
 msgid "_Start Setup"
@@ -753,9 +771,6 @@ msgstr "_Començar la configuracion"
 
 #~ msgid "<a href=\"more\">Find out more…</a>"
 #~ msgstr "<a href=\"more\">Ne saber mai…</a>"
-
-#~ msgid "Third Party Repositories"
-#~ msgstr "Depauses tèrces"
 
 #~ msgid ""
 #~ "Proprietary software typically has restrictions on how it can be used and "

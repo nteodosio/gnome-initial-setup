@@ -120,7 +120,7 @@ Index: gnome-initial-setup/data/meson.build
 ===================================================================
 --- gnome-initial-setup.orig/data/meson.build
 +++ gnome-initial-setup/data/meson.build
-@@ -100,6 +100,14 @@ if enable_systemd
+@@ -101,6 +101,14 @@ if enable_systemd
      )
  endif
  
@@ -134,12 +134,12 @@ Index: gnome-initial-setup/data/meson.build
 +)
  
  rules_dir = join_paths(data_dir, 'polkit-1', 'rules.d')
- install_data('20-gnome-initial-setup.rules', install_dir: rules_dir)
+ configure_file(
 Index: gnome-initial-setup/gnome-initial-setup/gis-driver.c
 ===================================================================
 --- gnome-initial-setup.orig/gnome-initial-setup/gis-driver.c
 +++ gnome-initial-setup/gnome-initial-setup/gis-driver.c
-@@ -99,6 +99,9 @@ struct _GisDriverPrivate {
+@@ -101,6 +101,9 @@ struct _GisDriver {
  
    const gchar *vendor_conf_file_path;
    GKeyFile *vendor_conf_file;
@@ -147,41 +147,36 @@ Index: gnome-initial-setup/gnome-initial-setup/gis-driver.c
 +  guint inhibit_count;
 +  gboolean quit_requested;
  };
- typedef struct _GisDriverPrivate GisDriverPrivate;
  
-@@ -1034,6 +1037,38 @@ gis_driver_save_data (GisDriver  *driver
-   return gis_assistant_save_data (priv->assistant, error);
+ G_DEFINE_TYPE (GisDriver, gis_driver, GTK_TYPE_APPLICATION)
+@@ -980,6 +982,33 @@ gis_driver_save_data (GisDriver  *driver
+   return gis_assistant_save_data (driver->assistant, error);
  }
  
 +void
 +gis_driver_inhibit_quit (GisDriver *driver)
 +{
-+  GisDriverPrivate *priv = gis_driver_get_instance_private (driver);
-+  priv->inhibit_count++;
++  driver->inhibit_count++;
 +}
 +
 +void
 +gis_driver_uninhibit_quit (GisDriver *driver)
 +{
-+  GisDriverPrivate *priv = gis_driver_get_instance_private (driver);
-+
-+  priv->inhibit_count--;
-+  if (!priv->inhibit_count && priv->quit_requested)
++  driver->inhibit_count--;
++  if (!driver->inhibit_count && driver->quit_requested)
 +    gis_driver_quit (driver);
 +}
 +
 +void gis_driver_quit (GisDriver *driver)
 +{
-+  GisDriverPrivate *priv = gis_driver_get_instance_private (driver);
-+
-+  if (priv->inhibit_count == 0)
++  if (driver->inhibit_count == 0)
 +    {
 +      g_application_quit (G_APPLICATION (driver));
 +    }
 +  else
 +    {
-+      priv->quit_requested = TRUE;
-+      gtk_widget_hide (GTK_WIDGET (priv->main_window));
++      driver->quit_requested = TRUE;
++      gtk_widget_hide (GTK_WIDGET (driver->main_window));
 +    }
 +  }
 +
@@ -192,7 +187,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gis-driver.h
 ===================================================================
 --- gnome-initial-setup.orig/gnome-initial-setup/gis-driver.h
 +++ gnome-initial-setup/gnome-initial-setup/gis-driver.h
-@@ -141,6 +141,12 @@ gchar *gis_driver_conf_get_string (GisDr
+@@ -120,6 +120,12 @@ gchar *gis_driver_conf_get_string (GisDr
                                     const gchar *group,
                                     const gchar *key);
  
@@ -209,7 +204,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
 ===================================================================
 --- gnome-initial-setup.orig/gnome-initial-setup/gnome-initial-setup.c
 +++ gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
-@@ -43,6 +43,9 @@
+@@ -44,6 +44,9 @@
  #include "pages/parental-controls/gis-parental-controls-page.h"
  #include "pages/password/gis-password-page.h"
  #include "pages/summary/gis-summary-page.h"
@@ -219,7 +214,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
  
  #define VENDOR_PAGES_GROUP "pages"
  #define VENDOR_SKIP_KEY "skip"
-@@ -81,6 +84,17 @@ static PageData page_table[] = {
+@@ -83,6 +86,17 @@ static PageData page_table[] = {
    { NULL },
  };
  
@@ -237,7 +232,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
  #undef PAGE
  
  static gboolean
-@@ -178,6 +192,25 @@ destroy_pages_after (GisAssistant *assis
+@@ -180,6 +194,25 @@ destroy_pages_after (GisAssistant *assis
    }
  }
  
@@ -263,7 +258,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
  static void
  rebuild_pages_cb (GisDriver *driver)
  {
-@@ -190,7 +223,11 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -192,7 +225,11 @@ rebuild_pages_cb (GisDriver *driver)
  
    assistant = gis_driver_get_assistant (driver);
    current_page = gis_assistant_get_current_page (assistant);
@@ -276,7 +271,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
  
    g_ptr_array_free (skipped_pages, TRUE);
    skipped_pages = g_ptr_array_new_with_free_func ((GDestroyNotify) gtk_widget_destroy);
-@@ -198,7 +235,7 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -200,7 +237,7 @@ rebuild_pages_cb (GisDriver *driver)
    if (current_page != NULL) {
      destroy_pages_after (assistant, current_page);
  
@@ -289,7 +284,7 @@ Index: gnome-initial-setup/gnome-initial-setup/meson.build
 ===================================================================
 --- gnome-initial-setup.orig/gnome-initial-setup/meson.build
 +++ gnome-initial-setup/gnome-initial-setup/meson.build
-@@ -50,6 +50,9 @@ dependencies = [
+@@ -52,6 +52,9 @@ dependencies = [
      dependency ('libsecret-1', version: '>= 0.18.8'),
      dependency ('pwquality'),
      dependency ('webkit2gtk-4.0', version: '>= 2.26.0'),
@@ -2794,8 +2789,8 @@ Index: gnome-initial-setup/gnome-initial-setup/pages/meson.build
 ===================================================================
 --- gnome-initial-setup.orig/gnome-initial-setup/pages/meson.build
 +++ gnome-initial-setup/gnome-initial-setup/pages/meson.build
-@@ -9,6 +9,9 @@ pages = [
-    'password',
+@@ -10,6 +10,9 @@ pages = [
+    'software',
     'summary',
     'welcome',
 +   'ubuntu-report',
@@ -3323,7 +3318,7 @@ Index: gnome-initial-setup/meson.build
 ===================================================================
 --- gnome-initial-setup.orig/meson.build
 +++ gnome-initial-setup/meson.build
-@@ -69,6 +69,9 @@ libmalcontent_ui_dep = dependency ('malc
+@@ -70,6 +70,9 @@ libmalcontent_ui_dep = dependency ('malc
                                     required: get_option('parental_controls'))
  conf.set('HAVE_PARENTAL_CONTROLS', libmalcontent_dep.found() and libmalcontent_ui_dep.found())
  
@@ -3342,7 +3337,7 @@ Index: gnome-initial-setup/po/POTFILES.in
  data/gnome-initial-setup-first-login.desktop.in.in
  data/gnome-initial-setup.desktop.in.in
  gnome-initial-setup/cc-common-language.c
-@@ -38,3 +39,12 @@ gnome-initial-setup/pages/timezone/gis-t
+@@ -40,3 +41,12 @@ gnome-initial-setup/pages/timezone/gis-t
  gnome-initial-setup/pages/timezone/gis-timezone-page.ui
  gnome-initial-setup/pages/welcome/gis-welcome-page.c
  gnome-initial-setup/pages/welcome/gis-welcome-page.ui

@@ -2,7 +2,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
 ===================================================================
 --- gnome-initial-setup.orig/gnome-initial-setup/gnome-initial-setup.c
 +++ gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
-@@ -356,20 +356,6 @@ main (int argc, char *argv[])
+@@ -358,20 +358,6 @@ main (int argc, char *argv[])
  
    driver = gis_driver_new (mode);
  

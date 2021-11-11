@@ -26,7 +26,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
 ===================================================================
 --- gnome-initial-setup.orig/gnome-initial-setup/gnome-initial-setup.c
 +++ gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
-@@ -95,6 +95,16 @@ static PageData ubuntu_page_table[] = {
+@@ -97,6 +97,16 @@ static PageData ubuntu_page_table[] = {
    { NULL },
  };
  
@@ -43,7 +43,7 @@ Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
  #undef PAGE
  
  static gboolean
-@@ -226,6 +236,8 @@ rebuild_pages_cb (GisDriver *driver)
+@@ -228,6 +238,8 @@ rebuild_pages_cb (GisDriver *driver)
  
    if (is_desktop ("ubuntu"))
      page_data = ubuntu_page_table;
