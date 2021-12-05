@@ -1,3 +1,9 @@
+gnome-initial-setup (41.2-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sat, 04 Dec 2021 19:34:18 -0500
+
 gnome-initial-setup (41.0-1) unstable; urgency=medium
 
   * New upstream release
