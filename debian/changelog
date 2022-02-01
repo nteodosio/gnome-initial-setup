@@ -1,3 +1,14 @@
+gnome-initial-setup (41.2-2) unstable; urgency=medium
+
+  * Team upload
+  * d/patches: Update to upstream gnome-41 branch commit 41.2-2-g916995f0
+    - Update Icelandic translation
+  * d/p/build-Fix-Meson-deprecation-warning.patch:
+    Add patch from upstream to fix FTBFS with recent Meson
+    (Closes: #1004780)
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 01 Feb 2022 23:03:00 +0000
+
 gnome-initial-setup (41.2-1) unstable; urgency=medium
 
   * New upstream release
