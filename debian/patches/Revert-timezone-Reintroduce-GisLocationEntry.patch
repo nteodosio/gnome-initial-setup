@@ -1,0 +1,72 @@
+From: Jeremy Bicha <jbicha@debian.org>
+Date: Wed, 16 Feb 2022 09:41:22 -0500
+Subject: Revert "timezone: Reintroduce GisLocationEntry"
+
+This reverts commit a7dfea203494c285cd222f44cf05e9e07bfd6b38.
+---
+ gnome-initial-setup/pages/timezone/gis-timezone-page.c  | 9 ++++++---
+ gnome-initial-setup/pages/timezone/gis-timezone-page.ui | 2 +-
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/gnome-initial-setup/pages/timezone/gis-timezone-page.c b/gnome-initial-setup/pages/timezone/gis-timezone-page.c
+index c4a5b5d..e0a6d3d 100644
+--- a/gnome-initial-setup/pages/timezone/gis-timezone-page.c
++++ b/gnome-initial-setup/pages/timezone/gis-timezone-page.c
+@@ -49,7 +49,6 @@
+ #include "gis-bubble-widget.h"
+ 
+ #include "gis-page-header.h"
+-#include "gis-location-entry.h"
+ 
+ #define DEFAULT_TZ "Europe/London"
+ #define DESKTOP_ID "gnome-datetime-panel"
+@@ -229,14 +228,15 @@ entry_text_changed (GtkEditable *editable,
+   priv->search_entry_text_changed_id = 0;
+ }
+ 
++#if 0
+ static void
+ entry_location_changed (GObject *object, GParamSpec *param, GisTimezonePage *page)
+ {
+   GisTimezonePagePrivate *priv = gis_timezone_page_get_instance_private (page);
+-  GisLocationEntry *entry = GIS_LOCATION_ENTRY (object);
++  GWeatherLocationEntry *entry = GWEATHER_LOCATION_ENTRY (object);
+   g_autoptr(GWeatherLocation) location = NULL;
+ 
+-  location = gis_location_entry_get_location (entry);
++  location = gweather_location_entry_get_location (entry);
+   if (!location)
+     return;
+ 
+@@ -244,6 +244,7 @@ entry_location_changed (GObject *object, GParamSpec *param, GisTimezonePage *pag
+   set_location (page, location);
+   priv->in_search = FALSE;
+ }
++#endif
+ 
+ #define GETTEXT_PACKAGE_TIMEZONES "gnome-control-center-2.0-timezones"
+ 
+@@ -445,8 +446,10 @@ gis_timezone_page_constructed (GObject *object)
+   priv->search_entry_text_changed_id =
+       g_signal_connect (priv->search_entry, "changed",
+                         G_CALLBACK (entry_text_changed), page);
++#if 0
+   g_signal_connect (priv->search_entry, "notify::location",
+                     G_CALLBACK (entry_location_changed), page);
++#endif
+   g_signal_connect (priv->search_entry, "map",
+                     G_CALLBACK (entry_mapped), page);
+   g_signal_connect (priv->map, "location-changed",
+diff --git a/gnome-initial-setup/pages/timezone/gis-timezone-page.ui b/gnome-initial-setup/pages/timezone/gis-timezone-page.ui
+index 588ec41..1f81d3e 100644
+--- a/gnome-initial-setup/pages/timezone/gis-timezone-page.ui
++++ b/gnome-initial-setup/pages/timezone/gis-timezone-page.ui
+@@ -28,7 +28,7 @@
+             <property name="orientation">vertical</property>
+             <property name="spacing">14</property>
+             <child>
+-              <object class="GisLocationEntry" id="search_entry">
++              <object class="GtkEntry" id="search_entry">
+                 <property name="visible">True</property>
+                 <property name="halign">center</property>
+                 <property name="max-width-chars">55</property>
