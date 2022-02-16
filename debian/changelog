@@ -1,8 +1,14 @@
-gnome-initial-setup (42~beta-1) UNRELEASED; urgency=medium
+gnome-initial-setup (42~beta-1) unstable; urgency=medium
 
   * New upstream release
+  * Drop all patches: applied in new release
+  * Add patch to support GNOME 42 dark theme preference
+  * Revert switch to libgweather4
+  * Build-Depend on libgnome-desktop-4-dev instead of libgnome-desktop-3-dev
+  * debian/control.in: Build-Depend on libhandy
+  * debian/vendor.conf: Drop unused run_welcome_tour line
 
- -- Jeremy Bicha <jeremy.bicha@canonical.com>  Wed, 16 Feb 2022 09:38:25 -0500
+ -- Jeremy Bicha <jeremy.bicha@canonical.com>  Wed, 16 Feb 2022 10:34:12 -0500
 
 gnome-initial-setup (41.2-2) unstable; urgency=medium
 
