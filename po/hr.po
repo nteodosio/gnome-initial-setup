@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: gnome-initial-setup gnome-3-24\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-initial-setup/"
 "issues\n"
-"POT-Creation-Date: 2021-08-10 09:42+0000\n"
-"PO-Revision-Date: 2021-09-09 16:04+0200\n"
-"Last-Translator: gogo <linux.hr@protonmail.com>\n"
+"POT-Creation-Date: 2021-11-25 20:50+0000\n"
+"PO-Revision-Date: 2021-11-26 19:11+0100\n"
+"Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 2.3\n"
 
 #: data/gnome-initial-setup-first-login.desktop.in.in:3
 #: data/gnome-initial-setup.desktop.in.in:3
@@ -47,7 +47,7 @@ msgstr "_Odustani"
 
 #: gnome-initial-setup/gnome-initial-setup.c:272
 msgid "Force existing user mode"
-msgstr "Prisili način postojećeg korinika"
+msgstr "Prisili način postojećeg korisnika"
 
 #: gnome-initial-setup/gnome-initial-setup.c:278
 msgid "— GNOME initial setup"
@@ -104,7 +104,7 @@ msgstr "_Lozinka"
 
 #: gnome-initial-setup/pages/account/gis-account-page-enterprise.ui:146
 msgid "Enterprise domain or realm name"
-msgstr "Domena tvrtke ili ime"
+msgstr "Domena tvrtke ili naziv"
 
 #: gnome-initial-setup/pages/account/gis-account-page-enterprise.ui:211
 msgid "C_ontinue"
@@ -196,7 +196,7 @@ msgstr "Nemoguće se automatski pridružiti ovoj vrsti domene"
 #: gnome-initial-setup/pages/account/um-realm-manager.c:373
 #, c-format
 msgid "No such domain or realm found"
-msgstr "Takva domena ili područje nije pornađeno"
+msgstr "Takva domena ili područje nije pronađeno"
 
 #: gnome-initial-setup/pages/account/um-realm-manager.c:782
 #: gnome-initial-setup/pages/account/um-realm-manager.c:796
@@ -522,7 +522,7 @@ msgstr ""
 #: gnome-initial-setup/pages/password/pw-utils.c:117
 msgctxt "Password hint"
 msgid "Mix uppercase and lowercase and try to use a number or two."
-msgstr "Promješajte velika i mala slova i dodajte slovo ili dva."
+msgstr "Kombinirajte velika i mala slova i dodajte broj ili dva."
 
 #: gnome-initial-setup/pages/password/pw-utils.c:119
 msgctxt "Password hint"
@@ -577,7 +577,7 @@ msgid ""
 "Allows applications to determine your geographical location. An indication "
 "is shown when location services are in use."
 msgstr ""
-"Dopušta aplikacijama otkrivanje vaše geografske lokacije. Indikator je "
+"Dopušta aplikacijama otkrivanje vašeg zemljopisnog položaja. Indikator je "
 "prikazan kada se usluga lociranja koristi."
 
 #: gnome-initial-setup/pages/privacy/gis-privacy-page.ui:74
@@ -600,12 +600,12 @@ msgstr "Repozitoriji treće strane"
 #: gnome-initial-setup/pages/software/gis-software-page.c:113
 msgid ""
 "Third-party repositories provide access to additional software from selected "
-"external sources. They include popular apps, as well as firmware that is "
-"important for some devices. Some proprietary software is included."
+"external sources, including popular apps and drivers that are important for "
+"some devices. Some proprietary software is included."
 msgstr ""
 "Repozitoriji treće strane omogućuju pristup dodatnom softveru iz odabranih "
-"vanjskih izvora. Uključuju popularne aplikacije, kao i frimver koji je bitan "
-"za pojedine uređaje. Određeni vlasnički softver je isto uključen."
+"vanjskih izvora, uključuju popularne aplikacije i upravljačke programe koji "
+"su bitni za pojedine uređaje. Određeni vlasnički softver je isto uključen."
 
 #. Translators: the parameter here is the name of a distribution,
 #. * like "Fedora" or "Ubuntu". It falls back to "GNOME 3" if we can't
@@ -621,7 +621,7 @@ msgstr "_Počnite koristiti %s"
 #: gnome-initial-setup/pages/summary/gis-summary-page.c:240
 #, c-format
 msgid "%s is ready to be used. We hope that you love it!"
-msgstr "%s je spreman za korištenje. Nadamo se da vam se sviđa!"
+msgstr "%s je spreman za korištenje. Nadamo se da će vam se svidjeti!"
 
 #: gnome-initial-setup/pages/summary/gis-summary-page.c:264
 msgid "Setup Complete"
@@ -701,8 +701,8 @@ msgid ""
 "Setup will guide you through making an account and enabling some features. "
 "We’ll have you up and running in no time."
 msgstr ""
-"Postavljanje će vas voditi u stvaranju računa i omogućavanju određenih "
-"značajki. Sve će biti podešeno i pokrenuto za trenutak."
+"Aplikacija postavljanja će vas voditi u stvaranju računa i omogućavanju "
+"određenih značajki. Sve će biti podešeno i pokrenuto za trenutak."
 
 #: gnome-initial-setup/pages/welcome/gis-welcome-page.ui:54
 msgid "_Start Setup"

@@ -1,3 +1,53 @@
+gnome-initial-setup (42~beta-1ubuntu1) UNRELEASED; urgency=medium
+
+  * Resynchronize with Debian. Remaining changes:
+    + debian/control.in:
+      - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev
+    + Add Ubuntu-specific patches:
+      - 0001-Make-summary-page-explicitly-request-navigation-butt.patch
+      - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
+      - 0001-Add-Ubuntu-mode-with-special-pages.patch
+      - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+      - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
+      - 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
+      - Don-t-show-Facebook-in-Ubuntu.patch
+      - 0008-Ubuntu-location-default.patch
+      - ubuntu_newuser_wizard.patch:
+        + revert the new upstream behaviour of not using the wizard for
+          existing users since it has a purpose in Ubuntu
+
+ -- Jeremy Bicha <jeremy.bicha@canonical.com>  Thu, 17 Feb 2022 08:06:10 -0500
+
+gnome-initial-setup (42~beta-1) unstable; urgency=medium
+
+  * New upstream release
+  * Drop all patches: applied in new release
+  * Add patch to support GNOME 42 dark theme preference
+  * Revert switch to libgweather4
+  * Build-Depend on libgnome-desktop-4-dev instead of libgnome-desktop-3-dev
+  * debian/control.in: Build-Depend on libhandy
+  * debian/vendor.conf: Drop unused run_welcome_tour line
+
+ -- Jeremy Bicha <jeremy.bicha@canonical.com>  Wed, 16 Feb 2022 10:34:12 -0500
+
+gnome-initial-setup (41.2-2) unstable; urgency=medium
+
+  * Team upload
+  * d/patches: Update to upstream gnome-41 branch commit 41.2-2-g916995f0
+    - Update Icelandic translation
+  * d/p/build-Fix-Meson-deprecation-warning.patch:
+    Add patch from upstream to fix FTBFS with recent Meson
+    (Closes: #1004780)
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 01 Feb 2022 23:03:00 +0000
+
+gnome-initial-setup (41.2-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/vendor.conf: Don't try to run the welcome tour on Ubuntu
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 05 Dec 2021 02:57:19 -0500
+
 gnome-initial-setup (41.0-1ubuntu1) jammy; urgency=medium
 
   * Resynchronize with Debian. Remaining changes:

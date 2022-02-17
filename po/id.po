@@ -2,7 +2,7 @@
 # Copyright (C) 2012 gnome-initial-setup's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-initial-setup package.
 # Andika Triwidada <andika@gmail.com>, 2012, 2013, 2014, 2015.
-# Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2017-2021.
+# Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2017-2022.
 # Sucipto <sucipto@pm.me>, 2020.
 #
 msgid ""
@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gnome-initial-setup gnome-3-30\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-initial-setup/"
 "issues\n"
-"POT-Creation-Date: 2021-08-10 09:42+0000\n"
-"PO-Revision-Date: 2021-08-15 18:45+0700\n"
+"POT-Creation-Date: 2022-01-06 15:43+0000\n"
+"PO-Revision-Date: 2022-01-12 11:32+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.0\n"
-"Plural-Forms: nplurals=2; plural= n!=1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: data/gnome-initial-setup-first-login.desktop.in.in:3
 #: data/gnome-initial-setup.desktop.in.in:3
@@ -603,25 +603,32 @@ msgid ""
 "Privacy controls can be changed at any time from the Settings application."
 msgstr "Kendali privasi dapat diubah setiap saat dari aplikasi Pengaturan."
 
-#: gnome-initial-setup/pages/software/gis-software-page.c:112
+#: gnome-initial-setup/pages/software/gis-software-page.c:113
 #: gnome-initial-setup/pages/software/gis-software-page.ui:16
-#: gnome-initial-setup/pages/software/gis-software-page.ui:31
 msgid "Third-Party Repositories"
 msgstr "Repositori Pihak Ketiga"
 
-#: gnome-initial-setup/pages/software/gis-software-page.c:113
+#: gnome-initial-setup/pages/software/gis-software-page.c:114
 msgid ""
 "Third-party repositories provide access to additional software from selected "
-"external sources. They include popular apps, as well as firmware that is "
-"important for some devices. Some proprietary software is included."
+"external sources, including popular apps and drivers that are important for "
+"some devices. Some proprietary software is included."
 msgstr ""
 "Repositori pihak ketiga menyediakan akses ke perangkat lunak tambahan dari "
-"sumber eksternal yang dipilih. Mereka termasuk aplikasi populer, serta "
-"perangkat tegar yang penting untuk beberapa perangkat. Beberapa perangkat "
-"lunak berpemilik disertakan."
+"sumber eksternal yang dipilih, termasuk aplikasi dan driver populer yang "
+"penting untuk beberapa perangkat. Beberapa perangkat lunak berpemilik "
+"disertakan."
+
+#: gnome-initial-setup/pages/software/gis-software-page.c:127
+msgid "_Disable Third-Party Repositories"
+msgstr "Non-Aktifkan _Repositori Pihak Ketiga"
+
+#: gnome-initial-setup/pages/software/gis-software-page.c:132
+msgid "_Enable Third-Party Repositories"
+msgstr "Aktifkan R_epositori Pihak Ketiga"
 
 #. Translators: the parameter here is the name of a distribution,
-#. * like "Fedora" or "Ubuntu". It falls back to "GNOME 3" if we can't
+#. * like "Fedora" or "Ubuntu". It falls back to "GNOME" if we can't
 #. * detect any distribution.
 #: gnome-initial-setup/pages/summary/gis-summary-page.c:233
 #, c-format
@@ -629,7 +636,7 @@ msgid "_Start Using %s"
 msgstr "_Mulai memakai %s"
 
 #. Translators: the parameter here is the name of a distribution,
-#. * like "Fedora" or "Ubuntu". It falls back to "GNOME 3" if we can't
+#. * like "Fedora" or "Ubuntu". It falls back to "GNOME" if we can't
 #. * detect any distribution.
 #: gnome-initial-setup/pages/summary/gis-summary-page.c:240
 #, c-format
@@ -640,12 +647,32 @@ msgstr "%s siap digunakan. Kami harap Anda menyukainya!"
 msgid "Setup Complete"
 msgstr "Penyiapan Selesai"
 
-#: gnome-initial-setup/pages/summary/gis-summary-page.ui:70
+#: gnome-initial-setup/pages/summary/gis-summary-page.ui:64
 msgid "All done!"
 msgstr "Semua selesai!"
 
+#. Recurse, adding the ADM1 name to the country name
+#. Translators: this is the name of a location followed by a region, for example:
+#. * 'London, United Kingdom'
+#. * You shouldn't need to translate this string unless the language has a different comma.
+#.
+#. <location> with no parent <city>
+#. Translators: this is the name of a location followed by a region, for example:
+#. * 'London, United Kingdom'
+#. * You shouldn't need to translate this string unless the language has a different comma.
+#.
+#: gnome-initial-setup/pages/timezone/gis-location-entry.c:523
+#: gnome-initial-setup/pages/timezone/gis-location-entry.c:551
+#, c-format
+msgid "%s, %s"
+msgstr "%s, %s"
+
+#: gnome-initial-setup/pages/timezone/gis-location-entry.c:822
+msgid "Loading…"
+msgstr "Memuat…"
+
 #. Translators: "city, country"
-#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:273
+#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:271
 #, c-format
 msgctxt "timezone loc"
 msgid "%s, %s"
@@ -654,28 +681,28 @@ msgstr "%s, %s"
 #. Translators: UTC here means the Coordinated Universal Time.
 #. * %:::z will be replaced by the offset from UTC e.g. UTC+02
 #.
-#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:310
+#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:308
 msgid "UTC%:::z"
 msgstr "UTC%:::z"
 
 #. Translators: This is the time format used in 12-hour mode.
-#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:314
+#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:312
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
 #. Translators: This is the time format used in 24-hour mode.
-#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:317
+#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:315
 msgid "%R"
 msgstr "%R"
 
 #. Translators: "timezone (utc shift)"
-#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:320
+#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:318
 #, c-format
 msgctxt "timezone map"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:485
+#: gnome-initial-setup/pages/timezone/gis-timezone-page.c:483
 #: gnome-initial-setup/pages/timezone/gis-timezone-page.ui:17
 msgid "Time Zone"
 msgstr "Zona Waktu"

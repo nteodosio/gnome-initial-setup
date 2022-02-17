@@ -37,8 +37,9 @@
 
 struct _GisSoftwarePagePrivate
 {
-  GtkWidget *proprietary_switch;
   GtkWidget *header;
+  GtkWidget *enable_disable_button;
+  gboolean enabled;
 };
 
 typedef struct _GisSoftwarePagePrivate GisSoftwarePagePrivate;
@@ -90,7 +91,7 @@ gis_software_page_apply (GisPage      *gis_page,
     {
       const char *arg1;
 
-      if (gtk_switch_get_state (GTK_SWITCH (priv->proprietary_switch)))
+      if (priv->enabled)
         arg1 = "enable";
       else
         arg1 = "disable";
@@ -110,17 +111,37 @@ gis_software_page_locale_changed (GisPage *gis_page)
   GisSoftwarePagePrivate *priv = gis_software_page_get_instance_private (page);
 
   gis_page_set_title (GIS_PAGE (page), _("Third-Party Repositories"));
-  g_object_set (priv->header, "subtitle", _("Third-party repositories provide access to additional software from selected external sources. They include popular apps, as well as firmware that is important for some devices. Some proprietary software is included."), NULL);
+  g_object_set (priv->header, "subtitle", _("Third-party repositories provide access to additional software from selected external sources, including popular apps and drivers that are important for some devices. Some proprietary software is included."), NULL);
+}
+
+static void
+enabled_state_changed (GisSoftwarePage *page)
+{
+  GisSoftwarePagePrivate *priv = gis_software_page_get_instance_private (page);
+  GtkStyleContext *style;
+
+  style = gtk_widget_get_style_context (priv->enable_disable_button);
+
+  if (priv->enabled)
+    {
+      gtk_button_set_label (GTK_BUTTON (priv->enable_disable_button), _("_Disable Third-Party Repositories"));
+      gtk_style_context_remove_class (style, "suggested-action");
+    }
+  else
+    {
+      gtk_button_set_label (GTK_BUTTON (priv->enable_disable_button), _("_Enable Third-Party Repositories"));
+      gtk_style_context_add_class (style, "suggested-action");
+    }
 }
 
 static gboolean
-state_set (GtkSwitch *sw,
-           gboolean   state,
-           gpointer   data)
+enable_disable_button_clicked_cb (GtkButton       *button,
+                                  GisSoftwarePage *page)
 {
-  gtk_switch_set_state (sw, state);
-
-  return TRUE;
+  GisSoftwarePagePrivate *priv = gis_software_page_get_instance_private (page);
+  priv->enabled = !priv->enabled;
+  enabled_state_changed (page);
+  return GDK_EVENT_STOP;
 }
 
 static void
@@ -130,9 +151,9 @@ gis_software_page_class_init (GisSoftwarePageClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-software-page.ui");
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisSoftwarePage, proprietary_switch);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisSoftwarePage, header);
-  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), state_set);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisSoftwarePage, enable_disable_button);
+  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), enable_disable_button_clicked_cb);
 
   page_class->page_id = PAGE_ID;
   page_class->locale_changed = gis_software_page_locale_changed;
@@ -147,6 +168,7 @@ gis_software_page_init (GisSoftwarePage *page)
   g_type_ensure (GIS_TYPE_PAGE_HEADER);
 
   gtk_widget_init_template (GTK_WIDGET (page));
+  enabled_state_changed (page);
 }
 
 GisPage *
