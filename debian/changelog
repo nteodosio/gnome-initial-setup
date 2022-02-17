@@ -1,4 +1,4 @@
-gnome-initial-setup (42~beta-1ubuntu1) UNRELEASED; urgency=medium
+gnome-initial-setup (42~beta-1ubuntu1) jammy; urgency=medium
 
   * Resynchronize with Debian. Remaining changes:
     + debian/control.in:
@@ -16,7 +16,7 @@ gnome-initial-setup (42~beta-1ubuntu1) UNRELEASED; urgency=medium
         + revert the new upstream behaviour of not using the wizard for
           existing users since it has a purpose in Ubuntu
 
- -- Jeremy Bicha <jeremy.bicha@canonical.com>  Thu, 17 Feb 2022 08:06:10 -0500
+ -- Jeremy Bicha <jeremy.bicha@canonical.com>  Thu, 17 Feb 2022 08:22:03 -0500
 
 gnome-initial-setup (42~beta-1) unstable; urgency=medium
 
