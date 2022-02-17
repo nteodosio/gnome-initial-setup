@@ -1,7 +1,16 @@
-Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
+From: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Date: Thu, 17 Feb 2022 08:17:17 -0500
+Subject: ubuntu_newuser_wizard
+
 ===================================================================
---- gnome-initial-setup.orig/gnome-initial-setup/gnome-initial-setup.c
-+++ gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
+---
+ gnome-initial-setup/gnome-initial-setup.c | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
+index 46d0b48..0638f20 100644
+--- a/gnome-initial-setup/gnome-initial-setup.c
++++ b/gnome-initial-setup/gnome-initial-setup.c
 @@ -358,20 +358,6 @@ main (int argc, char *argv[])
  
    driver = gis_driver_new (mode);

@@ -10,10 +10,10 @@ https://gitlab.gnome.org/GNOME/gnome-initial-setup/-/merge_requests/140
  3 files changed, 5 insertions(+)
 
 diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
-index a4c6711..8dcb332 100644
+index 0638f20..08f7d9f 100644
 --- a/gnome-initial-setup/gnome-initial-setup.c
 +++ b/gnome-initial-setup/gnome-initial-setup.c
-@@ -289,6 +289,9 @@ main (int argc, char *argv[])
+@@ -338,6 +338,9 @@ main (int argc, char *argv[])
  #endif
  
    gtk_init (&argc, &argv);
@@ -36,7 +36,7 @@ index 8880634..04d1ef4 100644
  typedef struct _GisDriver    GisDriver;
  typedef struct _GisAssistant GisAssistant;
 diff --git a/gnome-initial-setup/meson.build b/gnome-initial-setup/meson.build
-index 35c1668..96a279b 100644
+index e4f1199..3188fdd 100644
 --- a/gnome-initial-setup/meson.build
 +++ b/gnome-initial-setup/meson.build
 @@ -44,6 +44,7 @@ dependencies = [

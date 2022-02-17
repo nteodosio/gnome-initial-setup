@@ -9,10 +9,10 @@ Subject: [PATCH] Display the ubuntu welcome wizard in Unity Don't display the
  gnome-initial-setup/gnome-initial-setup.c          | 12 ++++++++++++
  2 files changed, 13 insertions(+), 1 deletion(-)
 
-Index: gnome-initial-setup/data/gnome-initial-setup-first-login.desktop.in.in
-===================================================================
---- gnome-initial-setup.orig/data/gnome-initial-setup-first-login.desktop.in.in
-+++ gnome-initial-setup/data/gnome-initial-setup-first-login.desktop.in.in
+diff --git a/data/gnome-initial-setup-first-login.desktop.in.in b/data/gnome-initial-setup-first-login.desktop.in.in
+index f3d0df7..38f86cf 100644
+--- a/data/gnome-initial-setup-first-login.desktop.in.in
++++ b/data/gnome-initial-setup-first-login.desktop.in.in
 @@ -7,7 +7,7 @@ Terminal=false
  Type=Application
  StartupNotify=true
@@ -22,10 +22,10 @@ Index: gnome-initial-setup/data/gnome-initial-setup-first-login.desktop.in.in
  NoDisplay=true
  AutostartCondition=unless-exists gnome-initial-setup-done
  X-GNOME-HiddenUnderSystemd=@systemd_hidden@
-Index: gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
-===================================================================
---- gnome-initial-setup.orig/gnome-initial-setup/gnome-initial-setup.c
-+++ gnome-initial-setup/gnome-initial-setup/gnome-initial-setup.c
+diff --git a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
+index 81281d8..46d0b48 100644
+--- a/gnome-initial-setup/gnome-initial-setup.c
++++ b/gnome-initial-setup/gnome-initial-setup.c
 @@ -97,6 +97,16 @@ static PageData ubuntu_page_table[] = {
    { NULL },
  };

@@ -10,7 +10,7 @@ This reverts commit 34462d5c6255cd432044a7d9799ac055991b552e.
  3 files changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/gnome-initial-setup/meson.build b/gnome-initial-setup/meson.build
-index 43321ec..35c1668 100644
+index 60edab8..e4f1199 100644
 --- a/gnome-initial-setup/meson.build
 +++ b/gnome-initial-setup/meson.build
 @@ -35,7 +35,7 @@ dependencies = [
