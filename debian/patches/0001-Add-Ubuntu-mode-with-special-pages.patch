@@ -1918,7 +1918,7 @@ index 0000000..2f3c742
 +                <property name="can_focus">False</property>
 +                <property name="halign">start</property>
 +                <property name="valign">start</property>
-+                <property name="icon_name">ubuntu-logo-icon</property>
++                <property name="icon_name">distributor-logo</property>
 +                <property name="icon_size">6</property>
 +              </object>
 +              <packing>
