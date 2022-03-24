@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <glib/gi18n.h>
+#include <handy.h>
 
 #ifdef HAVE_CHEESE
 #include <cheese-gtk.h>
@@ -275,6 +276,14 @@ main (int argc, char *argv[])
 
   g_unsetenv ("GIO_USE_VFS");
 
+  /* By default, libhandy reads settings from the Settings portal, which causes
+   * the portal to be started, which causes gnome-keyring to be started. This
+   * interferes with our attempt below to manually start gnome-keyring and set
+   * the login keyring password to a well-known value, which we overwrite with
+   * the user's password once they choose one.
+   */
+  g_setenv ("HDY_DISABLE_PORTAL", "1", /* overwrite */ TRUE);
+
   context = g_option_context_new (_("— GNOME initial setup"));
   g_option_context_add_main_entries (context, entries, NULL);
 
@@ -289,6 +298,9 @@ main (int argc, char *argv[])
 #endif
 
   gtk_init (&argc, &argv);
+  hdy_init ();
+  hdy_style_manager_set_color_scheme (hdy_style_manager_get_default (),
+    HDY_COLOR_SCHEME_PREFER_LIGHT);
 
   g_message ("Starting gnome-initial-setup");
   if (gis_get_mock_mode ())
