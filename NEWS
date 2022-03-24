@@ -1,3 +1,51 @@
+42.0.1
+------
+
+* The dark theme preference support introduced in 42.rc caused a regression in
+  Initial Setup's handling of the login keyring. The effect was that the new
+  user's login keyring password does not match their system password, and so
+  cannot be unlocked. This regression is fixed in this release. Thanks to Adam
+  Williamson for diagnosing the problem & Matthias Clasen for suggesting the
+  fix. (#141)
+
+42.0
+----
+
+* Translation updates:
+ - Bokmål, Norwegian
+ - Danish
+ - French
+ - Hungarian
+ - Italian
+ - Japanese
+ - Kazakh
+ - Occitan (post 1500)
+ - Panjabi
+ - Polish
+ - Serbian
+ - Slovak
+
+42.rc
+-----
+
+* Initial Setup now supports the GNOME 42 dark theme preference, and picks up a
+  dependency on libhandy to enable this. This will only have a visible impact
+  if a distribution overrides the default value of this preference, since there
+  is no way for a user to adjust this preference until Initial Setup is
+  complete. (Jeremy Bicha, !140)
+
+* Translation updates:
+ - Bulgarian
+ - Catalan
+ - Croatian
+ - Finnish
+ - German
+ - Korean
+ - Lithuanian
+ - Persian
+ - Swedish
+ - Turkish
+
 42.beta
 -------
 
