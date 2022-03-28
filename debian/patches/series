@@ -1,5 +1,0 @@
-Revert-timezone-Load-GisLocationEntry-type-before-page-te.patch
-Revert-timezone-Reintroduce-GisLocationEntry.patch
-Revert-timezone-Renamespace-LocationEntry-update-to-GWeat.patch
-Revert-timezone-Import-GWeatherLocationEntry.patch
-Revert-timezone-Build-against-gweather-4.0.patch
