@@ -1,0 +1,16 @@
+# Description: ubuntu-logo-icon is from settings and with text next to it,
+we might need to revisit the use of the logo but workaround for now
+# Ubuntu: https://launchpad.net/bugs/1966115
+Index: gnome-initial-setup/gnome-initial-setup/pages/language/gis-language-page.c
+===================================================================
+--- gnome-initial-setup.orig/gnome-initial-setup/pages/language/gis-language-page.c
++++ gnome-initial-setup/gnome-initial-setup/pages/language/gis-language-page.c
+@@ -192,7 +192,7 @@ update_distro_logo (GisLanguagePage *pag
+   } id_to_logo[] = {
+     { "debian",                         "emblem-debian" },
+     { "fedora",                         "fedora-logo-icon" },
+-    { "ubuntu",                         "ubuntu-logo-icon" },
++    { "ubuntu",                         "distributor-logo" },
+     { "openSUSE Tumbleweed",            "opensuse-logo-icon" },
+     { "openSUSE Leap",                  "opensuse-logo-icon" },
+     { "SLED",                           "suse-logo-icon" },
