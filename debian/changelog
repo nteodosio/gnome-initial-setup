@@ -1,12 +1,14 @@
-gnome-initial-setup (42.1-1) UNRELEASED; urgency=medium
+gnome-initial-setup (42.1-1) unstable; urgency=medium
 
   [ Jeremy Bicha ]
   * New upstream translations release
+  * Add debian/upstream/metadata
+  * Bump Standards-Version to 4.6.0
 
   [ Will Thompson ]
   * debian/copyright: Remove obsolete license exception for um-realm-manager.*
 
- -- Jeremy Bicha <jbicha@ubuntu.com>  Mon, 18 Apr 2022 10:48:12 -0400
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Mon, 18 Apr 2022 11:55:21 -0400
 
 gnome-initial-setup (42.0.1-2) unstable; urgency=medium
 
