@@ -1,3 +1,54 @@
+gnome-initial-setup (42.2-1ubuntu1) UNRELEASED; urgency=medium
+
+  * Resynchronize with Debian. Remaining changes:
+    + debian/control.in:
+      - Build-Depends on libsnapd-glib-dev, libsoup2.4-dev, libsysmetrics-dev,
+        polkitd, libxml2-utils
+    + Add Ubuntu-specific patches:
+      - 0001-Make-summary-page-explicitly-request-navigation-butt.patch
+      - 0001-Ensure-stamp-file-if-the-user-quit-the-wizard.patch
+      - 0001-Add-Ubuntu-mode-with-special-pages.patch
+      - 0001-Display-the-ubuntu-welcome-wizard-in-Unity.patch
+      - 0006-goa-Add-Ubuntu-Single-Sign-On-to-the-list.patch
+      - 0007-goa-adjust-description-to-not-mention-email-or-conta.patch
+      - Don-t-show-Facebook-in-Ubuntu.patch
+      - 0008-Ubuntu-location-default.patch
+      - ubuntu_newuser_wizard.patch:
+        + revert the new upstream behaviour of not using the wizard for
+          existing users since it has a purpose in Ubuntu
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Mon, 06 Jun 2022 16:51:14 -0400
+
+gnome-initial-setup (42.2-1) unstable; urgency=medium
+
+  * New upstream translations release
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Mon, 06 Jun 2022 16:47:25 -0400
+
+gnome-initial-setup (42.1.1-1) unstable; urgency=medium
+
+  * New upstream translations release
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Thu, 21 Apr 2022 13:37:45 -0400
+
+gnome-initial-setup (42.1-1) unstable; urgency=medium
+
+  [ Jeremy Bicha ]
+  * New upstream translations release
+  * Add debian/upstream/metadata
+  * Bump Standards-Version to 4.6.0
+
+  [ Will Thompson ]
+  * debian/copyright: Remove obsolete license exception for um-realm-manager.*
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Mon, 18 Apr 2022 11:55:21 -0400
+
+gnome-initial-setup (42.0.1-2) unstable; urgency=medium
+
+  * Switch to libgweather4
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Mon, 28 Mar 2022 11:55:08 -0400
+
 gnome-initial-setup (42.0.1-1ubuntu3) kinetic; urgency=medium
 
   * Drop patches reverting switch to gweather4

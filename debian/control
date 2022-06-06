@@ -7,7 +7,7 @@ Section: gnome
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
-Uploaders: Jeremy Bicha <jbicha@ubuntu.com>, Jordi Mallach <jordi@debian.org>, Laurent Bigonville <bigon@debian.org>, Sebastien Bacher <seb128@debian.org>
+Uploaders: Jeremy Bicha <jbicha@ubuntu.com>, Laurent Bigonville <bigon@debian.org>, Sebastien Bacher <seb128@debian.org>
 Build-Depends: debhelper-compat (= 13),
                dh-sequence-gnome,
                gsettings-desktop-schemas-dev (>= 3.37.1),
@@ -28,6 +28,8 @@ Build-Depends: debhelper-compat (= 13),
                libibus-1.0-dev (>= 1.5.2),
                libjson-glib-dev,
                libkrb5-dev,
+               libmalcontent-0-dev [amd64 arm64 armel armhf i386 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
+               libmalcontent-ui-0-dev [amd64 arm64 armel armhf i386 mips mipsel mips64el ppc64el s390x hppa powerpc powerpcspe ppc64],
                libnm-dev (>= 1.2),
                libnma-dev (>= 1.0),
                libpango1.0-dev (>= 1.32.5),
@@ -42,10 +44,10 @@ Build-Depends: debhelper-compat (= 13),
                libwebkit2gtk-4.0-dev (>= 2.26),
                libxml2-utils,
                meson (>= 0.50.0),
-               policykit-1,
+               polkitd,
                systemd ( >= 242),
 Rules-Requires-Root: no
-Standards-Version: 4.5.0
+Standards-Version: 4.6.0
 XS-Debian-Vcs-Git: https://salsa.debian.org/gnome-team/gnome-initial-setup.git
 XS-Debian-Vcs-Browser: https://salsa.debian.org/gnome-team/gnome-initial-setup
 Vcs-Git: https://salsa.debian.org/gnome-team/gnome-initial-setup.git -b ubuntu/master
