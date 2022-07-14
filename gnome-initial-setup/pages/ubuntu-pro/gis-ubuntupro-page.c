@@ -29,6 +29,7 @@
 #include <gio/gio.h>
 #include <polkit/polkit.h>
 #include <curl/curl.h>
+#include <json-c/json.h>
 
 struct _GisUbuntuProPagePrivate {
   GtkWidget *enable_pro_select;
@@ -263,6 +264,28 @@ magic_parser(void* ptr,      //pointer to actual response
              size_t nmemb,   //size of data to which ptr points
              void* userdata) //WRITEDATA
 {
+    const char *data = (const char*)ptr; //FIXME: NOT NULL TERMINATED!
+
+    json_object *jfile, *jexpire, *jtoken, *jcode;
+    char        *expire, *token, *code;
+
+    jfile = json_tokener_parse(data);
+    if (!jfile){
+        exit(1);
+    }
+
+    if (
+        json_object_object_get_ex(jfile, "expiresIn", &jexpire) &&
+        json_object_object_get_ex(jfile, "token", &jtoken) &&
+        json_object_object_get_ex(jfile, "userCode", &jcode)
+    ){
+          expire = strdup(json_object_get_string(jexpire));
+          token  = strdup(json_object_get_string(jtoken));
+          code = strdup(json_object_get_string(jcode));
+          g_print("expire: %s\ntoken: %s\ncode: %s",expire,token,code);
+    }
+    json_object_put(jfile);
+
 }
 
 static void
