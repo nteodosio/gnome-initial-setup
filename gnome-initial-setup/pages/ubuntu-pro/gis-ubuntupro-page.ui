@@ -64,7 +64,7 @@
                     <property name="margin-left">30</property>
                     <property name="margin-right">30</property>
                     <property name="yalign">0</property>
-                    <property name="resource">/org/gnome/initial-setup/ubuntu-pro.svg</property>
+                    <property name="pixbuf">ubuntupro.png</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -99,6 +99,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="position">2</property>
           </packing>
         </child>
+<!---->
         <child>
           <object class="GtkLabel">
             <property name="visible">True</property>
@@ -114,6 +115,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="position">3</property>
           </packing>
         </child>
+<!---->
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -159,6 +161,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="spacing">6</property>
+<!---->
                             <child>
                               <object class="GtkEntry" id="pro_email_entry">
                                 <property name="visible">True</property>
@@ -173,6 +176,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
                                 <property name="position">0</property>
                               </packing>
                             </child>
+<!---->
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
@@ -216,6 +220,7 @@ to enable Ubuntu Pro</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
+<!---->
                         <child>
                           <object class="GtkLabel" id="pro_register_label">
                             <property name="visible">True</property>
@@ -230,6 +235,7 @@ to enable Ubuntu Pro</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
+<!---->
                         <child>
                           <object class="GtkLabel" id="token_attach_label">
                             <property name="can-focus">False</property>
@@ -368,6 +374,7 @@ to enable Ubuntu Pro</property>
             <property name="position">7</property>
           </packing>
         </child>
+<!---->
         <child>
           <object class="GtkButton" id="simulate_action">
             <property name="label" translatable="yes">get a pin</property>
@@ -377,6 +384,38 @@ to enable Ubuntu Pro</property>
             <property name="receives-default">True</property>
             <property name="halign">center</property>
             <signal name="clicked" handler="request_magic_attach" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+<!---->
+        <child>
+          <object class="GtkEntry" id="token_field">
+            <property name="visible">True</property>
+            <property name="sensitive">True</property>
+            <property name="can-focus">True</property>
+            <property name="width-chars">35</property>
+            <property name="placeholder-text" translatable="yes">Token</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="token_button">
+            <property name="label" translatable="yes">Attach</property>
+            <property name="visible">True</property>
+            <property name="sensitive">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="halign">start</property>
+            <signal name="clicked" handler="request_token_attach" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>

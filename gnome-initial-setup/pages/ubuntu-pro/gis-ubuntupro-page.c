@@ -28,6 +28,7 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <polkit/polkit.h>
+#include <curl/curl.h>
 
 struct _GisUbuntuProPagePrivate {
   GtkWidget *enable_pro_select;
@@ -41,6 +42,8 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *skip_choice;
   GtkWidget *generate_newcode_button;
   GtkWidget *simulate_action;
+  GtkWidget *token_field;
+  GtkWidget *token_button;
 
   guint ua_desktop_watch;
 
@@ -255,6 +258,14 @@ display_counter (gpointer data)
 }
 
 static void
+magic_parser(void* ptr,      //pointer to actual response
+             size_t size,    //always 1
+             size_t nmemb,   //size of data to which ptr points
+             void* userdata) //WRITEDATA
+{
+}
+
+static void
 request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
@@ -266,8 +277,70 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
   gtk_widget_show (GTK_WIDGET (priv->token_attach_label));
   gtk_widget_hide (GTK_WIDGET (priv->pro_register_label));
   gtk_widget_hide (GTK_WIDGET (priv->skip_choice));
+
+  char *output = {0};
+  CURLcode res;
+  CURL *curl_handle = curl_easy_init();
+  if(curl_handle) {
+    curl_easy_setopt(curl_handle, CURLOPT_URL, "https://contracts.staging.canonical.com/v1/magic-attach");
+    curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 0);
+    curl_easy_setopt(curl_handle, CURLOPT_POST, 1);
+    curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, "whatever");
+    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, magic_parser);
+    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &output);
+    res = curl_easy_perform(curl_handle); 
+    if (res != CURLE_OK){
+      g_warning("Could not get a valid response from the token provider.\n");
+    }
+  }
+  curl_easy_cleanup(curl_handle);
   
   g_timeout_add_seconds (1, display_counter, page);
+}
+
+static gboolean
+ua_attach(gchar *token){
+    GVariant        *result;
+    GDBusConnection *bus;
+    GError          *error = NULL;
+
+    bus = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+    if (bus == NULL){
+        g_warning("Failed to get system bus: %s", error->message);
+        return(FALSE);
+    }
+    result = g_dbus_connection_call_sync(bus,
+        "com.canonical.UbuntuAdvantage",
+        "/com/canonical/UbuntuAdvantage/Manager",
+        "com.canonical.UbuntuAdvantage.Manager",
+        "Attach",
+        g_variant_new("(s)", token),
+        G_VARIANT_TYPE("()"),
+        G_DBUS_CALL_FLAGS_NONE,
+        -1,
+        NULL,
+        &error);
+    if (result == NULL){
+        g_warning("Failed to contact Ubuntu Advantage D-Bus service: %s",
+                  error->message);
+        return(FALSE);
+    }
+    return(TRUE);
+}
+
+static void
+request_token_attach (GtkButton *button, GisUbuntuProPage *page)
+{
+  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  gtk_widget_set_sensitive (priv->token_button, FALSE);
+  gchar *token = gtk_entry_get_text(GTK_ENTRY(priv->token_field));
+  if (ua_attach(token)){
+    g_print("attached successfully\n");
+    //Go to next page
+  } else {
+    g_print("failed to attach\n");
+    gtk_widget_set_sensitive (priv->token_button, TRUE);
+  }
 }
 
 static void
@@ -317,7 +390,10 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, skip_choice);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, generate_newcode_button);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_field);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, simulate_action);
+  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_enablepro_toggled);
   
