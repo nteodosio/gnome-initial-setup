@@ -1,3 +1,4 @@
+data/com.ubuntu.welcome.policy.in
 data/gnome-initial-setup-first-login.desktop.in.in
 data/gnome-initial-setup.desktop.in.in
 gnome-initial-setup/cc-common-language.c
@@ -41,3 +42,12 @@ gnome-initial-setup/pages/timezone/gis-timezone-page.c
 gnome-initial-setup/pages/timezone/gis-timezone-page.ui
 gnome-initial-setup/pages/welcome/gis-welcome-page.c
 gnome-initial-setup/pages/welcome/gis-welcome-page.ui
+gnome-initial-setup/pages/timezone/gis-timezone-page.ui
+gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.c
+gnome-initial-setup/pages/ubuntu-report/gis-ubuntu-report-page.ui
+gnome-initial-setup/pages/livepatch/gis-auth-dialog.c
+gnome-initial-setup/pages/livepatch/gis-auth-dialog.ui
+gnome-initial-setup/pages/livepatch/gis-livepatch-page.c
+gnome-initial-setup/pages/livepatch/gis-livepatch-page.ui
+gnome-initial-setup/pages/apps/gis-apps-page.c
+gnome-initial-setup/pages/apps/gis-apps-page.ui

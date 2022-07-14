@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+
+<policyconfig>
+  <vendor>Ubuntu Welcome</vendor>
+  <vendor_url>https://www.ubuntu.com/</vendor_url>
+
+  <action id="com.ubuntu.welcome.ubuntupro">
+    <description>Manage Ubuntu Pro</description>
+    <message>Authentication is required to enable Ubuntu Pro</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.imply">io.snapcraft.snapd.login com.ubuntu.softwareproperties.applychanges </annotate>
+  </action>
+
+</policyconfig>

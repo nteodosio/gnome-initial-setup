@@ -73,6 +73,9 @@ libmalcontent_ui_dep = dependency ('malcontent-ui-0',
 have_parental_controls = libmalcontent_dep.found() and libmalcontent_ui_dep.found()
 conf.set('HAVE_PARENTAL_CONTROLS', have_parental_controls)
 
+# Needed for the 'livepatch' page
+polkit = dependency('polkit-gobject-1', version : '>= 0.103')
+
 configure_file(output: 'config.h',
                configuration: conf)
 config_h_dir = include_directories('.')

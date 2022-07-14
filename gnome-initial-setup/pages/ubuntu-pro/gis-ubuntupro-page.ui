@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <template class="GisUbuntuProPage" parent="GisPage">
+    <child>
+  <object class="GtkAlignment" id="stepUbuntuPro">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="top-padding">20</property>
+    <property name="bottom-padding">20</property>
+    <property name="left-padding">20</property>
+    <property name="right-padding">20</property>
+    <child>
+      <object class="GtkBox" id="enable_ubuntu_pro">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="no-show-all">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="label_ubuntu_pro">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">start</property>
+            <property name="margin-top">18</property>
+            <property name="margin-bottom">6</property>
+            <property name="label" translatable="yes">&lt;b&gt;Enable Ubuntu Pro&lt;/b&gt;</property>
+            <property name="use-markup">True</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">20</property>
+            <property name="margin-bottom">20</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="ubuntu_pro_eventbox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">12</property>
+            <property name="margin-bottom">12</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-left">30</property>
+                    <property name="margin-right">30</property>
+                    <property name="yalign">0</property>
+                    <property name="resource">/org/gnome/initial-setup/ubuntu-pro.svg</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="label" translatable="yes">Ubuntu Pro gives you access to multiple security and compliance features including Kernel Livepatch, automated hardening scripts and 10 years of security updates for over 30,000 deb packages.
+
+&lt;b&gt;Ubuntu Pro is free for personal use&lt;/b&gt;
+More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&gt;</property>
+                    <property name="use-markup">True</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">130</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
+            <property name="label" translatable="yes">To enable Ubuntu Pro, login with Ubuntu One or register a new account.</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkRadioButton" id="enable_pro_select">
+                    <property name="label" translatable="yes">Enable Ubuntu Pro</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="margin-top">6</property>
+                    <property name="xalign">0</property>
+                    <property name="draw-indicator">True</property>
+                    <property name="group">skip_pro_select</property>
+                    <signal name="toggled" handler="on_enablepro_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkAlignment">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="top-padding">6</property>
+                    <property name="left-padding">25</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkEntry" id="pro_email_entry">
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can-focus">True</property>
+                                <property name="width-chars">35</property>
+                                <property name="placeholder-text" translatable="yes">Your Ubuntu One email</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkImage" id="pro_status_image">
+                                    <property name="can-focus">False</property>
+                                    <property name="stock">gtk-dialog-warning</property>
+                                    <property name="icon_size">3</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="offline_warning">
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">An internet connection is required
+to enable Ubuntu Pro</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="pro_register_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="label" translatable="yes">&lt;small&gt;&lt;a href="https://login.ubuntu.com/"&gt;Register with Ubuntu One&lt;/a&gt;&lt;/small&gt;</property>
+                            <property name="use-markup">True</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="token_attach_label">
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">6</property>
+                            <property name="label" translatable="yes">To enable Ubuntu Pro, login at &lt;small&gt;&lt;a href="https://ubuntu.com/pro/attach/"&gt;ubuntu.com/pro/attach&lt;/a&gt;&lt;/small&gt; and verify the Attached Code below. &lt;b&gt;Expire in 30s&lt;/b&gt;</property>
+                            <property name="use-markup">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="skip_choice">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkRadioButton" id="skip_pro_select">
+                    <property name="label" translatable="yes">Skip Ubuntu Pro Setup for now</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="margin-top">12</property>
+                    <property name="xalign">0</property>
+                    <property name="active">True</property>
+                    <property name="draw-indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkAlignment">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="left-padding">25</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">&lt;small&gt;You can always enable Ubuntu Pro later in Settings&lt;/small&gt;</property>
+                        <property name="use-markup">True</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="left-padding">25</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">You can enable Ubuntu Pro via Settings or the ‘ua attach’ command.</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="scale" value="0"/>
+                </attributes>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="pin_label">
+            <property name="can-focus">False</property>
+            <property name="margin-top">12</property>
+            <property name="margin-bottom">12</property>
+            <property name="label" translatable="yes">0000</property>
+            <attributes>
+              <attribute name="scale" value="3"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="generate_newcode_button">
+            <property name="label" translatable="yes">Generate new attach code</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="halign">center</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="simulate_action">
+            <property name="label" translatable="yes">get a pin</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="halign">center</property>
+            <signal name="clicked" handler="request_magic_attach" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+    </child>
+  </template>
+</interface>
