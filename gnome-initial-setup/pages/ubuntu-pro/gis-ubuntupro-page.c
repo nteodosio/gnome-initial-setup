@@ -48,6 +48,7 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *token_button;
 
   guint ua_desktop_watch;
+  gint64 timeout;
 
   GPermission *permission;
 };
@@ -239,13 +240,12 @@ gis_ubuntupro_page_locale_changed (GisPage *page)
 static gboolean
 display_counter (gpointer data)
 {
-  static int counter = 30;
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
   GtkLabel *str_label;
   
-  counter = counter -1;
+  priv->timeout = priv->timeout - 1;
 
-  if (counter == 0) {
+  if (priv->timeout <= 0) {
     g_print("hit the timeout\n");
     str_label = g_strdup_printf ("To enable Ubuntu Pro, login at <small><a href='https://ubuntu.com/pro/attach/'>ubuntu.com/pro/attach</a></small> and verify the Attached Code below. <b>Code expired</b>");
     gtk_label_set_markup (GTK_LABEL (priv->token_attach_label), str_label);
@@ -253,7 +253,7 @@ display_counter (gpointer data)
     return FALSE;
   }
 
-  str_label = g_strdup_printf ("To enable Ubuntu Pro, login at <small><a href='https://ubuntu.com/pro/attach/'>ubuntu.com/pro/attach</a></small> and verify the Attached Code below. <b>Expire in %ds</b>", counter);
+  str_label = g_strdup_printf ("To enable Ubuntu Pro, login at <small><a href='https://ubuntu.com/pro/attach/'>ubuntu.com/pro/attach</a></small> and verify the Attached Code below. <b>Expire in %ds</b>", priv->timeout);
   gtk_label_set_markup (GTK_LABEL (priv->token_attach_label), str_label);
 
   return TRUE;
@@ -335,6 +335,7 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
     gint64 expire;
     magic_parser(buf, nbytes, &expire, &token, &code);
     gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
+    priv->timeout = expire;
     g_timeout_add_seconds (1, display_counter, page);
     free(token);
     free(code);
