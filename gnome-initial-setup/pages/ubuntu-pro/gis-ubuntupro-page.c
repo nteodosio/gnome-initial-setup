@@ -320,10 +320,10 @@ magic_parser(void* ptr,        //pointer to actual response
         return;
     }
 
-    JsonObject *status = json_node_get_object(root);
-    *expiresIn = json_object_get_int_member(status, "expiresIn");
-    *token = strdup(json_object_get_string_member(status, "token"));
-    *code = strdup(json_object_get_string_member(status, "userCode"));
+    JsonObject *response = json_node_get_object(root);
+    *expiresIn = json_object_get_int_member(response, "expiresIn");
+    *token = strdup(json_object_get_string_member(response, "token"));
+    *code = strdup(json_object_get_string_member(response, "userCode"));
 
     g_object_unref(parser);
 }
@@ -346,10 +346,10 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
     "https://contracts.staging.canonical.com/v1/magic-attach");
   if (nbytes > 0){
     gchar *token, *code;
-    gint64 expire;
-    magic_parser(buf, nbytes, &expire, &token, &code);
+    gint64 expiresIn;
+    magic_parser(buf, nbytes, &expiresIn, &token, &code);
     gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
-    priv->timeout = expire;
+    priv->timeout = expiresIn;
     g_timeout_add_seconds (1, display_counter, page);
     g_timeout_add_seconds (10, poll_token_attach, page);
     free(token);
