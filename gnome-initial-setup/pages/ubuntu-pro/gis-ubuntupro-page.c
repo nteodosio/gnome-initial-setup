@@ -237,6 +237,39 @@ gis_ubuntupro_page_locale_changed (GisPage *page)
   gis_page_set_title (GIS_PAGE (page), _("Ubuntu Pro"));
 }
 
+static gssize
+make_rest_req(void *buf, size_t bufsize, const char* type, const char* where)
+{
+  SoupSession *session = soup_session_new_with_options(NULL);
+  SoupMessage *msg;
+  const char *field = "foo";
+  GError *error = NULL;
+  msg = soup_message_new(type, where);
+  soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
+    strlen(field));
+  GInputStream *stream = soup_session_send(session, msg, NULL, &error);
+  gssize nbytes = g_input_stream_read(stream, buf, bufsize, NULL, &error);
+  if (nbytes >= bufsize || error != NULL){
+    g_warning("Didn't get a valid response for token request.");
+    return -1;
+  }
+  return nbytes;
+}
+
+
+static gboolean
+poll_token_attach (gpointer data)
+{
+  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
+  size_t bufsize = 1024;
+  void *buf = malloc(bufsize);
+  gssize nbytes = make_rest_req(buf, bufsize, "GET",
+    "https://contracts.staging.canonical.com/v1/magic-attach");
+//Example response: {"code":"unauthorized","message":"unauthorized","traceId":"280a7ed5-fdb0-4ac4-be23-d26deafb4610"}
+
+  free(buf);
+}
+
 static gboolean
 display_counter (gpointer data)
 {
@@ -295,25 +328,6 @@ magic_parser(void* ptr,        //pointer to actual response
     g_object_unref(parser);
 }
 
-static gssize
-make_rest_req(void *buf, size_t bufsize, const char* type, const char* where)
-{
-  SoupSession *session = soup_session_new_with_options(NULL);
-  SoupMessage *msg;
-  const char *field = "foo";
-  GError *error = NULL;
-  msg = soup_message_new(type, where);
-  soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
-    strlen(field));
-  GInputStream *stream = soup_session_send(session, msg, NULL, &error);
-  gssize nbytes = g_input_stream_read(stream, buf, bufsize, NULL, &error);
-  if (nbytes >= bufsize || error != NULL){
-    g_warning("Didn't get a valid response for token request.");
-    return -1;
-  }
-  return nbytes;
-}
-
 static void
 request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
 {
@@ -337,6 +351,7 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
     gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
     priv->timeout = expire;
     g_timeout_add_seconds (1, display_counter, page);
+    g_timeout_add_seconds (10, poll_token_attach, page);
     free(token);
     free(code);
   }
