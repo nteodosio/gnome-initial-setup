@@ -56,7 +56,6 @@ dependencies = [
     dependency ('snapd-glib'),
     dependency ('libsoup-2.4'),
     dependency ('libcurl'),
-    dependency ('json-c'),
     dependency ('sysmetrics'),
     cheese_dep,
     cheese_gtk_dep,

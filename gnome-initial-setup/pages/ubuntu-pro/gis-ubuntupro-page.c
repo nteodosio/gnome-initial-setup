@@ -29,7 +29,7 @@
 #include <gio/gio.h>
 #include <polkit/polkit.h>
 #include <curl/curl.h>
-#include <json-c/json.h>
+#include <json-glib/json-glib.h>
 
 struct _GisUbuntuProPagePrivate {
   GtkWidget *enable_pro_select;
@@ -264,28 +264,34 @@ magic_parser(void* ptr,      //pointer to actual response
              size_t nmemb,   //size of data to which ptr points
              void* userdata) //WRITEDATA
 {
-    const char *data = (const char*)ptr; //FIXME: NOT NULL TERMINATED!
+    const char *data = (const char*)ptr; // Not null terminated, use nmemb
 
-    json_object *jfile, *jexpire, *jtoken, *jcode;
-    char        *expire, *token, *code;
+    JsonParser *parser;
+    JsonNode *root;
+    GError *error;
 
-    jfile = json_tokener_parse(data);
-    if (!jfile){
-        exit(1);
+    parser = json_parser_new();
+    error = NULL;
+    json_parser_load_from_data(parser, data, nmemb, &error);
+    if (error){
+        g_warning("Couldn't parse magic token JSON; %s\n", error->message);
+        g_error_free(error);
+        g_object_unref(parser);
+        return;
+    }
+    root = json_parser_get_root(parser);
+    if (!JSON_NODE_HOLDS_OBJECT(root)){
+        g_warning("Invalid magic token JSON\n");
+        return;
     }
 
-    if (
-        json_object_object_get_ex(jfile, "expiresIn", &jexpire) &&
-        json_object_object_get_ex(jfile, "token", &jtoken) &&
-        json_object_object_get_ex(jfile, "userCode", &jcode)
-    ){
-          expire = strdup(json_object_get_string(jexpire));
-          token  = strdup(json_object_get_string(jtoken));
-          code = strdup(json_object_get_string(jcode));
-          g_print("expire: %s\ntoken: %s\ncode: %s",expire,token,code);
-    }
-    json_object_put(jfile);
+    JsonObject *status = json_node_get_object(root);
+    gint64 expire = json_object_get_int_member(status, "expiresIn");
+    gchar *token  = json_object_get_string_member(status, "token");
+    gchar *code = json_object_get_string_member(status, "userCode");
+    g_print("expire: %d\ntoken: %s\ncode: %s\n",expire,token,code);
 
+    g_object_unref(parser);
 }
 
 static void
