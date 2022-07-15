@@ -295,6 +295,26 @@ magic_parser(void* ptr,        //pointer to actual response
     g_object_unref(parser);
 }
 
+static gssize
+make_post(void *buf, size_t bufsize)
+{
+  SoupSession *session = soup_session_new_with_options(NULL);
+  SoupMessage *msg;
+  const char *field = "foo";
+  GError *error = NULL;
+  msg = soup_message_new("POST",
+    "https://contracts.staging.canonical.com/v1/magic-attach");
+  soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
+    strlen(field));
+  GInputStream *stream = soup_session_send(session, msg, NULL, &error);
+  gssize nbytes = g_input_stream_read(stream, buf, bufsize, NULL, &error);
+  if (nbytes >= bufsize || error != NULL){
+    g_warning("Didn't get a valid response for token request.");
+    return -1;
+  }
+  return nbytes;
+}
+
 static void
 request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
 {
@@ -309,28 +329,18 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
 
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
-  SoupSession *session = soup_session_new_with_options(NULL);
-  SoupMessage *msg;
-  const char *field = "foo";
-  GError *error = NULL;
-  msg = soup_message_new("POST",
-    "https://contracts.staging.canonical.com/v1/magic-attach");
-  soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
-    strlen(field));
-  GInputStream *stream = soup_session_send(session, msg, NULL, &error);
-  gssize nbytes = g_input_stream_read(stream, buf, bufsize, NULL, &error);
-  if (nbytes >= bufsize || error != NULL){
-    g_warning("Didn't get a valid response for token request.");
-    free(buf);
-    return;
+  gssize nbytes = make_post(buf, bufsize);
+  if (nbytes > 0){
+    gchar *token, *code;
+    gint64 expire;
+    magic_parser(buf, nbytes, &expire, &token, &code);
+    gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
+    g_timeout_add_seconds (1, display_counter, page);
+    free(token);
+    free(code);
   }
 
-  gchar *token, *code;
-  gint64 expire;
-  magic_parser(buf, nbytes, &expire, &token, &code);
-  gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
-  g_timeout_add_seconds (1, display_counter, page);
-  free(token); free(code); free(buf);
+  free(buf);
 }
 
 static gboolean
