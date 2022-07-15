@@ -260,8 +260,11 @@ display_counter (gpointer data)
 }
 
 static void
-magic_parser(void* ptr,      //pointer to actual response
-             size_t nmemb)   //size of data to which ptr points
+magic_parser(void* ptr,        //pointer to actual response
+             size_t nmemb,     //size of data to which ptr points
+             gint64 *expiresIn,
+             gchar **token,
+             gchar **code)
 {
     const char *data = (const char*)ptr; // Not null terminated, use nmemb
 
@@ -285,10 +288,9 @@ magic_parser(void* ptr,      //pointer to actual response
     }
 
     JsonObject *status = json_node_get_object(root);
-    gint64 expire = json_object_get_int_member(status, "expiresIn");
-    gchar *token  = json_object_get_string_member(status, "token");
-    gchar *code = json_object_get_string_member(status, "userCode");
-    g_print("expire: %d\ntoken: %s\ncode: %s\n",expire,token,code);
+    *expiresIn = json_object_get_int_member(status, "expiresIn");
+    *token = strdup(json_object_get_string_member(status, "token"));
+    *code = strdup(json_object_get_string_member(status, "userCode"));
 
     g_object_unref(parser);
 }
@@ -300,7 +302,6 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
   char *command = NULL;
 
   g_print ("Request magic attach\n");
-  gtk_label_set_text (GTK_LABEL (priv->pin_label), "1234");
   gtk_widget_show (GTK_WIDGET (priv->pin_label));
   gtk_widget_show (GTK_WIDGET (priv->token_attach_label));
   gtk_widget_hide (GTK_WIDGET (priv->pro_register_label));
@@ -320,11 +321,16 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
   gssize nbytes = g_input_stream_read(stream, buf, bufsize, NULL, &error);
   if (nbytes >= bufsize || error != NULL){
     g_warning("Didn't get a valid response for token request.");
-  } else {
-    magic_parser(buf, nbytes);
-    g_timeout_add_seconds (1, display_counter, page);
+    free(buf);
+    return;
   }
-  free(buf);
+
+  gchar *token, *code;
+  gint64 expire;
+  magic_parser(buf, nbytes, &expire, &token, &code);
+  gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
+  g_timeout_add_seconds (1, display_counter, page);
+  free(token); free(code); free(buf);
 }
 
 static gboolean
