@@ -30,6 +30,7 @@
 #include <polkit/polkit.h>
 #include <curl/curl.h>
 #include <json-glib/json-glib.h>
+#include <libsoup/soup.h>
 
 struct _GisUbuntuProPagePrivate {
   GtkWidget *enable_pro_select;
@@ -260,9 +261,7 @@ display_counter (gpointer data)
 
 static void
 magic_parser(void* ptr,      //pointer to actual response
-             size_t size,    //always 1
-             size_t nmemb,   //size of data to which ptr points
-             void* userdata) //WRITEDATA
+             size_t nmemb)   //size of data to which ptr points
 {
     const char *data = (const char*)ptr; // Not null terminated, use nmemb
 
@@ -307,24 +306,25 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
   gtk_widget_hide (GTK_WIDGET (priv->pro_register_label));
   gtk_widget_hide (GTK_WIDGET (priv->skip_choice));
 
-  char *output = {0};
-  CURLcode res;
-  CURL *curl_handle = curl_easy_init();
-  if(curl_handle) {
-    curl_easy_setopt(curl_handle, CURLOPT_URL, "https://contracts.staging.canonical.com/v1/magic-attach");
-    curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 0);
-    curl_easy_setopt(curl_handle, CURLOPT_POST, 1);
-    curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, "whatever");
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, magic_parser);
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &output);
-    res = curl_easy_perform(curl_handle); 
-    if (res != CURLE_OK){
-      g_warning("Could not get a valid response from the token provider.\n");
-    }
+  size_t bufsize = 1024;
+  void *buf = malloc(bufsize);
+  SoupSession *session = soup_session_new_with_options(NULL);
+  SoupMessage *msg;
+  const char *field = "foo";
+  GError *error = NULL;
+  msg = soup_message_new("POST",
+    "https://contracts.staging.canonical.com/v1/magic-attach");
+  soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
+    strlen(field));
+  GInputStream *stream = soup_session_send(session, msg, NULL, &error);
+  gssize nbytes = g_input_stream_read(stream, buf, bufsize, NULL, &error);
+  if (nbytes >= bufsize || error != NULL){
+    g_warning("Didn't get a valid response for token request.");
+  } else {
+    magic_parser(buf, nbytes);
+    g_timeout_add_seconds (1, display_counter, page);
   }
-  curl_easy_cleanup(curl_handle);
-  
-  g_timeout_add_seconds (1, display_counter, page);
+  free(buf);
 }
 
 static gboolean

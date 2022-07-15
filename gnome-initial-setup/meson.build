@@ -55,7 +55,6 @@ dependencies = [
     dependency ('webkit2gtk-4.0', version: '>= 2.26.0'),
     dependency ('snapd-glib'),
     dependency ('libsoup-2.4'),
-    dependency ('libcurl'),
     dependency ('sysmetrics'),
     cheese_dep,
     cheese_gtk_dep,
