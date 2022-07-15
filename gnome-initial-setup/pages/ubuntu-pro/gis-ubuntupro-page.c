@@ -49,6 +49,7 @@ struct _GisUbuntuProPagePrivate {
 
   guint ua_desktop_watch;
   gint64 timeout;
+  gchar *token;
 
   GPermission *permission;
 };
@@ -265,8 +266,10 @@ poll_token_attach (gpointer data)
   void *buf = malloc(bufsize);
   gssize nbytes = make_rest_req(buf, bufsize, "GET",
     "https://contracts.staging.canonical.com/v1/magic-attach");
-//Example response: {"code":"unauthorized","message":"unauthorized","traceId":"280a7ed5-fdb0-4ac4-be23-d26deafb4610"}
-
+//Send: curl -X GET -H 'Authorization: Bearer >>TOKEN<<' 
+//unauthorized response: {"code":"unauthorized","message":"unauthorized","traceId":"280a7ed5-fdb0-4ac4-be23-d26deafb4616"}
+//authorized response, has the same structure of the POST if pending: {"expires":"2022-07-15T17:45:51.902Z","expiresIn":567,"token":"M13TDXUcoPrrV9guPBmps6fUJpxxpc","userCode":"8FHI4I"}
+//authorized and activated response: contains two additional fields: "contract_id": "CONTRACT_ID", "contract_token": "CONTRACT_TOKEN"
   free(buf);
 }
 
@@ -292,7 +295,7 @@ display_counter (gpointer data)
   return TRUE;
 }
 
-static void
+static gboolean
 magic_parser(void* ptr,        //pointer to actual response
              size_t nmemb,     //size of data to which ptr points
              gint64 *expiresIn,
@@ -312,12 +315,12 @@ magic_parser(void* ptr,        //pointer to actual response
         g_warning("Couldn't parse magic token JSON; %s\n", error->message);
         g_error_free(error);
         g_object_unref(parser);
-        return;
+        return FALSE;
     }
     root = json_parser_get_root(parser);
     if (!JSON_NODE_HOLDS_OBJECT(root)){
         g_warning("Invalid magic token JSON\n");
-        return;
+        return FALSE;
     }
 
     JsonObject *response = json_node_get_object(root);
@@ -326,6 +329,7 @@ magic_parser(void* ptr,        //pointer to actual response
     *code = strdup(json_object_get_string_member(response, "userCode"));
 
     g_object_unref(parser);
+    return TRUE;
 }
 
 static void
@@ -347,9 +351,13 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
   if (nbytes > 0){
     gchar *token, *code;
     gint64 expiresIn;
-    magic_parser(buf, nbytes, &expiresIn, &token, &code);
+    if (!magic_parser(buf, nbytes, &expiresIn, &token, &code)){
+      g_warning("Couldn't parse response.\n");
+      return;
+    }
     gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
     priv->timeout = expiresIn;
+    priv->token = token;
     g_timeout_add_seconds (1, display_counter, page);
     g_timeout_add_seconds (10, poll_token_attach, page);
     free(token);
