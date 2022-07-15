@@ -296,14 +296,13 @@ magic_parser(void* ptr,        //pointer to actual response
 }
 
 static gssize
-make_post(void *buf, size_t bufsize)
+make_rest_req(void *buf, size_t bufsize, const char* type, const char* where)
 {
   SoupSession *session = soup_session_new_with_options(NULL);
   SoupMessage *msg;
   const char *field = "foo";
   GError *error = NULL;
-  msg = soup_message_new("POST",
-    "https://contracts.staging.canonical.com/v1/magic-attach");
+  msg = soup_message_new(type, where);
   soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
     strlen(field));
   GInputStream *stream = soup_session_send(session, msg, NULL, &error);
@@ -329,7 +328,8 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
 
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
-  gssize nbytes = make_post(buf, bufsize);
+  gssize nbytes = make_rest_req(buf, bufsize, "POST",
+    "https://contracts.staging.canonical.com/v1/magic-attach");
   if (nbytes > 0){
     gchar *token, *code;
     gint64 expire;
