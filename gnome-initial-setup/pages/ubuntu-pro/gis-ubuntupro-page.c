@@ -239,7 +239,8 @@ gis_ubuntupro_page_locale_changed (GisPage *page)
 }
 
 static gssize
-make_rest_req(void *buf, size_t bufsize, const char* type, const char* where)
+make_rest_req(void *buf, size_t bufsize, const char* type, const char* where,
+              const char* header_name, const char* header)
 {
   SoupSession *session = soup_session_new_with_options(NULL);
   SoupMessage *msg;
@@ -248,6 +249,9 @@ make_rest_req(void *buf, size_t bufsize, const char* type, const char* where)
   msg = soup_message_new(type, where);
   soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
     strlen(field));
+  if (header_name != NULL && header != NULL){
+    soup_message_headers_append (msg->request_headers, header_name, header);
+  }
   GInputStream *stream = soup_session_send(session, msg, NULL, &error);
   gssize nbytes = g_input_stream_read(stream, buf, bufsize, NULL, &error);
   if (nbytes >= bufsize || error != NULL){
@@ -264,12 +268,28 @@ poll_token_attach (gpointer data)
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
-  gssize nbytes = make_rest_req(buf, bufsize, "GET",
-    "https://contracts.staging.canonical.com/v1/magic-attach");
+  const char *header_name = "Authorization";
+  gchar header[128] = "Bearer ";
+  strcat(header, priv->token);
 //Send: curl -X GET -H 'Authorization: Bearer >>TOKEN<<' 
 //unauthorized response: {"code":"unauthorized","message":"unauthorized","traceId":"280a7ed5-fdb0-4ac4-be23-d26deafb4616"}
 //authorized response, has the same structure of the POST if pending: {"expires":"2022-07-15T17:45:51.902Z","expiresIn":567,"token":"M13TDXUcoPrrV9guPBmps6fUJpxxpc","userCode":"8FHI4I"}
 //authorized and activated response: contains two additional fields: "contract_id": "CONTRACT_ID", "contract_token": "CONTRACT_TOKEN"
+
+  SoupSession *session = soup_session_new_with_options(NULL);
+  SoupMessage *msg;
+  const char *field = "foo";
+  GError *error = NULL;
+
+  gssize nbytes = make_rest_req(buf, bufsize, "GET",
+    "https://contracts.staging.canonical.com/v1/magic-attach",
+    header_name, header);
+  if (nbytes > 0){
+    //We're cool and must check if token is activated by looking for contract_id
+    g_print((char*)buf);
+  }
+
+  return FALSE;
   free(buf);
 }
 
@@ -347,7 +367,7 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
   gssize nbytes = make_rest_req(buf, bufsize, "POST",
-    "https://contracts.staging.canonical.com/v1/magic-attach");
+    "https://contracts.staging.canonical.com/v1/magic-attach", NULL, NULL);
   if (nbytes > 0){
     gchar *token, *code;
     gint64 expiresIn;
@@ -357,10 +377,9 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
     }
     gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
     priv->timeout = expiresIn;
-    priv->token = token;
+    priv->token = token; //don't free, used by poll callback
     g_timeout_add_seconds (1, display_counter, page);
     g_timeout_add_seconds (10, poll_token_attach, page);
-    free(token);
     free(code);
   }
 
