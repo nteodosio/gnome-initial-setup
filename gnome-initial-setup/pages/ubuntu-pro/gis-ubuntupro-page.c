@@ -244,7 +244,7 @@ static gssize
 make_rest_req(void *buf, size_t bufsize, const char* type, const char* where,
               const char* header_name, const char* header)
 {
-  SoupSession *session = soup_session_new_with_options(NULL);
+  SoupSession *session = soup_session_new();
   SoupMessage *msg;
   const char *field = "foo";
   GError *error = NULL;
@@ -276,11 +276,6 @@ poll_token_attach (GisUbuntuProPagePrivate *priv)
 //unauthorized response: {"code":"unauthorized","message":"unauthorized","traceId":"280a7ed5-fdb0-4ac4-be23-d26deafb4616"}
 //authorized response, has the same structure of the POST if pending: {"expires":"2022-07-15T17:45:51.902Z","expiresIn":567,"token":"M13TDXUcoPrrV9guPBmps6fUJpxxpc","userCode":"8FHI4I"}
 //authorized and activated response: contains two additional fields: "contractID": "CONTRACT_ID", "contractToken": "CONTRACT_TOKEN"
-
-  SoupSession *session = soup_session_new_with_options(NULL);
-  SoupMessage *msg;
-  const char *field = "foo";
-  GError *error = NULL;
 
   gssize nbytes = make_rest_req(buf, bufsize, "GET",
     "https://contracts.staging.canonical.com/v1/magic-attach",
