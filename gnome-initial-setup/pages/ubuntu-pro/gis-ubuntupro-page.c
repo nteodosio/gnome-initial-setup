@@ -264,15 +264,8 @@ make_rest_req(void *buf, size_t bufsize, const char* type, const char* where,
 }
 
 static gboolean
-poll_token_attach (gpointer data)
+poll_token_attach (GisUbuntuProPagePrivate *priv)
 {
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
-  if (priv->timeout <= 0) {
-    // Token expired
-    return TRUE;
-  }
-
-  gboolean ret = FALSE;
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
   const char *header_name = "Authorization";
@@ -295,8 +288,7 @@ poll_token_attach (gpointer data)
     RestJSONResponse resp;
     if (!magic_parser(buf, nbytes, &resp)){
       g_warning("Couldn't parse response.\n");
-    }
-    if (resp.contract_id != NULL){
+    } else if (resp.contract_id != NULL){
       g_print("Attached with contract ID %s\n", resp.contract_id);
       ret = TRUE;
     }
@@ -307,7 +299,7 @@ poll_token_attach (gpointer data)
 }
 
 static gboolean
-display_counter (gpointer data)
+token_countdown (gpointer data)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
   GtkLabel *str_label;
@@ -320,6 +312,13 @@ display_counter (gpointer data)
     gtk_label_set_markup (GTK_LABEL (priv->token_attach_label), str_label);
     gtk_widget_show (GTK_WIDGET (priv->generate_newcode_button));
     return FALSE;
+  } else if (priv->timeout % 10 == 0) {
+  /* Don't poll the server every second, only every 10 seconds. */
+    gboolean attached = poll_token_attach(priv);
+    if (attached) {
+      g_print("attached!\n");
+      return FALSE;
+    }
   }
 
   str_label = g_strdup_printf ("To enable Ubuntu Pro, login at <small><a href='https://ubuntu.com/pro/attach/'>ubuntu.com/pro/attach</a></small> and verify the Attached Code below. <b>Expire in %ds</b>", priv->timeout);
@@ -400,8 +399,7 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
     gtk_label_set_text (GTK_LABEL (priv->pin_label), resp.code);
     priv->timeout = resp.expiresIn;
     priv->token = resp.token; //don't free, used by poll callback
-    g_timeout_add_seconds (1, display_counter, page);
-    g_timeout_add_seconds (10, poll_token_attach, page);
+    g_timeout_add_seconds (1, token_countdown, page);
     free(resp.code);
   }
 
