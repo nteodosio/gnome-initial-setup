@@ -316,11 +316,9 @@ display_counter (gpointer data)
 }
 
 static gboolean
-magic_parser(void* ptr,        //pointer to actual response
-             size_t nmemb,     //size of data to which ptr points
-             gint64 *expiresIn,
-             gchar **token,
-             gchar **code)
+magic_parser(void* ptr,              //pointer to actual response
+             size_t nmemb,           //size of data to which ptr points
+             RestJSONResponse *resp) //relevant response fields
 {
     const char *data = (const char*)ptr; // Not null terminated, use nmemb
 
@@ -344,9 +342,21 @@ magic_parser(void* ptr,        //pointer to actual response
     }
 
     JsonObject *response = json_node_get_object(root);
-    *expiresIn = json_object_get_int_member(response, "expiresIn");
-    *token = strdup(json_object_get_string_member(response, "token"));
-    *code = strdup(json_object_get_string_member(response, "userCode"));
+    resp->expiresIn = json_object_has_member(response, "expiresIn") ?
+        json_object_get_int_member(response, "expiresIn") :
+        0;
+    resp->token = json_object_has_member(response, "token") ?
+        strdup(json_object_get_string_member(response, "token")) :
+        NULL;
+    resp->code = json_object_has_member(response, "userCode") ?
+        strdup(json_object_get_string_member(response, "userCode")) :
+        NULL;
+    resp->contract_id = json_object_has_member(response, "contract_id") ?
+        strdup(json_object_get_string_member(response, "contract_id")) :
+        NULL;
+    resp->contract_token = json_object_has_member(response, "contract_token") ?
+        strdup(json_object_get_string_member(response, "contract_token")) :
+        NULL;
 
     g_object_unref(parser);
     return TRUE;
@@ -369,18 +379,17 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
   gssize nbytes = make_rest_req(buf, bufsize, "POST",
     "https://contracts.staging.canonical.com/v1/magic-attach", NULL, NULL);
   if (nbytes > 0){
-    gchar *token, *code;
-    gint64 expiresIn;
-    if (!magic_parser(buf, nbytes, &expiresIn, &token, &code)){
+    RestJSONResponse resp;
+    if (!magic_parser(buf, nbytes, &resp)){
       g_warning("Couldn't parse response.\n");
       return;
     }
-    gtk_label_set_text (GTK_LABEL (priv->pin_label), code);
-    priv->timeout = expiresIn;
-    priv->token = token; //don't free, used by poll callback
+    gtk_label_set_text (GTK_LABEL (priv->pin_label), resp.code);
+    priv->timeout = resp.expiresIn;
+    priv->token = resp.token; //don't free, used by poll callback
     g_timeout_add_seconds (1, display_counter, page);
     g_timeout_add_seconds (10, poll_token_attach, page);
-    free(code);
+    free(resp.code);
   }
 
   free(buf);

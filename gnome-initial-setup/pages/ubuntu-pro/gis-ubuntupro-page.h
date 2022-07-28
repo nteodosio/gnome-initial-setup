@@ -32,6 +32,7 @@ G_BEGIN_DECLS
 
 typedef struct _GisUbuntuProPage        GisUbuntuProPage;
 typedef struct _GisUbuntuProPageClass   GisUbuntuProPageClass;
+typedef struct _RestJSONResponse        RestJSONResponse;
 
 struct _GisUbuntuProPage
 {
@@ -41,6 +42,14 @@ struct _GisUbuntuProPage
 struct _GisUbuntuProPageClass
 {
   GisPageClass parent_class;
+};
+
+struct _RestJSONResponse {
+    gint64 expiresIn;
+    gchar *token;
+    gchar *code;
+    gchar *contract_id;
+    gchar *contract_token;
 };
 
 GType gis_ubuntupro_page_get_type (void);
