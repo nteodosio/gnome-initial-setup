@@ -57,6 +57,8 @@ typedef struct _GisUbuntuProPagePrivate GisUbuntuProPagePrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (GisUbuntuProPage, gis_ubuntupro_page, GIS_TYPE_PAGE);
 
+static gboolean magic_parser(void*, size_t, RestJSONResponse*);
+
 static gboolean
 get_ubuntu_advantage_attached(gboolean *attached)
 {
@@ -261,12 +263,16 @@ make_rest_req(void *buf, size_t bufsize, const char* type, const char* where,
   return nbytes;
 }
 
-
 static gboolean
 poll_token_attach (gpointer data)
 {
-  gboolean ret = FALSE;
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
+  if (priv->timeout <= 0) {
+    // Token expired
+    return TRUE;
+  }
+
+  gboolean ret = FALSE;
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
   const char *header_name = "Authorization";
