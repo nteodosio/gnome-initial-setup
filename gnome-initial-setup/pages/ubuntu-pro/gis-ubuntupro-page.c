@@ -265,6 +265,7 @@ make_rest_req(void *buf, size_t bufsize, const char* type, const char* where,
 static gboolean
 poll_token_attach (gpointer data)
 {
+  gboolean ret = FALSE;
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
@@ -285,12 +286,18 @@ poll_token_attach (gpointer data)
     "https://contracts.staging.canonical.com/v1/magic-attach",
     header_name, header);
   if (nbytes > 0){
-    //We're cool and must check if token is activated by looking for contract_id
-    g_print((char*)buf);
+    RestJSONResponse resp;
+    if (!magic_parser(buf, nbytes, &resp)){
+      g_warning("Couldn't parse response.\n");
+    }
+    if (resp.contract_id != NULL){
+      g_print("Attached with contract ID %s\n", resp.contract_id);
+      ret = TRUE;
+    }
   }
 
-  return FALSE;
   free(buf);
+  return ret;
 }
 
 static gboolean
