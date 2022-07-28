@@ -275,7 +275,7 @@ poll_token_attach (GisUbuntuProPagePrivate *priv)
 //Send: curl -X GET -H 'Authorization: Bearer >>TOKEN<<' 
 //unauthorized response: {"code":"unauthorized","message":"unauthorized","traceId":"280a7ed5-fdb0-4ac4-be23-d26deafb4616"}
 //authorized response, has the same structure of the POST if pending: {"expires":"2022-07-15T17:45:51.902Z","expiresIn":567,"token":"M13TDXUcoPrrV9guPBmps6fUJpxxpc","userCode":"8FHI4I"}
-//authorized and activated response: contains two additional fields: "contract_id": "CONTRACT_ID", "contract_token": "CONTRACT_TOKEN"
+//authorized and activated response: contains two additional fields: "contractID": "CONTRACT_ID", "contractToken": "CONTRACT_TOKEN"
 
   SoupSession *session = soup_session_new_with_options(NULL);
   SoupMessage *msg;
@@ -289,8 +289,8 @@ poll_token_attach (GisUbuntuProPagePrivate *priv)
     RestJSONResponse resp;
     if (!magic_parser(buf, nbytes, &resp)){
       g_warning("Couldn't parse response.\n");
-    } else if (resp.contract_id != NULL){
-      g_print("Attached with contract ID %s\n", resp.contract_id);
+    } else if (resp.contractID != NULL){
+      g_print("Attached with contract ID %s\n", resp.contractID);
       ret = TRUE;
     }
   }
@@ -364,11 +364,11 @@ magic_parser(void* ptr,              //pointer to actual response
     resp->code = json_object_has_member(response, "userCode") ?
         strdup(json_object_get_string_member(response, "userCode")) :
         NULL;
-    resp->contract_id = json_object_has_member(response, "contract_id") ?
-        strdup(json_object_get_string_member(response, "contract_id")) :
+    resp->contractID = json_object_has_member(response, "contractID") ?
+        strdup(json_object_get_string_member(response, "contractID")) :
         NULL;
-    resp->contract_token = json_object_has_member(response, "contract_token") ?
-        strdup(json_object_get_string_member(response, "contract_token")) :
+    resp->contractToken = json_object_has_member(response, "contractToken") ?
+        strdup(json_object_get_string_member(response, "contractToken")) :
         NULL;
 
     g_object_unref(parser);

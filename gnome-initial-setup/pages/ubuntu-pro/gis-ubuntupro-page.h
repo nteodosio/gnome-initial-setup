@@ -48,8 +48,8 @@ struct _RestJSONResponse {
     gint64 expiresIn;
     gchar *token;
     gchar *code;
-    gchar *contract_id;
-    gchar *contract_token;
+    gchar *contractID;
+    gchar *contractToken;
 };
 
 GType gis_ubuntupro_page_get_type (void);
