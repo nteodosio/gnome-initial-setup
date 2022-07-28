@@ -266,6 +266,7 @@ make_rest_req(void *buf, size_t bufsize, const char* type, const char* where,
 static gboolean
 poll_token_attach (GisUbuntuProPagePrivate *priv)
 {
+  gboolean ret = FALSE;
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
   const char *header_name = "Authorization";
