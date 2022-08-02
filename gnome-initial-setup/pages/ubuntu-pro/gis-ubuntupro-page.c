@@ -28,7 +28,6 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <polkit/polkit.h>
-#include <curl/curl.h>
 #include <json-glib/json-glib.h>
 #include <libsoup/soup.h>
 
