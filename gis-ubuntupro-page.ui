@@ -3,13 +3,9 @@
   <!-- interface-requires gtk+ 3.0 -->
   <template class="GisUbuntuProPage" parent="GisPage">
     <child>
-  <object class="GtkAlignment" id="stepUbuntuPro">
+  <object class="GtkBox" id="stepUbuntuPro">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="top-padding">20</property>
-    <property name="bottom-padding">20</property>
-    <property name="left-padding">20</property>
-    <property name="right-padding">20</property>
     <child>
       <object class="GtkBox" id="enable_ubuntu_pro">
         <property name="visible">True</property>
@@ -345,22 +341,6 @@ to enable Ubuntu Pro</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="pin_label">
-            <property name="can-focus">False</property>
-            <property name="margin-top">12</property>
-            <property name="margin-bottom">12</property>
-            <property name="label" translatable="yes">0000</property>
-            <attributes>
-              <attribute name="scale" value="3"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">6</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="generate_newcode_button">
             <property name="label" translatable="yes">Generate new attach code</property>
             <property name="can-focus">True</property>
@@ -391,6 +371,83 @@ to enable Ubuntu Pro</property>
           </packing>
         </child>
 <!---->
+      </object>
+    </child>
+  <child>
+  <object class="GtkBox" id="enable_ubuntu_pro2">
+    <property name="visible">False</property>
+    <property name="can-focus">False</property>
+    <property name="no-show-all">True</property>
+    <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkRadioButton" id="token">
+            <property name="label" translatable="yes">Or add token manually</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="margin-top">6</property>
+            <property name="xalign">0</property>
+            <property name="draw-indicator">True</property>
+            <property name="group">magic</property>
+            <signal name="toggled" handler="request_token_attach" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="token_field">
+            <property name="visible">False</property>
+            <property name="sensitive">True</property>
+            <property name="can-focus">True</property>
+            <property name="width-chars">35</property>
+            <property name="placeholder-text" translatable="yes">Token</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioButton" id="magic">
+            <property name="label" translatable="yes">Log in with Ubuntu One</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="margin-top">6</property>
+            <property name="xalign">0</property>
+            <property name="active">False</property>
+            <property name="draw-indicator">True</property>
+            <property name="group">magic</property>
+            <signal name="toggled" handler="request_magic_attach" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="pin_label">
+            <property name="can-focus">False</property>
+            <property name="margin-top">12</property>
+            <property name="margin-bottom">12</property>
+            <property name="label" translatable="yes">0000</property>
+            <attributes>
+              <attribute name="scale" value="3"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+
         <child>
           <object class="GtkButton" id="simulate_action">
             <property name="label" translatable="yes">get a pin</property>
@@ -409,21 +466,6 @@ to enable Ubuntu Pro</property>
         </child>
 <!---->
         <child>
-          <object class="GtkEntry" id="token_field">
-            <property name="visible">False</property>
-            <property name="sensitive">True</property>
-            <property name="can-focus">True</property>
-            <property name="width-chars">35</property>
-            <property name="placeholder-text" translatable="yes">Token</property>
-            <property name="halign">start</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">8</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="token_button">
             <property name="label" translatable="yes">Attach</property>
             <property name="visible">False</property>
@@ -439,8 +481,8 @@ to enable Ubuntu Pro</property>
             <property name="position">8</property>
           </packing>
         </child>
-      </object>
-    </child>
+  </object>
+  </child>
   </object>
     </child>
   </template>

@@ -46,6 +46,8 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *simulate_action;
   GtkWidget *token_field;
   GtkWidget *token_button;
+  GtkWidget *enable_ubuntu_pro;
+  GtkWidget *enable_ubuntu_pro2;
 
   guint ua_desktop_watch;
   gint64 timeout;
@@ -375,9 +377,9 @@ next_page (GtkButton *button, GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
 
-  gtk_widget_set_visible (GTK_WIDGET (priv->token_button), TRUE);
+  gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro), FALSE);
+  gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), TRUE);
   gtk_widget_set_visible (GTK_WIDGET (priv->token_field), TRUE);
-  gtk_widget_set_visible (GTK_WIDGET (priv->simulate_action), TRUE);
   gtk_widget_set_visible (GTK_WIDGET (button), FALSE);
 }
 
@@ -507,6 +509,8 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, generate_newcode_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_field);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_button);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro2);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, simulate_action);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
