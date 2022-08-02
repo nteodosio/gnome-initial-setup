@@ -76,9 +76,8 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="label" translatable="yes">Ubuntu Pro gives you access to multiple security and compliance features including Kernel Livepatch, automated hardening scripts and 10 years of security updates for over 30,000 deb packages.
+                    <property name="label" translatable="yes">Upgrade this machine to Ubuntu Pro for security updates on a much wider range of packages, until 2032. Assists with FedRAMP, FIPS, STIG, HIPAA and other compliance or hardening requirements.
 
-&lt;b&gt;Ubuntu Pro is free for personal use&lt;/b&gt;
 More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&gt;</property>
                     <property name="use-markup">True</property>
                     <property name="wrap">True</property>
@@ -106,7 +105,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="can-focus">False</property>
             <property name="margin-top">6</property>
             <property name="margin-bottom">6</property>
-            <property name="label" translatable="yes">To enable Ubuntu Pro, login with Ubuntu One or register a new account.</property>
+            <property name="label" translatable="yes">Enable Ubuntu Pro for this installation or skip this step.</property>
             <property name="xalign">0</property>
           </object>
           <packing>
@@ -272,7 +271,7 @@ to enable Ubuntu Pro</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkRadioButton" id="skip_pro_select">
-                    <property name="label" translatable="yes">Skip Ubuntu Pro Setup for now</property>
+                    <property name="label" translatable="yes">Skip for now</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
@@ -296,7 +295,7 @@ to enable Ubuntu Pro</property>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">&lt;small&gt;You can always enable Ubuntu Pro later in Settings&lt;/small&gt;</property>
+                        <property name="label" translatable="yes">&lt;small&gt;You can always enable Ubuntu Pro later via the 'pro attach' command&lt;/small&gt;</property>
                         <property name="use-markup">True</property>
                         <property name="xalign">0</property>
                       </object>
@@ -374,6 +373,7 @@ to enable Ubuntu Pro</property>
             <property name="position">7</property>
           </packing>
         </child>
+<!---->
         <child>
           <object class="GtkButton">
             <property name="label" translatable="yes">Next page</property>

@@ -373,7 +373,12 @@ magic_parser(void* ptr,              //pointer to actual response
 static void
 next_page (GtkButton *button, GisUbuntuProPage *page)
 {
-    g_print("Next page\n");
+  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+
+  gtk_widget_set_visible (GTK_WIDGET (priv->token_button), TRUE);
+  gtk_widget_set_visible (GTK_WIDGET (priv->token_field), TRUE);
+  gtk_widget_set_visible (GTK_WIDGET (priv->simulate_action), TRUE);
+  gtk_widget_set_visible (GTK_WIDGET (button), FALSE);
 }
 
 static void
