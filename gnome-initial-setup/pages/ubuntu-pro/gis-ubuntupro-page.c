@@ -461,6 +461,26 @@ request_token_attach (GtkButton *button, GisUbuntuProPage *page)
 }
 
 static void
+on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
+{
+  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+    request_magic_attach(button, page);
+  }
+}
+
+static void
+on_token_toggled (GtkButton *button, GisUbuntuProPage *page)
+{
+  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+    request_token_attach(button, page);
+  }
+}
+
+static void
 on_enablepro_toggled (GtkWidget *button, GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
@@ -516,6 +536,8 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_enablepro_toggled);
+  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_token_toggled);
+  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_magic_toggled);
   
   page_class->page_id = PAGE_ID;
   page_class->locale_changed = gis_ubuntupro_page_locale_changed;
