@@ -164,7 +164,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
 <!---->
                             <child>
                               <object class="GtkEntry" id="pro_email_entry">
-                                <property name="visible">True</property>
+                                <property name="visible">False</property>
                                 <property name="sensitive">False</property>
                                 <property name="can-focus">True</property>
                                 <property name="width-chars">35</property>
@@ -223,7 +223,7 @@ to enable Ubuntu Pro</property>
 <!---->
                         <child>
                           <object class="GtkLabel" id="pro_register_label">
-                            <property name="visible">True</property>
+                            <property name="visible">False</property>
                             <property name="can-focus">True</property>
                             <property name="label" translatable="yes">&lt;small&gt;&lt;a href="https://login.ubuntu.com/"&gt;Register with Ubuntu One&lt;/a&gt;&lt;/small&gt;</property>
                             <property name="use-markup">True</property>
@@ -394,7 +394,7 @@ to enable Ubuntu Pro</property>
         <child>
           <object class="GtkButton" id="simulate_action">
             <property name="label" translatable="yes">get a pin</property>
-            <property name="visible">True</property>
+            <property name="visible">False</property>
             <property name="sensitive">False</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
@@ -410,7 +410,7 @@ to enable Ubuntu Pro</property>
 <!---->
         <child>
           <object class="GtkEntry" id="token_field">
-            <property name="visible">True</property>
+            <property name="visible">False</property>
             <property name="sensitive">True</property>
             <property name="can-focus">True</property>
             <property name="width-chars">35</property>
@@ -426,7 +426,7 @@ to enable Ubuntu Pro</property>
         <child>
           <object class="GtkButton" id="token_button">
             <property name="label" translatable="yes">Attach</property>
-            <property name="visible">True</property>
+            <property name="visible">False</property>
             <property name="sensitive">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
