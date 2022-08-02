@@ -481,7 +481,9 @@ on_token_toggled (GtkButton *button, GisUbuntuProPage *page)
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
 
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
-    request_token_attach(button, page);
+    gtk_widget_set_sensitive(priv->token_field, TRUE);
+  } else {
+    gtk_widget_set_sensitive(priv->token_field, FALSE);
   }
 }
 
