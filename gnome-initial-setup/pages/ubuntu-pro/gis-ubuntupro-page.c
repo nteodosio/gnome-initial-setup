@@ -48,6 +48,7 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *token_button;
   GtkWidget *enable_ubuntu_pro;
   GtkWidget *enable_ubuntu_pro2;
+  GtkWidget *pin_hint;
 
   guint ua_desktop_watch;
   gint64 timeout;
@@ -315,6 +316,7 @@ token_countdown (gpointer data)
     gboolean attached = poll_token_attach(priv);
     if (attached) {
       g_print("attached!\n");
+      gtk_label_set_text(GTK_LABEL(priv->pin_label), "Code verified");
       return FALSE;
     }
   }
@@ -466,7 +468,11 @@ on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
 
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
-    request_magic_attach(button, page);
+    const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
+    if (*label == '\0' || priv->timeout <= 0){
+      request_magic_attach(button, page);
+      gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
+    }
   }
 }
 
@@ -532,6 +538,7 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro2);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, simulate_action);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_hint);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
