@@ -374,6 +374,22 @@ to enable Ubuntu Pro</property>
             <property name="position">7</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">Next page</property>
+            <property name="visible">True</property>
+            <property name="sensitive">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="halign">start</property>
+            <signal name="clicked" handler="next_page" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
 <!---->
         <child>
           <object class="GtkButton" id="simulate_action">

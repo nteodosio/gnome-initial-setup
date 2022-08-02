@@ -371,6 +371,12 @@ magic_parser(void* ptr,              //pointer to actual response
 }
 
 static void
+next_page (GtkButton *button, GisUbuntuProPage *page)
+{
+    g_print("Next page\n");
+}
+
+static void
 request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
@@ -499,6 +505,7 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, simulate_action);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
+  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_enablepro_toggled);
   
   page_class->page_id = PAGE_ID;
