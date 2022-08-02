@@ -378,10 +378,16 @@ next_page (GtkButton *button, GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
 
-  gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro), FALSE);
-  gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), TRUE);
-  gtk_widget_set_visible (GTK_WIDGET (priv->token_field), TRUE);
-  gtk_widget_set_visible (GTK_WIDGET (button), FALSE);
+  if (gtk_toggle_button_get_active(priv->enable_pro_select)){
+    gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro), FALSE);
+    gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), TRUE);
+    gtk_widget_set_visible(GTK_WIDGET (priv->token_field), TRUE);
+    gtk_widget_set_visible(GTK_WIDGET (button), FALSE);
+  } else if (gtk_toggle_button_get_active(priv->skip_pro_select)){
+    //Jump to next page
+  } else {
+    g_assert_not_reached ();
+  }
 }
 
 static void
