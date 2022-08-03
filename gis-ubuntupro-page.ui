@@ -6,6 +6,8 @@
   <object class="GtkBox" id="stepUbuntuPro">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
+
+<!-- Page 1 -->
     <child>
       <object class="GtkBox" id="enable_ubuntu_pro">
         <property name="visible">True</property>
@@ -373,6 +375,8 @@ to enable Ubuntu Pro</property>
 <!---->
       </object>
     </child>
+
+<!-- Page 2 -->
   <child>
   <object class="GtkBox" id="enable_ubuntu_pro2">
     <property name="visible">False</property>
@@ -583,8 +587,83 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="position">8</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">Next page</property>
+            <property name="visible">True</property>
+            <property name="sensitive">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="halign">start</property>
+            <signal name="clicked" handler="next_page" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">9</property>
+          </packing>
+        </child>
   </object>
   </child>
+
+<!-- Page 3 -->
+  <child>
+  <object class="GtkBox" id="enable_ubuntu_pro3">
+    <property name="visible">False</property>
+    <property name="can-focus">False</property>
+    <property name="no-show-all">True</property>
+    <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="enabled_services_header">
+            <property name="label" translatable="yes">List of your enabled services:
+            </property>
+            <property name="visible">True</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="enabled_services">
+            <property name="visible">True</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="available_services_header">
+            <property name="label" translatable="yes">Other available services:
+            </property>
+            <property name="visible">True</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="available_services">
+            <property name="visible">True</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+  </object>
+  </child>
+
   </object>
     </child>
   </template>

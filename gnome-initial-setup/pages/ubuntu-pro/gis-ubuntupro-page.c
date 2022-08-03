@@ -47,7 +47,12 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *token_button;
   GtkWidget *enable_ubuntu_pro;
   GtkWidget *enable_ubuntu_pro2;
+  GtkWidget *enable_ubuntu_pro3;
   GtkWidget *pin_hint;
+  GtkWidget *enabled_services;
+  GtkWidget *enabled_services_header;
+  GtkWidget *available_services;
+  GtkWidget *available_services_header;
 
   guint ua_desktop_watch;
   gint64 timeout;
@@ -60,6 +65,22 @@ typedef struct _GisUbuntuProPagePrivate GisUbuntuProPagePrivate;
 G_DEFINE_TYPE_WITH_PRIVATE (GisUbuntuProPage, gis_ubuntupro_page, GIS_TYPE_PAGE);
 
 static gboolean magic_parser(void*, size_t, RestJSONResponse*);
+
+/* From Vifm src/utils/str.c */
+int
+strappend(char **str, size_t *len, const char suffix[]){
+	const size_t suffix_len = strlen(suffix);
+	char *const new = realloc(*str, *len + suffix_len + 1);
+	if (new == NULL){
+		return(1);
+	}
+
+	strcpy(new + *len, suffix);
+	*str = new;
+	*len += suffix_len;
+
+	return(0);
+}
 
 static gboolean
 get_ubuntu_advantage_attached(gboolean *attached)
@@ -373,21 +394,131 @@ magic_parser(void* ptr,              //pointer to actual response
     return TRUE;
 }
 
+char*
+parse_ua_status(){
+    size_t len;
+    char   buffer[1024], *output = {0};
+
+    FILE *stream = popen("ua status --format=json", "r");
+    if (stream == NULL){
+        exit(1);
+    }
+    while (fgets(buffer, sizeof(buffer), stream) != NULL){
+        len = (output != NULL ? strlen(output) : 0);
+        strappend(&output, &len, buffer);
+    }
+    if (pclose(stream) != 0){
+        g_warning("Couldn't execute ua, is ubuntu-advantage-tools installed?");
+    }
+
+    return(output);
+}
+
+static gboolean
+display_ua_services(GisUbuntuProPagePrivate *priv){
+    JsonParser  *parser;
+    JsonNode    *root_node;
+    JsonObject  *root, *services;
+    JsonArray   *services_array;
+    GError      *error;
+    guint       i, n_services;
+    size_t      len;
+    const char  *status, *description, *available;
+    char        *enabled_str = {0}, *available_str = {0};
+    gboolean    ret;
+
+    char *str = parse_ua_status();
+
+    parser = json_parser_new();
+    error = NULL;
+    json_parser_load_from_data(parser, str, strlen(str), &error);
+    if (error){
+        g_warning("Couldn't parse magic token JSON; %s\n", error->message);
+        ret = FALSE;
+        goto end;
+    }
+    root_node = json_parser_get_root(parser);
+    if (!JSON_NODE_HOLDS_OBJECT(root_node)){
+        g_warning("Invalid magic token JSON\n");
+        ret = FALSE;
+        goto end;
+    }
+
+    root = json_node_get_object(root_node);
+    services_array = json_object_get_array_member(root, "services");
+    n_services = json_array_get_length(services_array);
+
+    /* Get services description, status and availability */
+    for (i = 0; i < n_services; i++){
+        services = json_array_get_object_element(services_array, i);
+        if (
+            json_object_has_member(services, "description") &&
+            json_object_has_member(services, "status") &&
+            json_object_has_member(services, "available")
+        ) {
+            description = json_object_get_string_member(services, "description");
+            status = json_object_get_string_member(services, "status");
+            available = json_object_get_string_member(services, "available");
+            if (strcmp(status, "enabled") == 0){
+              len = (enabled_str != NULL ? strlen(enabled_str) : 0);
+              strappend(&enabled_str, &len, description);
+              strappend(&enabled_str, &len, "\n");
+            } else if (strcmp(available, "available") == 0) {
+              len = (available_str != NULL ? strlen(available_str) : 0);
+              strappend(&available_str, &len, description);
+              strappend(&enabled_str, &len, "\n");
+            }
+        }
+    }
+    ret = i;
+
+    /* Display enabled and disabled but avaialable services */
+    if (enabled_str == NULL) {
+      gtk_widget_destroy(GTK_WIDGET(priv->enabled_services_header));
+    } else {
+      gtk_label_set_text(priv->enabled_services, enabled_str);
+      free(enabled_str);
+    }
+    if (available_str == NULL) {
+      gtk_widget_destroy(GTK_WIDGET(priv->available_services_header));
+    } else {
+      gtk_label_set_text(priv->available_services, available_str);
+      free(available_str);
+    }
+
+end:
+    free(str);
+    g_object_unref(parser);
+    g_error_free(error);
+    return ret;
+}
+
 static void
 next_page (GtkButton *button, GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  static int page_n = 2;
 
-  if (gtk_toggle_button_get_active(priv->enable_pro_select)){
-    gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro), FALSE);
-    gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), TRUE);
-    gtk_widget_set_visible(GTK_WIDGET (priv->token_field), TRUE);
-    gtk_widget_set_visible(GTK_WIDGET (button), FALSE);
-  } else if (gtk_toggle_button_get_active(priv->skip_pro_select)){
-    //Jump to next page
-  } else {
-    g_assert_not_reached ();
+  if (page_n == 2){
+    if (gtk_toggle_button_get_active(priv->enable_pro_select)){
+      gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro), FALSE);
+      gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), TRUE);
+      gtk_widget_set_visible(GTK_WIDGET (priv->token_field), TRUE);
+    } else if (gtk_toggle_button_get_active(priv->skip_pro_select)){
+      //Skip to next section
+    } else {
+      g_assert_not_reached ();
+    }
+  } else if (page_n == 3){
+    if (display_ua_services(priv)){
+      gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), FALSE);
+      gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro3), TRUE);
+    } else {
+      //Error: Couldn't get services
+    }
   }
+
+  page_n++;
 }
 
 static void
@@ -544,8 +675,13 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro2);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro3);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, simulate_action);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_hint);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services_header);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, available_services);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, available_services_header);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
