@@ -38,7 +38,6 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *pro_email_entry;
   GtkWidget *pro_register_label;
   GtkWidget *pro_status_image;
-  GtkWidget *token_attach_label;
   GtkWidget *pin_label;
   GtkWidget *skip_choice;
   GtkWidget *generate_newcode_button;
@@ -354,21 +353,17 @@ token_countdown (gpointer data)
   if (priv->timeout <= 0) {
     g_print("hit the timeout\n");
     str_label = g_strdup_printf ("To enable Ubuntu Pro, login at <small><a href='https://ubuntu.com/pro/attach/'>ubuntu.com/pro/attach</a></small> and verify the Attached Code below. <b>Code expired</b>");
-    gtk_label_set_markup (GTK_LABEL (priv->token_attach_label), str_label);
+    //gtk_label_set_markup (GTK_LABEL (priv->token_attach_label), str_label);
     gtk_widget_show (GTK_WIDGET (priv->generate_newcode_button));
     return FALSE;
   } else if (priv->timeout % 10 == 0) {
   /* Don't poll the server every second, only every 10 seconds. */
     gboolean attached = poll_token_attach(priv);
     if (attached) {
-      g_print("attached!\n");
       gtk_label_set_text(GTK_LABEL(priv->pin_label), "Code verified");
       return FALSE;
     }
   }
-
-  str_label = g_strdup_printf ("To enable Ubuntu Pro, login at <small><a href='https://ubuntu.com/pro/attach/'>ubuntu.com/pro/attach</a></small> and verify the Attached Code below. <b>Expire in %ds</b>", priv->timeout);
-  gtk_label_set_markup (GTK_LABEL (priv->token_attach_label), str_label);
 
   return TRUE;
 }
@@ -555,9 +550,6 @@ request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
 
   g_print ("Request magic attach\n");
   gtk_widget_show (GTK_WIDGET (priv->pin_label));
-  gtk_widget_show (GTK_WIDGET (priv->token_attach_label));
-  gtk_widget_hide (GTK_WIDGET (priv->pro_register_label));
-  gtk_widget_hide (GTK_WIDGET (priv->skip_choice));
 
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
@@ -693,7 +685,6 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_email_entry);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_register_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_status_image);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_attach_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, skip_choice);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, generate_newcode_button);
