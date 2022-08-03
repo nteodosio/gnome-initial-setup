@@ -342,19 +342,6 @@ to enable Ubuntu Pro</property>
             <property name="position">5</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkButton" id="generate_newcode_button">
-            <property name="label" translatable="yes">Generate new attach code</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="halign">center</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">7</property>
-          </packing>
-        </child>
 <!---->
         <child>
           <object class="GtkButton">
@@ -474,7 +461,6 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="margin-top">6</property>
             <property name="xalign">0</property>
             <property name="group">magic</property>
-            <signal name="toggled" handler="on_magic_toggled" swapped="no"/>
             <signal name="clicked" handler="on_magic_toggled" swapped="no"/>
           </object>
           <packing>
@@ -484,23 +470,37 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="pin_label">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">12</property>
-            <property name="margin-bottom">8</property>
-            <property name="halign">start</property>
-            <property name="margin-left">20</property>
-            <property name="label" translatable="yes"></property>
-            <attributes>
-              <attribute name="scale" value="2"/>
-            </attributes>
+            <child>
+              <object class="GtkLabel" id="pin_label">
+                <property name="label" translatable="yes">      </property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="margin-top">12</property>
+                <property name="margin-bottom">8</property>
+                <property name="halign">start</property>
+                <property name="margin-left">20</property>
+                <property name="label" translatable="yes"></property>
+                <attributes>
+                  <attribute name="scale" value="2"/>
+                </attributes>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="pin_status">
+                <property name="visible">True</property>
+                <property name="use-markup">True</property>
+                <property name="margin-left">20</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="pin_hint">

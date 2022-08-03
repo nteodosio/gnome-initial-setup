@@ -40,7 +40,6 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *pro_status_image;
   GtkWidget *pin_label;
   GtkWidget *skip_choice;
-  GtkWidget *generate_newcode_button;
   GtkWidget *simulate_action;
   GtkWidget *token_field;
   GtkWidget *token_button;
@@ -48,6 +47,7 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *enable_ubuntu_pro2;
   GtkWidget *enable_ubuntu_pro3;
   GtkWidget *pin_hint;
+  GtkWidget *pin_status;
   GtkWidget *enabled_services;
   GtkWidget *enabled_services_header;
   GtkWidget *available_services;
@@ -351,16 +351,16 @@ token_countdown (gpointer data)
   priv->timeout = priv->timeout - 1;
 
   if (priv->timeout <= 0) {
-    g_print("hit the timeout\n");
-    str_label = g_strdup_printf ("To enable Ubuntu Pro, login at <small><a href='https://ubuntu.com/pro/attach/'>ubuntu.com/pro/attach</a></small> and verify the Attached Code below. <b>Code expired</b>");
-    //gtk_label_set_markup (GTK_LABEL (priv->token_attach_label), str_label);
-    gtk_widget_show (GTK_WIDGET (priv->generate_newcode_button));
+    str_label = g_strdup_printf ("<span foreground=\"#900000\"><b>Code expired</b></span>");
+    gtk_label_set_markup (GTK_LABEL (priv->pin_status), str_label);
+    gtk_label_set_text(GTK_LABEL(priv->pin_hint), "Click the button to generate a new code.");
     return FALSE;
   } else if (priv->timeout % 10 == 0) {
   /* Don't poll the server every second, only every 10 seconds. */
     gboolean attached = poll_token_attach(priv);
     if (attached) {
-      gtk_label_set_text(GTK_LABEL(priv->pin_label), "Code verified");
+      str_label = g_strdup_printf ("<span foreground=\"#008000\"><b>Code verified</b></span>");
+      gtk_label_set_text(GTK_LABEL(priv->pin_status), "Code verified");
       return FALSE;
     }
   }
@@ -621,12 +621,11 @@ on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
 
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
     const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
     if (*label == '\0' || priv->timeout <= 0){
       request_magic_attach(button, page);
       gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
-    }
+      gtk_label_set_text(GTK_LABEL(priv->pin_status), "");
   }
 }
 
@@ -687,13 +686,13 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_status_image);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, skip_choice);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, generate_newcode_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_field);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_button);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro2);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro3);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, simulate_action);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_hint);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services_header);
