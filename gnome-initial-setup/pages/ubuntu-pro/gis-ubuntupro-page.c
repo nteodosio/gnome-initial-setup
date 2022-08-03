@@ -292,7 +292,7 @@ poll_token_attach (GisUbuntuProPagePrivate *priv)
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
   const char *header_name = "Authorization";
-  gchar *header = "Bearer ";
+  char *header = strdup("Bearer ");
   size_t len = strlen(header);
   strappend(&header, &len, priv->token);
 
