@@ -615,10 +615,12 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
     <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel" id="enabled_services_header">
-            <property name="label" translatable="yes">List of your enabled services:
-            </property>
+            <property name="label" translatable="yes">List of your enabled services:</property>
             <property name="visible">True</property>
             <property name="halign">start</property>
+            <attributes>
+              <attribute name="scale" value="1.5"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -639,10 +641,12 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
         </child>
         <child>
           <object class="GtkLabel" id="available_services_header">
-            <property name="label" translatable="yes">Other available services:
-            </property>
+            <property name="label" translatable="yes">Other available services:</property>
             <property name="visible">True</property>
             <property name="halign">start</property>
+            <attributes>
+              <attribute name="scale" value="1.5"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -659,6 +663,18 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="label" translatable="yes">You can start using Ubuntu Pro features once Ubuntu has finished installing. If you want to change the default enablements for your token you can do so via the ubuntu.com/pro web interface. Alternatively you can change enabled services by going to the Settings menu or run 'sudo pro status' in the command line.</property>
+            <property name="visible">True</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">9</property>
           </packing>
         </child>
   </object>
