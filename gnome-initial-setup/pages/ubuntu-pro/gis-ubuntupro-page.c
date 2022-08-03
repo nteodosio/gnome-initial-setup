@@ -293,16 +293,42 @@ poll_token_attach (GisUbuntuProPagePrivate *priv)
   size_t bufsize = 1024;
   void *buf = malloc(bufsize);
   const char *header_name = "Authorization";
-  gchar header[128] = "Bearer ";
-  strcat(header, priv->token);
-//Send: curl -X GET -H 'Authorization: Bearer >>TOKEN<<' 
-//unauthorized response: {"code":"unauthorized","message":"unauthorized","traceId":"280a7ed5-fdb0-4ac4-be23-d26deafb4616"}
-//authorized response, has the same structure of the POST if pending: {"expires":"2022-07-15T17:45:51.902Z","expiresIn":567,"token":"M13TDXUcoPrrV9guPBmps6fUJpxxpc","userCode":"8FHI4I"}
-//authorized and activated response: contains two additional fields: "contractID": "CONTRACT_ID", "contractToken": "CONTRACT_TOKEN"
+  gchar *header = "Bearer ";
+  size_t len = strlen(header);
+  strappend(&header, &len, priv->token);
 
+/* curl -X GET -H 'Authorization: Bearer >>TOKEN<<'
+ *
+ * Sample unauthorized response:
+ * {
+ *   "code":"unauthorized",
+ *   "message":"unauthorized",
+ *   "traceId":"280a7ed5-fdb0-4ac4-be23-d26deafb4616"
+ * }
+ *
+ * Sample authorized response:
+ * {
+ *   "expires":"2022-07-15T17:45:51.902Z",
+ *   "expiresIn":567,
+ *   "token":"M1guPBps6fUJpxasdasdxpc",
+ *   "userCode":"8FHI4I"
+ * }
+ *
+ * Sample authorized and activated response:
+ * {
+ *   "expires":"2022-07-15T17:45:51.902Z",
+ *   "expiresIn":567,
+ *   "token":"M1guPBps6fUJpxasdasdxpc",
+ *   "userCode":"8FHI4I",
+ *   "contractID":"CONTRACT_ID",
+ *   "contractToken":"CONTRACT_TOKEN"
+ * }
+ *
+ */
   gssize nbytes = make_rest_req(buf, bufsize, "GET",
     "https://contracts.staging.canonical.com/v1/magic-attach",
     header_name, header);
+  free(header);
   if (nbytes > 0){
     RestJSONResponse resp;
     if (!magic_parser(buf, nbytes, &resp)){
