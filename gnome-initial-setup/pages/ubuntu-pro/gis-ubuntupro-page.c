@@ -52,6 +52,7 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *enabled_services_header;
   GtkWidget *available_services;
   GtkWidget *available_services_header;
+  GtkWidget *contract_name;
 
   guint ua_desktop_watch;
   gint64 timeout;
@@ -439,12 +440,12 @@ static gboolean
 display_ua_services(GisUbuntuProPagePrivate *priv){
     JsonParser  *parser;
     JsonNode    *root_node;
-    JsonObject  *root, *services;
+    JsonObject  *root, *services, *contract;
     JsonArray   *services_array;
     GError      *error;
     guint       i, n_services;
     size_t      len;
-    const char  *status, *description, *available;
+    const char  *status, *description, *available, *contract_name;
     char        *enabled_str = {0}, *available_str = {0};
     gboolean    ret;
 
@@ -466,6 +467,11 @@ display_ua_services(GisUbuntuProPagePrivate *priv){
     }
 
     root = json_node_get_object(root_node);
+
+    contract = json_object_get_object_member(root, "contract");
+    contract_name = json_object_get_string_member(contract, "name");
+    gtk_label_set_text(priv->contract_name, contract_name);
+
     services_array = json_object_get_array_member(root, "services");
     n_services = json_array_get_length(services_array);
 
@@ -701,6 +707,7 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services_header);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, available_services);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, available_services_header);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, contract_name);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);

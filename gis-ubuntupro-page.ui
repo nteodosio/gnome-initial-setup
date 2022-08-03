@@ -637,6 +637,33 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
           <property name="no-show-all">True</property>
           <property name="orientation">vertical</property>
         <child>
+          <object class="GtkLabel" id="subscription">
+            <property name="label" translatable="yes">Your subscription:</property>
+            <property name="visible">True</property>
+            <property name="halign">start</property>
+            <attributes>
+              <attribute name="scale" value="1.5"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="contract_name">
+            <property name="label" translatable="yes"></property>
+            <property name="visible">True</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkLabel" id="enabled_services_header">
             <property name="label" translatable="yes">List of your enabled services:</property>
             <property name="visible">True</property>
