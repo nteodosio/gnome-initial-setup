@@ -42,7 +42,7 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *skip_choice;
   GtkWidget *simulate_action;
   GtkWidget *token_field;
-  GtkWidget *token_button;
+  GtkWidget *token_status;
   GtkWidget *enable_ubuntu_pro;
   GtkWidget *enable_ubuntu_pro2;
   GtkWidget *enable_ubuntu_pro3;
@@ -604,15 +604,18 @@ ua_attach(gchar *token){
 static void
 request_token_attach (GtkButton *button, GisUbuntuProPage *page)
 {
+  GtkLabel *str_label;
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
-  gtk_widget_set_sensitive (priv->token_button, FALSE);
+
+  gtk_widget_set_sensitive (priv->token_field, FALSE);
   gchar *token = gtk_entry_get_text(GTK_ENTRY(priv->token_field));
   if (ua_attach(token)){
-    g_print("attached successfully\n");
-    //Go to next page
+    str_label = g_strdup_printf("<span foreground=\"#008000\"><b>Valid token</b></span>");
+    gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
   } else {
-    g_print("failed to attach\n");
-    gtk_widget_set_sensitive (priv->token_button, TRUE);
+    str_label = g_strdup_printf("<span foreground=\"#900000\"><b>Failed to attach</b></span>");
+    gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
+    gtk_widget_set_sensitive (priv->token_field, TRUE);
   }
 }
 
@@ -687,7 +690,7 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, skip_choice);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_field);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_button);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro2);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro3);

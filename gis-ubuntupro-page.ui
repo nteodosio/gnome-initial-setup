@@ -536,24 +536,38 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="token_field">
-            <property name="visible">False</property>
-            <property name="sensitive">False</property>
-            <property name="can-focus">True</property>
-            <property name="margin-left">20</property>
-            <property name="margin-top">12</property>
-            <property name="width-chars">35</property>
-            <property name="placeholder-text" translatable="yes">Token</property>
-            <property name="halign">start</property>
-            <signal name="activate" handler="request_token_attach" swapped="no"/>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="no-show-all">True</property>
+            <child>
+              <object class="GtkEntry" id="token_field">
+                <property name="visible">False</property>
+                <property name="sensitive">False</property>
+                <property name="can-focus">True</property>
+                <property name="margin-left">20</property>
+                <property name="margin-top">12</property>
+                <property name="width-chars">35</property>
+                <property name="placeholder-text" translatable="yes">Token</property>
+                <property name="halign">start</property>
+                <signal name="activate" handler="request_token_attach" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="token_status">
+                <property name="visible">True</property>
+                <property name="margin-left">20</property>
+                <property name="margin-top">12</property>
+                <property name="halign">start</property>
+              </object>
+            </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">7</property>
-          </packing>
         </child>
-
         <child>
           <object class="GtkButton" id="simulate_action">
             <property name="label" translatable="yes">get a pin</property>
@@ -563,23 +577,6 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="receives-default">True</property>
             <property name="halign">center</property>
             <signal name="clicked" handler="request_magic_attach" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">8</property>
-          </packing>
-        </child>
-<!---->
-        <child>
-          <object class="GtkButton" id="token_button">
-            <property name="label" translatable="yes">Attach</property>
-            <property name="visible">False</property>
-            <property name="sensitive">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="halign">start</property>
-            <signal name="clicked" handler="request_token_attach" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
