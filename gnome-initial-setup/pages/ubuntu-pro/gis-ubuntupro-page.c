@@ -484,10 +484,10 @@ display_ua_services(GisUbuntuProPagePrivate *priv){
               len = (enabled_str != NULL ? strlen(enabled_str) : 0);
               strappend(&enabled_str, &len, description);
               strappend(&enabled_str, &len, "\n");
-            } else if (strcmp(available, "available") == 0) {
+            } else if (strcmp(available, "yes") == 0) {
               len = (available_str != NULL ? strlen(available_str) : 0);
               strappend(&available_str, &len, description);
-              strappend(&enabled_str, &len, "\n");
+              strappend(&available_str, &len, "\n");
             }
         }
     }
