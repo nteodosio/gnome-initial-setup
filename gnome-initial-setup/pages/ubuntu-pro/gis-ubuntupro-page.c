@@ -420,7 +420,7 @@ parse_ua_status(){
     size_t len;
     char   buffer[1024], *output = {0};
 
-    FILE *stream = popen("ua status --format=json", "r");
+    FILE *stream = popen("ua status --all --format=json", "r");
     if (stream == NULL){
         exit(1);
     }
