@@ -610,6 +610,32 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
     <property name="can-focus">False</property>
     <property name="no-show-all">True</property>
     <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="no-show-all">True</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-left">5</property>
+            <property name="margin-right">5</property>
+            <property name="yalign">0</property>
+            <property name="pixbuf">checkmark.png</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+        <object class="GtkBox">
+          <property name="visible">True</property>
+          <property name="can-focus">False</property>
+          <property name="no-show-all">True</property>
+          <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel" id="enabled_services_header">
             <property name="label" translatable="yes">List of your enabled services:</property>
@@ -662,10 +688,15 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="position">6</property>
           </packing>
         </child>
+        </object>
+        </child>
+        </object>
+        </child>
         <child>
           <object class="GtkLabel">
             <property name="label" translatable="yes">You can start using Ubuntu Pro features once Ubuntu has finished installing. If you want to change the default enablements for your token you can do so via the ubuntu.com/pro web interface. Alternatively you can change enabled services by going to the Settings menu or run 'sudo pro status' in the command line.</property>
             <property name="visible">True</property>
+            <property name="wrap">True</property>
             <property name="halign">start</property>
           </object>
           <packing>
