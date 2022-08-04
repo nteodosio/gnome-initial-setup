@@ -346,7 +346,7 @@ static gboolean
 token_countdown (gpointer data)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
-  GtkLabel *str_label;
+  gchar *str_label;
   
   priv->timeout = priv->timeout - 1;
 
@@ -469,7 +469,7 @@ display_ua_services(GisUbuntuProPagePrivate *priv){
 
     contract = json_object_get_object_member(root, "contract");
     contract_name = json_object_get_string_member(contract, "name");
-    gtk_label_set_text(priv->contract_name, contract_name);
+    gtk_label_set_text(GTK_WIDGET(priv->contract_name), contract_name);
 
     services_array = json_object_get_array_member(root, "services");
     n_services = json_array_get_length(services_array);
@@ -502,13 +502,13 @@ display_ua_services(GisUbuntuProPagePrivate *priv){
     if (enabled_str == NULL) {
       gtk_widget_destroy(GTK_WIDGET(priv->enabled_services_header));
     } else {
-      gtk_label_set_text(priv->enabled_services, enabled_str);
+      gtk_label_set_text(GTK_WIDGET(priv->enabled_services), enabled_str);
       free(enabled_str);
     }
     if (available_str == NULL) {
       gtk_widget_destroy(GTK_WIDGET(priv->available_services_header));
     } else {
-      gtk_label_set_text(priv->available_services, available_str);
+      gtk_label_set_text(GTK_WIDGET(priv->available_services), available_str);
       free(available_str);
     }
 
@@ -526,11 +526,11 @@ next_page (GtkButton *button, GisUbuntuProPage *page)
   static int page_n = 2;
 
   if (page_n == 2){
-    if (gtk_toggle_button_get_active(priv->enable_pro_select)){
+    if (gtk_toggle_button_get_active(GTK_WIDGET(priv->enable_pro_select))){
       gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro), FALSE);
       gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), TRUE);
       gtk_widget_set_visible(GTK_WIDGET (priv->token_field), TRUE);
-    } else if (gtk_toggle_button_get_active(priv->skip_pro_select)){
+    } else if (gtk_toggle_button_get_active(GTK_WIDGET(priv->skip_pro_select))){
       //Skip to next section
     } else {
       g_assert_not_reached ();
@@ -551,7 +551,6 @@ static void
 request_magic_attach (GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
-  char *command = NULL;
 
   g_print ("Request magic attach\n");
   gtk_widget_show (GTK_WIDGET (priv->pin_label));
@@ -577,7 +576,7 @@ request_magic_attach (GisUbuntuProPage *page)
 }
 
 static gboolean
-ua_attach(gchar *token){
+ua_attach(const gchar *token){
     GVariant        *result;
     GDBusConnection *bus;
     GError          *error = NULL;
@@ -609,11 +608,11 @@ ua_attach(gchar *token){
 static void
 request_token_attach (GtkButton *button, GisUbuntuProPage *page)
 {
-  GtkLabel *str_label;
+  gchar *str_label;
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
 
   gtk_widget_set_sensitive (priv->token_field, FALSE);
-  gchar *token = gtk_entry_get_text(GTK_ENTRY(priv->token_field));
+  const gchar *token = gtk_entry_get_text(GTK_ENTRY(priv->token_field));
   if (ua_attach(token)){
     str_label = g_strdup_printf("<span foreground=\"#008000\"><b>Valid token</b></span>");
     gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
