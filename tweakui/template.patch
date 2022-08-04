@@ -1,0 +1,20 @@
+--- gis-ubuntupro-page.ui	2022-06-29 17:13:29.015920341 +0200
++++ gis-ubuntupro-page.ui.new	2022-06-30 09:08:52.452254984 +0200
+@@ -1,7 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<!-- Generated with glade 3.38.2 -->
+ <interface>
+-  <requires lib="gtk+" version="3.16"/>
++  <!-- interface-requires gtk+ 3.0 -->
++  <template class="GisUbuntuProPage" parent="GisPage">
++    <child>
+   <object class="GtkAlignment" id="stepUbuntuPro">
+     <property name="visible">True</property>
+     <property name="can-focus">False</property>
+@@ -275,4 +276,6 @@
+       </object>
+     </child>
+   </object>
++    </child>
++  </template>
+ </interface>
