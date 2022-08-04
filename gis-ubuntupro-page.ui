@@ -19,12 +19,15 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="halign">start</property>
-            <property name="margin-top">18</property>
-            <property name="margin-bottom">6</property>
+            <property name="margin-top">3</property>
+            <property name="margin-bottom">0</property>
             <property name="label" translatable="yes">&lt;b&gt;Enable Ubuntu Pro&lt;/b&gt;</property>
             <property name="use-markup">True</property>
             <property name="wrap">True</property>
             <property name="xalign">0</property>
+            <attributes>
+              <attribute name="scale" value="1.4"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -36,8 +39,8 @@
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">20</property>
-            <property name="margin-bottom">20</property>
+            <property name="margin-top">10</property>
+            <property name="margin-bottom">10</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -375,12 +378,15 @@ to enable Ubuntu Pro</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="halign">start</property>
-            <property name="margin-top">18</property>
-            <property name="margin-bottom">6</property>
+            <property name="margin-top">3</property>
+            <property name="margin-bottom">0</property>
             <property name="label" translatable="yes">&lt;b&gt;Enable Ubuntu Pro&lt;/b&gt;</property>
             <property name="use-markup">True</property>
             <property name="wrap">True</property>
             <property name="xalign">0</property>
+            <attributes>
+              <attribute name="scale" value="1.4"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -392,8 +398,8 @@ to enable Ubuntu Pro</property>
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">20</property>
-            <property name="margin-bottom">20</property>
+            <property name="margin-top">10</property>
+            <property name="margin-bottom">10</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -611,6 +617,40 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
     <property name="no-show-all">True</property>
     <property name="orientation">vertical</property>
     <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="halign">start</property>
+        <property name="margin-top">3</property>
+        <property name="margin-bottom">0</property>
+        <property name="label" translatable="yes">&lt;b&gt;Ubuntu Pro Services&lt;/b&gt;</property>
+        <property name="use-markup">True</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0</property>
+        <attributes>
+          <attribute name="scale" value="1.4"/>
+        </attributes>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSeparator">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
@@ -639,6 +679,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
         <child>
           <object class="GtkLabel" id="subscription">
             <property name="label" translatable="yes">Your subscription:</property>
+            <property name="margin-bottom">10</property>
             <property name="visible">True</property>
             <property name="halign">start</property>
             <attributes>
@@ -655,6 +696,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
           <object class="GtkLabel" id="contract_name">
             <property name="label" translatable="yes"></property>
             <property name="visible">True</property>
+            <property name="margin-bottom">15</property>
             <property name="halign">start</property>
           </object>
           <packing>
@@ -666,6 +708,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
         <child>
           <object class="GtkLabel" id="enabled_services_header">
             <property name="label" translatable="yes">List of your enabled services:</property>
+            <property name="margin-bottom">10</property>
             <property name="visible">True</property>
             <property name="halign">start</property>
             <attributes>
@@ -692,6 +735,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
         <child>
           <object class="GtkLabel" id="available_services_header">
             <property name="label" translatable="yes">Other available services:</property>
+            <property name="margin-bottom">10</property>
             <property name="visible">True</property>
             <property name="halign">start</property>
             <attributes>
