@@ -40,7 +40,6 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *pro_status_image;
   GtkWidget *pin_label;
   GtkWidget *skip_choice;
-  GtkWidget *simulate_action;
   GtkWidget *token_field;
   GtkWidget *token_status;
   GtkWidget *enable_ubuntu_pro;
@@ -549,7 +548,7 @@ next_page (GtkButton *button, GisUbuntuProPage *page)
 }
 
 static void
-request_magic_attach (GtkButton *button, GisUbuntuProPage *page)
+request_magic_attach (GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
   char *command = NULL;
@@ -632,7 +631,7 @@ on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
 
     const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
     if (*label == '\0' || priv->timeout <= 0){
-      request_magic_attach(button, page);
+      request_magic_attach(page);
       gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
       gtk_label_set_text(GTK_LABEL(priv->pin_status), "");
   }
@@ -647,21 +646,6 @@ on_token_toggled (GtkButton *button, GisUbuntuProPage *page)
     gtk_widget_set_sensitive(priv->token_field, TRUE);
   } else {
     gtk_widget_set_sensitive(priv->token_field, FALSE);
-  }
-}
-
-static void
-on_enablepro_toggled (GtkWidget *button, GisUbuntuProPage *page)
-{
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
-
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
-    gtk_widget_set_sensitive (priv->pro_email_entry, TRUE);
-    gtk_widget_set_sensitive (priv->simulate_action, TRUE);
-  }
-  else {
-    gtk_widget_set_sensitive (priv->pro_email_entry, FALSE);
-    gtk_widget_set_sensitive (priv->simulate_action, FALSE);
   }
 }
 
@@ -700,7 +684,6 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro2);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro3);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, simulate_action);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_hint);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services);
@@ -711,7 +694,6 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
-  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_enablepro_toggled);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_token_toggled);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_magic_toggled);
   

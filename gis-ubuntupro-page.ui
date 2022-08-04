@@ -575,22 +575,6 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="simulate_action">
-            <property name="label" translatable="yes">get a pin</property>
-            <property name="visible">False</property>
-            <property name="sensitive">False</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="halign">center</property>
-            <signal name="clicked" handler="request_magic_attach" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">8</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton">
             <property name="label" translatable="yes">Next page</property>
             <property name="visible">True</property>
