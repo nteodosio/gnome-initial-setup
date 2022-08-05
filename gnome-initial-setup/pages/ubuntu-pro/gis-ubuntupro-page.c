@@ -42,9 +42,9 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *skip_choice;
   GtkWidget *token_field;
   GtkWidget *token_status;
-  GtkWidget *enable_ubuntu_pro;
-  GtkWidget *enable_ubuntu_pro2;
-  GtkWidget *enable_ubuntu_pro3;
+  GtkWidget *page1;
+  GtkWidget *page2;
+  GtkWidget *page3;
   GtkWidget *pin_hint;
   GtkWidget *pin_status;
   GtkWidget *enabled_services;
@@ -527,8 +527,8 @@ next_page (GtkButton *button, GisUbuntuProPage *page)
 
   if (page_n == 2){
     if (gtk_toggle_button_get_active(GTK_WIDGET(priv->enable_pro_select))){
-      gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro), FALSE);
-      gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), TRUE);
+      gtk_widget_set_visible(GTK_WIDGET(priv->page1), FALSE);
+      gtk_widget_set_visible(GTK_WIDGET(priv->page2), TRUE);
       gtk_widget_set_visible(GTK_WIDGET (priv->token_field), TRUE);
     } else if (gtk_toggle_button_get_active(GTK_WIDGET(priv->skip_pro_select))){
       //Skip to next section
@@ -537,8 +537,8 @@ next_page (GtkButton *button, GisUbuntuProPage *page)
     }
   } else if (page_n == 3){
     if (display_ua_services(priv)){
-      gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro2), FALSE);
-      gtk_widget_set_visible(GTK_WIDGET(priv->enable_ubuntu_pro3), TRUE);
+      gtk_widget_set_visible(GTK_WIDGET(priv->page2), FALSE);
+      gtk_widget_set_visible(GTK_WIDGET(priv->page3), TRUE);
     } else {
       //Error: Couldn't get services
     }
@@ -680,9 +680,9 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, skip_choice);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_field);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_status);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro2);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_ubuntu_pro3);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, page1);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, page2);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, page3);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_hint);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services);

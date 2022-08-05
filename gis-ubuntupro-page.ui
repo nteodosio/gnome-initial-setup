@@ -9,7 +9,7 @@
 
 <!-- Page 1 -->
     <child>
-      <object class="GtkBox" id="enable_ubuntu_pro">
+      <object class="GtkBox" id="page1">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="no-show-all">True</property>
@@ -368,7 +368,7 @@ to enable Ubuntu Pro</property>
 
 <!-- Page 2 -->
   <child>
-  <object class="GtkBox" id="enable_ubuntu_pro2">
+  <object class="GtkBox" id="page2">
     <property name="visible">False</property>
     <property name="can-focus">False</property>
     <property name="no-show-all">True</property>
@@ -595,7 +595,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
 
 <!-- Page 3 -->
   <child>
-  <object class="GtkBox" id="enable_ubuntu_pro3">
+  <object class="GtkBox" id="page3">
     <property name="visible">False</property>
     <property name="can-focus">False</property>
     <property name="no-show-all">True</property>
