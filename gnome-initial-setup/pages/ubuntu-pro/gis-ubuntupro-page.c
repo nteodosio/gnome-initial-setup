@@ -31,27 +31,41 @@
 #include <json-glib/json-glib.h>
 #include <libsoup/soup.h>
 
-struct _GisUbuntuProPagePrivate {
+struct _GisUbuntuProPage1Private {
   GtkWidget *enable_pro_select;
   GtkWidget *skip_pro_select;
   GtkWidget *offline_warning;
-  GtkWidget *pro_email_entry;
-  GtkWidget *pro_register_label;
-  GtkWidget *pro_status_image;
-  GtkWidget *pin_label;
+
+  /* Unused! */
   GtkWidget *skip_choice;
+  GtkWidget *pro_status_image;
+  GtkWidget *pro_register_label;
+  GtkWidget *pro_email_entry;
+};
+typedef struct _GisUbuntuProPage1Private GisUbuntuProPage1Private;
+
+struct _GisUbuntuProPage2Private {
+  GtkWidget *pin_label;
   GtkWidget *token_field;
   GtkWidget *token_status;
-  GtkWidget *page1;
-  GtkWidget *page2;
-  GtkWidget *page3;
   GtkWidget *pin_hint;
   GtkWidget *pin_status;
+};
+typedef struct _GisUbuntuProPage2Private GisUbuntuProPage2Private;
+
+struct _GisUbuntuProPage3Private {
   GtkWidget *enabled_services;
   GtkWidget *enabled_services_header;
   GtkWidget *available_services;
   GtkWidget *available_services_header;
   GtkWidget *contract_name;
+};
+typedef struct _GisUbuntuProPage3Private GisUbuntuProPage3Private;
+
+struct _GisUbuntuProPagePrivate {
+  GtkWidget *page1;
+  GtkWidget *page2;
+  GtkWidget *page3;
 
   guint ua_desktop_watch;
   gint64 timeout;
@@ -207,8 +221,6 @@ on_uad_disappeared (GDBusConnection *unused1,
   g_print("on_uad_disappeared\n");
   gtk_widget_set_visible (GTK_WIDGET (page), FALSE);
 }
-
-static void next_page (GtkButton *, GisUbuntuProPage *);
 
 static void
 gis_ubuntupro_page_constructed (GObject *object)
@@ -524,7 +536,6 @@ end:
 static void
 next_page (GtkButton *button, GisUbuntuProPage *page)
 {
-  g_print("X\n");
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
   static int page_n = 2;
 
@@ -659,7 +670,6 @@ gis_ubuntupro_page_apply (GisPage      *page,
     g_print("apply\n");
 //  GisPage *account_page = GIS_PAGE (data);
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
-  next_page(NULL, page);
   return TRUE;
 /*  return gis_ubuntupro_page_apply (GIS_UBUNTUPRO_PAGE (priv->page), cancellable,
                                             ubuntupro_apply_complete, page);
