@@ -208,6 +208,8 @@ on_uad_disappeared (GDBusConnection *unused1,
   gtk_widget_set_visible (GTK_WIDGET (page), FALSE);
 }
 
+static void next_page (GtkButton *, GisUbuntuProPage *);
+
 static void
 gis_ubuntupro_page_constructed (GObject *object)
 {
@@ -522,6 +524,7 @@ end:
 static void
 next_page (GtkButton *button, GisUbuntuProPage *page)
 {
+  g_print("X\n");
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
   static int page_n = 2;
 
@@ -656,6 +659,7 @@ gis_ubuntupro_page_apply (GisPage      *page,
     g_print("apply\n");
 //  GisPage *account_page = GIS_PAGE (data);
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  next_page(NULL, page);
   return TRUE;
 /*  return gis_ubuntupro_page_apply (GIS_UBUNTUPRO_PAGE (priv->page), cancellable,
                                             ubuntupro_apply_complete, page);
