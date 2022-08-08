@@ -24,6 +24,9 @@
 G_BEGIN_DECLS
 
 #define GIS_TYPE_UBUNTUPRO_PAGE            (gis_ubuntupro_page_get_type ())
+#define GIS_TYPE_UBUNTUPRO_PAGE1           (gis_ubuntupro_page1_get_type ())
+#define GIS_TYPE_UBUNTUPRO_PAGE2           (gis_ubuntupro_page2_get_type ())
+#define GIS_TYPE_UBUNTUPRO_PAGE3           (gis_ubuntupro_page3_get_type ())
 #define GIS_UBUNTUPRO_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPage))
 #define GIS_UBUNTUPRO_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPageClass))
 #define GIS_UBUNTUPRO_PAGE1(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE1, GisUbuntuProPage1))

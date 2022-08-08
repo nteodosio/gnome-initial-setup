@@ -232,8 +232,8 @@ on_uad_disappeared (GDBusConnection *unused1,
 static void
 gis_ubuntupro_page1_constructed (GObject *object)
 {
-  GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE (object);
-  GisUbuntuProPage1Private *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE1 (object);
+  GisUbuntuProPage1Private *priv = gis_ubuntupro_page1_get_instance_private (page);
   g_autoptr(GError) error = NULL;
   GDBusConnection *connection;
   GNetworkMonitor *network_monitor = g_network_monitor_get_default ();
@@ -368,7 +368,7 @@ poll_token_attach (GisUbuntuProPage2Private *priv)
 static gboolean
 token_countdown (gpointer data)
 {
-  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (data);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (data);
   gchar *str_label;
   
   priv->timeout = priv->timeout - 1;
@@ -573,9 +573,9 @@ next_page (GtkButton *button, GisUbuntuProPage *page)
 */
 
 static void
-request_magic_attach (GisUbuntuProPage *page)
+request_magic_attach (GisUbuntuProPage2 *page)
 {
-  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (page);
 
   g_print ("Request magic attach\n");
   gtk_widget_show (GTK_WIDGET (priv->pin_label));
@@ -631,10 +631,10 @@ ua_attach(const gchar *token){
 }
 
 static void
-request_token_attach (GtkButton *button, GisUbuntuProPage *page)
+request_token_attach (GtkButton *button, GisUbuntuProPage2 *page)
 {
   gchar *str_label;
-  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (page);
 
   gtk_widget_set_sensitive (priv->token_field, FALSE);
   const gchar *token = gtk_entry_get_text(GTK_ENTRY(priv->token_field));
@@ -651,20 +651,22 @@ request_token_attach (GtkButton *button, GisUbuntuProPage *page)
 static void
 on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
 {
-  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPagePrivate *priv0 = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage2 *page2 = GIS_UBUNTUPRO_PAGE2(priv0->page2);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (page2);
 
     const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
     if (*label == '\0' || priv->timeout <= 0){
-      request_magic_attach(page);
+      request_magic_attach(page2);
       gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
       gtk_label_set_text(GTK_LABEL(priv->pin_status), "");
   }
 }
 
 static void
-on_token_toggled (GtkButton *button, GisUbuntuProPage *page)
+on_token_toggled (GtkButton *button, GisUbuntuProPage2 *page)
 {
-  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (page);
 
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
     gtk_widget_set_sensitive(priv->token_field, TRUE);
@@ -811,6 +813,13 @@ gis_prepare_ubuntu_pro_page (GisDriver *driver)
     return NULL;
 
   return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE,
+                       "driver", driver,
+                       NULL);
+}
+GisPage *
+gis_prepare_ubuntu_pro_page1 (GisDriver *driver)
+{
+  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE1,
                        "driver", driver,
                        NULL);
 }
