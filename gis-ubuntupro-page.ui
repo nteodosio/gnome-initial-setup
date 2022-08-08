@@ -12,17 +12,17 @@
             <property name="valign">start</property>
             <property name="vexpand">True</property>
             <child>
-              <object class="GisUbuntuProPageLocal" id="page1">
+              <object class="GisUbuntuProPage1" id="page1">
                 <property name="visible">True</property>
               </object>
             </child>
             <child>
-              <object class="GisUbuntuProPageLocal" id="page2">
+              <object class="GisUbuntuProPage2" id="page2">
                 <property name="visible">True</property>
               </object>
             </child>
             <child>
-              <object class="GisUbuntuProPageLocal" id="page3">
+              <object class="GisUbuntuProPage3" id="page3">
                 <property name="visible">True</property>
               </object>
             </child>

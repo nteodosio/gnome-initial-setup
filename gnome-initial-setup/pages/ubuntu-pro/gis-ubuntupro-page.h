@@ -24,9 +24,6 @@
 G_BEGIN_DECLS
 
 #define GIS_TYPE_UBUNTUPRO_PAGE            (gis_ubuntupro_page_get_type ())
-#define GIS_TYPE_UBUNTUPRO_PAGE1           (gis_ubuntupro_page_get_type1 ())
-#define GIS_TYPE_UBUNTUPRO_PAGE2           (gis_ubuntupro_page_get_type2 ())
-#define GIS_TYPE_UBUNTUPRO_PAGE3           (gis_ubuntupro_page_get_type3 ())
 #define GIS_UBUNTUPRO_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPage))
 #define GIS_UBUNTUPRO_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPageClass))
 #define GIS_UBUNTUPRO_PAGE1(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE1, GisUbuntuProPage1))
@@ -98,9 +95,6 @@ struct _RestJSONResponse {
 };
 
 GType gis_ubuntupro_page_get_type (void);
-GType gis_ubuntupro_page_get_type1 (void);
-GType gis_ubuntupro_page_get_type2 (void);
-GType gis_ubuntupro_page_get_type3 (void);
 
 GisPage *gis_prepare_ubuntu_pro_page (GisDriver *driver);
 GisPage *gis_prepare_ubuntu_pro_page1 (GisDriver *driver);

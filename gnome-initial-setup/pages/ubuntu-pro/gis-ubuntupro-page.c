@@ -232,7 +232,7 @@ on_uad_disappeared (GDBusConnection *unused1,
 static void
 gis_ubuntupro_page1_constructed (GObject *object)
 {
-  GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE1 (object);
+  GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE (object);
   GisUbuntuProPage1Private *priv = gis_ubuntupro_page_get_instance_private (page);
   g_autoptr(GError) error = NULL;
   GDBusConnection *connection;
@@ -693,13 +693,15 @@ gis_ubuntupro_page1_class_init (GisUbuntuProPage1Class *klass)
   GisPageClass *page_class = GIS_PAGE_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enable_pro_select);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, skip_pro_select);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, offline_warning);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_email_entry);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_register_label);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_status_image);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, skip_choice);
+  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntupro-page-1.ui");
+
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, enable_pro_select);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, skip_pro_select);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, offline_warning);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_email_entry);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_register_label);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_status_image);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, skip_choice);
 
   page_class->page_id = PAGE1_ID;
   object_class->constructed = gis_ubuntupro_page1_constructed;
@@ -710,11 +712,13 @@ gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
   GisPageClass *page_class = GIS_PAGE_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_label);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_field);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_status);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_status);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_hint);
+  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntupro-page-2.ui");
+
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_label);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, token_field);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, token_status);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_status);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_hint);
 
   page_class->page_id = PAGE2_ID;
 }
@@ -724,11 +728,13 @@ gis_ubuntupro_page3_class_init (GisUbuntuProPage3Class *klass)
   GisPageClass *page_class = GIS_PAGE_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services_header);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, available_services);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, available_services_header);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, contract_name);
+  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntupro-page-3.ui");
+
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, enabled_services);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, enabled_services_header);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, available_services);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, available_services_header);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, contract_name);
 
   page_class->page_id = PAGE3_ID;
 }
@@ -800,28 +806,6 @@ gis_prepare_ubuntu_pro_page (GisDriver *driver)
     return NULL;
 
   return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE,
-                       "driver", driver,
-                       NULL);
-}
-
-GisPage *
-gis_prepare_ubuntu_pro_page1 (GisDriver *driver)
-{
-  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE1,
-                       "driver", driver,
-                       NULL);
-}
-GisPage *
-gis_prepare_ubuntu_pro_page2 (GisDriver *driver)
-{
-  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE2,
-                       "driver", driver,
-                       NULL);
-}
-GisPage *
-gis_prepare_ubuntu_pro_page3 (GisDriver *driver)
-{
-  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE3,
                        "driver", driver,
                        NULL);
 }
