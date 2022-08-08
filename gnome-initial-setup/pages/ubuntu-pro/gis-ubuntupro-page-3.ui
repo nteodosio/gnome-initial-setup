@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <template class="GisUbuntuProPage" parent="GisPage">
+  <template class="GisUbuntuProPage3" parent="GtkBin">
   <child>
   <object class="GtkBox" id="page3">
     <property name="visible">False</property>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <template class="GisUbuntuProPage" parent="GisPage">
+  <template class="GisUbuntuProPage1" parent="GtkBin">
     <child>
       <object class="GtkBox" id="page1">
         <property name="visible">True</property>
@@ -359,3 +359,5 @@ to enable Ubuntu Pro</property>
 <!---->
       </object>
     </child>
+  </template>
+</interface>

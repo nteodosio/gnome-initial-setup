@@ -80,6 +80,9 @@ struct _GisUbuntuProPagePrivate {
 typedef struct _GisUbuntuProPagePrivate GisUbuntuProPagePrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (GisUbuntuProPage, gis_ubuntupro_page, GIS_TYPE_PAGE);
+G_DEFINE_TYPE_WITH_PRIVATE (GisUbuntuProPage1, gis_ubuntupro_page1, GTK_TYPE_BIN);
+G_DEFINE_TYPE_WITH_PRIVATE (GisUbuntuProPage2, gis_ubuntupro_page2, GTK_TYPE_BIN);
+G_DEFINE_TYPE_WITH_PRIVATE (GisUbuntuProPage3, gis_ubuntupro_page3, GTK_TYPE_BIN);
 
 static gboolean magic_parser(void*, size_t, RestJSONResponse*);
 
@@ -229,7 +232,7 @@ on_uad_disappeared (GDBusConnection *unused1,
 static void
 gis_ubuntupro_page1_constructed (GObject *object)
 {
-  GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (object);
+  GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE1 (object);
   GisUbuntuProPage1Private *priv = gis_ubuntupro_page_get_instance_private (page);
   g_autoptr(GError) error = NULL;
   GDBusConnection *connection;
@@ -758,6 +761,27 @@ gis_ubuntupro_page_init (GisUbuntuProPage *page)
 
   gtk_widget_init_template (GTK_WIDGET (page));
 }
+static void
+gis_ubuntupro_page1_init (GisUbuntuProPage1 *page)
+{
+  g_resources_register (ubuntupro_get_resource ());
+
+  gtk_widget_init_template (GTK_WIDGET (page));
+}
+static void
+gis_ubuntupro_page2_init (GisUbuntuProPage2 *page)
+{
+  g_resources_register (ubuntupro_get_resource ());
+
+  gtk_widget_init_template (GTK_WIDGET (page));
+}
+static void
+gis_ubuntupro_page3_init (GisUbuntuProPage3 *page)
+{
+  g_resources_register (ubuntupro_get_resource ());
+
+  gtk_widget_init_template (GTK_WIDGET (page));
+}
 
 GisPage *
 gis_prepare_ubuntu_pro_page (GisDriver *driver)
@@ -776,6 +800,28 @@ gis_prepare_ubuntu_pro_page (GisDriver *driver)
     return NULL;
 
   return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE,
+                       "driver", driver,
+                       NULL);
+}
+
+GisPage *
+gis_prepare_ubuntu_pro_page1 (GisDriver *driver)
+{
+  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE1,
+                       "driver", driver,
+                       NULL);
+}
+GisPage *
+gis_prepare_ubuntu_pro_page2 (GisDriver *driver)
+{
+  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE2,
+                       "driver", driver,
+                       NULL);
+}
+GisPage *
+gis_prepare_ubuntu_pro_page3 (GisDriver *driver)
+{
+  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE3,
                        "driver", driver,
                        NULL);
 }

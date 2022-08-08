@@ -24,11 +24,23 @@
 G_BEGIN_DECLS
 
 #define GIS_TYPE_UBUNTUPRO_PAGE            (gis_ubuntupro_page_get_type ())
+#define GIS_TYPE_UBUNTUPRO_PAGE1           (gis_ubuntupro_page_get_type1 ())
+#define GIS_TYPE_UBUNTUPRO_PAGE2           (gis_ubuntupro_page_get_type2 ())
+#define GIS_TYPE_UBUNTUPRO_PAGE3           (gis_ubuntupro_page_get_type3 ())
 #define GIS_UBUNTUPRO_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPage))
 #define GIS_UBUNTUPRO_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPageClass))
+#define GIS_UBUNTUPRO_PAGE1(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE1, GisUbuntuProPage1))
+#define GIS_UBUNTUPRO_PAGE1_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE1, GisUbuntuProPage1Class))
+#define GIS_UBUNTUPRO_PAGE2(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE2, GisUbuntuProPage2))
+#define GIS_UBUNTUPRO_PAGE2_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE2, GisUbuntuProPage2Class))
+#define GIS_UBUNTUPRO_PAGE3(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE3, GisUbuntuProPage3))
+#define GIS_UBUNTUPRO_PAGE3_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE3, GisUbuntuProPage3Class))
 #define GIS_IS_UBUNTUPRO_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTUPRO_PAGE))
 #define GIS_IS_UBUNTUPRO_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTUPRO_PAGE))
 #define GIS_UBUNTUPRO_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPageClass))
+#define GIS_UBUNTUPRO_PAGE1_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_PAGE1, GisUbuntuProPage1Class))
+#define GIS_UBUNTUPRO_PAGE2_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_PAGE2, GisUbuntuProPage2Class))
+#define GIS_UBUNTUPRO_PAGE3_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_PAGE3, GisUbuntuProPage3Class))
 
 typedef struct _GisUbuntuProPage        GisUbuntuProPage;
 typedef struct _GisUbuntuProPageClass   GisUbuntuProPageClass;
@@ -49,6 +61,33 @@ struct _GisUbuntuProPageClass
 {
   GisPageClass parent_class;
 };
+struct _GisUbuntuProPage1
+{
+  GisPage parent;
+};
+
+struct _GisUbuntuProPage1Class
+{
+  GisPageClass parent_class;
+};
+struct _GisUbuntuProPage2
+{
+  GisPage parent;
+};
+
+struct _GisUbuntuProPage2Class
+{
+  GisPageClass parent_class;
+};
+struct _GisUbuntuProPage3
+{
+  GisPage parent;
+};
+
+struct _GisUbuntuProPage3Class
+{
+  GisPageClass parent_class;
+};
 
 struct _RestJSONResponse {
     gint64 expiresIn;
@@ -59,8 +98,14 @@ struct _RestJSONResponse {
 };
 
 GType gis_ubuntupro_page_get_type (void);
+GType gis_ubuntupro_page_get_type1 (void);
+GType gis_ubuntupro_page_get_type2 (void);
+GType gis_ubuntupro_page_get_type3 (void);
 
 GisPage *gis_prepare_ubuntu_pro_page (GisDriver *driver);
+GisPage *gis_prepare_ubuntu_pro_page1 (GisDriver *driver);
+GisPage *gis_prepare_ubuntu_pro_page2 (GisDriver *driver);
+GisPage *gis_prepare_ubuntu_pro_page3 (GisDriver *driver);
 
 G_END_DECLS
 
