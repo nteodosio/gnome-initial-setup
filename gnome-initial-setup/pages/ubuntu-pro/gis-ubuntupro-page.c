@@ -765,6 +765,11 @@ gis_ubuntupro_page_init (GisUbuntuProPage *page)
 {
   g_resources_register (ubuntupro_get_resource ());
 
+  // Magic that makes stuff compile
+  gis_ubuntupro_page1_get_type ();
+  gis_ubuntupro_page2_get_type ();
+  gis_ubuntupro_page3_get_type ();
+
   gtk_widget_init_template (GTK_WIDGET (page));
 }
 static void
