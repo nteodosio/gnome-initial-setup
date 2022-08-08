@@ -32,6 +32,12 @@ G_BEGIN_DECLS
 
 typedef struct _GisUbuntuProPage        GisUbuntuProPage;
 typedef struct _GisUbuntuProPageClass   GisUbuntuProPageClass;
+typedef struct _GisUbuntuProPage1       GisUbuntuProPage1;
+typedef struct _GisUbuntuProPage1Class  GisUbuntuProPage1Class;
+typedef struct _GisUbuntuProPage2       GisUbuntuProPage2;
+typedef struct _GisUbuntuProPage2Class  GisUbuntuProPage2Class;
+typedef struct _GisUbuntuProPage3       GisUbuntuProPage3;
+typedef struct _GisUbuntuProPage3Class  GisUbuntuProPage3Class;
 typedef struct _RestJSONResponse        RestJSONResponse;
 
 struct _GisUbuntuProPage

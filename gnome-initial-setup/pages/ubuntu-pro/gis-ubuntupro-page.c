@@ -19,6 +19,9 @@
 /* Canonical Ubuntu Pro page {{{1 */
 
 #define PAGE_ID "UbuntuPro"
+#define PAGE1_ID "UbuntuPro1"
+#define PAGE2_ID "UbuntuPro2"
+#define PAGE3_ID "UbuntuPro3"
 
 #include "config.h"
 #include "gis-auth-dialog.h"
@@ -41,6 +44,8 @@ struct _GisUbuntuProPage1Private {
   GtkWidget *pro_register_label;
   GtkWidget *pro_status_image;
   GtkWidget *skip_choice;
+
+  GPermission *permission;
 };
 typedef struct _GisUbuntuProPage1Private GisUbuntuProPage1Private;
 
@@ -50,6 +55,9 @@ struct _GisUbuntuProPage2Private {
   GtkWidget *token_status;
   GtkWidget *pin_hint;
   GtkWidget *pin_status;
+
+  gint64 timeout;
+  gchar *token;
 };
 typedef struct _GisUbuntuProPage2Private GisUbuntuProPage2Private;
 
@@ -68,10 +76,6 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *page3;
 
   guint ua_desktop_watch;
-  gint64 timeout;
-  gchar *token;
-
-  GPermission *permission;
 };
 typedef struct _GisUbuntuProPagePrivate GisUbuntuProPagePrivate;
 
@@ -223,10 +227,10 @@ on_uad_disappeared (GDBusConnection *unused1,
 }
 
 static void
-gis_ubuntupro_page_constructed (GObject *object)
+gis_ubuntupro_page1_constructed (GObject *object)
 {
   GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (object);
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage1Private *priv = gis_ubuntupro_page_get_instance_private (page);
   g_autoptr(GError) error = NULL;
   GDBusConnection *connection;
   GNetworkMonitor *network_monitor = g_network_monitor_get_default ();
@@ -259,6 +263,7 @@ gis_ubuntupro_page_constructed (GObject *object)
   gtk_widget_show (GTK_WIDGET (page));
 }
 
+/*
 static void
 gis_ubuntupro_page_dispose (GObject *object)
 {
@@ -269,6 +274,7 @@ gis_ubuntupro_page_dispose (GObject *object)
 
   G_OBJECT_CLASS (gis_ubuntupro_page_parent_class)->dispose (object);
 }
+*/
 
 static void
 gis_ubuntupro_page_locale_changed (GisPage *page)
@@ -300,7 +306,7 @@ make_rest_req(void *buf, size_t bufsize, const char* type, const char* where,
 }
 
 static gboolean
-poll_token_attach (GisUbuntuProPagePrivate *priv)
+poll_token_attach (GisUbuntuProPage2Private *priv)
 {
   gboolean ret = FALSE;
   size_t bufsize = 1024;
@@ -359,7 +365,7 @@ poll_token_attach (GisUbuntuProPagePrivate *priv)
 static gboolean
 token_countdown (gpointer data)
 {
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (data);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (data);
   gchar *str_label;
   
   priv->timeout = priv->timeout - 1;
@@ -450,7 +456,7 @@ parse_ua_status(){
 }
 
 static gboolean
-display_ua_services(GisUbuntuProPagePrivate *priv){
+display_ua_services(GisUbuntuProPage3Private *priv){
     JsonParser  *parser;
     JsonNode    *root_node;
     JsonObject  *root, *services, *contract;
@@ -483,7 +489,7 @@ display_ua_services(GisUbuntuProPagePrivate *priv){
 
     contract = json_object_get_object_member(root, "contract");
     contract_name = json_object_get_string_member(contract, "name");
-    gtk_label_set_text(GTK_WIDGET(priv->contract_name), contract_name);
+    gtk_label_set_text(GTK_LABEL(priv->contract_name), contract_name);
 
     services_array = json_object_get_array_member(root, "services");
     n_services = json_array_get_length(services_array);
@@ -516,13 +522,13 @@ display_ua_services(GisUbuntuProPagePrivate *priv){
     if (enabled_str == NULL) {
       gtk_widget_destroy(GTK_WIDGET(priv->enabled_services_header));
     } else {
-      gtk_label_set_text(GTK_WIDGET(priv->enabled_services), enabled_str);
+      gtk_label_set_text(GTK_LABEL(priv->enabled_services), enabled_str);
       free(enabled_str);
     }
     if (available_str == NULL) {
       gtk_widget_destroy(GTK_WIDGET(priv->available_services_header));
     } else {
-      gtk_label_set_text(GTK_WIDGET(priv->available_services), available_str);
+      gtk_label_set_text(GTK_LABEL(priv->available_services), available_str);
       free(available_str);
     }
 
@@ -533,6 +539,7 @@ end:
     return ret;
 }
 
+/*
 static void
 next_page (GtkButton *button, GisUbuntuProPage *page)
 {
@@ -560,11 +567,12 @@ next_page (GtkButton *button, GisUbuntuProPage *page)
 
   page_n++;
 }
+*/
 
 static void
 request_magic_attach (GisUbuntuProPage *page)
 {
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (page);
 
   g_print ("Request magic attach\n");
   gtk_widget_show (GTK_WIDGET (priv->pin_label));
@@ -623,7 +631,7 @@ static void
 request_token_attach (GtkButton *button, GisUbuntuProPage *page)
 {
   gchar *str_label;
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (page);
 
   gtk_widget_set_sensitive (priv->token_field, FALSE);
   const gchar *token = gtk_entry_get_text(GTK_ENTRY(priv->token_field));
@@ -640,7 +648,7 @@ request_token_attach (GtkButton *button, GisUbuntuProPage *page)
 static void
 on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
 {
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (page);
 
     const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
     if (*label == '\0' || priv->timeout <= 0){
@@ -653,7 +661,7 @@ on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
 static void
 on_token_toggled (GtkButton *button, GisUbuntuProPage *page)
 {
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page_get_instance_private (page);
 
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
     gtk_widget_set_sensitive(priv->token_field, TRUE);
@@ -662,22 +670,22 @@ on_token_toggled (GtkButton *button, GisUbuntuProPage *page)
   }
 }
 
-/* non working yet hack trying to override the next action */
+/* non working yet hack trying to override the next action *//*
 static gboolean
 gis_ubuntupro_page_apply (GisPage      *page,
                          GCancellable *cancellable)
 {
     g_print("apply\n");
-//  GisPage *account_page = GIS_PAGE (data);
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
-  return TRUE;
-/*  return gis_ubuntupro_page_apply (GIS_UBUNTUPRO_PAGE (priv->page), cancellable,
+    GisPage *account_page = GIS_PAGE (data);
+    GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+    return TRUE;
+    return gis_ubuntupro_page_apply (GIS_UBUNTUPRO_PAGE (priv->page), cancellable,
                                             ubuntupro_apply_complete, page);
-                                            */
 }
+*/
 
 static void
-gis_ubuntupro_page1_class_init (GisUbuntuProPageClass *klass)
+gis_ubuntupro_page1_class_init (GisUbuntuProPage1Class *klass)
 {
   GisPageClass *page_class = GIS_PAGE_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -689,24 +697,37 @@ gis_ubuntupro_page1_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_register_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pro_status_image);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, skip_choice);
+
+  page_class->page_id = PAGE1_ID;
+  object_class->constructed = gis_ubuntupro_page1_constructed;
 }
 static void
-gis_ubuntupro_page2_class_init (GisUbuntuProPageClass *klass)
+gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
 {
+  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_field);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, token_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, pin_hint);
+
+  page_class->page_id = PAGE2_ID;
 }
 static void
-gis_ubuntupro_page3_class_init (GisUbuntuProPageClass *klass)
+gis_ubuntupro_page3_class_init (GisUbuntuProPage3Class *klass)
 {
+  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, enabled_services_header);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, available_services);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, available_services_header);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, contract_name);
+
+  page_class->page_id = PAGE3_ID;
 }
 
 static void
@@ -722,15 +743,12 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, page3);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
-  gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
+  //gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_token_toggled);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_magic_toggled);
   
   page_class->page_id = PAGE_ID;
   page_class->locale_changed = gis_ubuntupro_page_locale_changed;
-  page_class->apply = gis_ubuntupro_page_apply;  
-  object_class->constructed = gis_ubuntupro_page_constructed;
-  object_class->dispose = gis_ubuntupro_page_dispose;
 }
 
 static void
