@@ -230,6 +230,15 @@ on_uad_disappeared (GDBusConnection *unused1,
 }
 
 static void
+gis_ubuntupro_page_constructed (GObject *object)
+{
+  GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (object);
+  gis_page_set_complete (GIS_PAGE (page), TRUE);
+  gtk_widget_show (GTK_WIDGET (page));
+
+}
+
+static void
 gis_ubuntupro_page1_constructed (GObject *object)
 {
   GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE1 (object);
@@ -760,6 +769,9 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   
   page_class->page_id = PAGE_ID;
   page_class->locale_changed = gis_ubuntupro_page_locale_changed;
+  //page_class->apply = gis_ubuntupro_page_apply;
+  object_class->constructed = gis_ubuntupro_page_constructed;
+  //object_class->dispose = gis_ubuntupro_page_dispose;
 }
 
 static void
