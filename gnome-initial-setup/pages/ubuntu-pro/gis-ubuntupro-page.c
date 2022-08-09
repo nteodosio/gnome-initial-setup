@@ -43,6 +43,9 @@ struct _GisUbuntuProPage1Private {
   GtkWidget *skip_choice;
 
   GPermission *permission;
+  GCancellable *cancellable;
+  GisPageApplyCallback apply_complete_callback;
+  gpointer apply_complete_data;
 };
 typedef struct _GisUbuntuProPage1Private GisUbuntuProPage1Private;
 
@@ -232,7 +235,7 @@ gis_ubuntupro_page_constructed (GObject *object)
   GisUbuntuProPage *main_page = GIS_UBUNTUPRO_PAGE (object);
   GisUbuntuProPagePrivate *main_page_priv = gis_ubuntupro_page_get_instance_private (main_page);
   GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE1 (main_page_priv->page1);
-  GisUbuntuProPage1Private *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProPage1Private *priv = gis_ubuntupro_page1_get_instance_private (page);
 
   gis_page_set_complete (GIS_PAGE (main_page), TRUE);
   gtk_widget_show (GTK_WIDGET (main_page));
@@ -678,19 +681,50 @@ on_token_toggled (GtkButton *button, GisUbuntuProPage2 *page)
   }
 }
 
-/* non working yet hack trying to override the next action *//*
+static void
+ubuntupro_apply_complete (GisPage  *dummy,
+                          gboolean  valid,
+                          gpointer  user_data)
+{
+    g_print("2apply\n");
+  GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (user_data);
+  gis_page_apply_complete (GIS_PAGE (page), valid);
+}
+
+gboolean
+gis_ubuntupro_page1_apply (GisUbuntuProPage1 *page,
+                                   GCancellable             *cancellable,
+                                   GisPageApplyCallback      callback,
+                                   gpointer                  data)
+{
+    g_print("1apply\n");
+  GisPage *ubuntupro_page1 = GIS_PAGE (data);
+  GisUbuntuProPage1Private *priv = gis_ubuntupro_page1_get_instance_private (page);
+
+  priv->apply_complete_callback = callback;
+  priv->apply_complete_data = data;
+  priv->cancellable = g_object_ref (cancellable);
+    g_print("1applied\n");
+  return TRUE;
+}
+
+/* non working yet hack trying to override the next action */
 static gboolean
-gis_ubuntupro_page_apply (GisPage      *page,
+gis_ubuntupro_page_apply (GisPage      *gis_page,
                          GCancellable *cancellable)
 {
-    g_print("apply\n");
-    GisPage *account_page = GIS_PAGE (data);
-    GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  g_print("apply\n");
+  GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (gis_page);
+  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+
+  if (gis_ubuntupro_page1_apply (GIS_UBUNTUPRO_PAGE1 (priv->page1), cancellable,
+                                ubuntupro_apply_complete, page)){
+    gis_assistant_next_page (gis_driver_get_assistant (GIS_PAGE (page)->driver));
     return TRUE;
-    return gis_ubuntupro_page_apply (GIS_UBUNTUPRO_PAGE (priv->page), cancellable,
-                                            ubuntupro_apply_complete, page);
+  } else {
+    return FALSE;
+  }
 }
-*/
 
 static void
 gis_ubuntupro_page1_class_init (GisUbuntuProPage1Class *klass)
@@ -720,6 +754,7 @@ gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_hint);
 
+  //page_class->apply = gis_ubuntupro_page_apply;
 }
 static void
 gis_ubuntupro_page3_class_init (GisUbuntuProPage3Class *klass)
@@ -755,7 +790,7 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   
   page_class->page_id = PAGE_ID;
   page_class->locale_changed = gis_ubuntupro_page_locale_changed;
-  //page_class->apply = gis_ubuntupro_page_apply;
+  page_class->apply = gis_ubuntupro_page_apply;
   object_class->constructed = gis_ubuntupro_page_constructed;
   //object_class->dispose = gis_ubuntupro_page_dispose;
 }
