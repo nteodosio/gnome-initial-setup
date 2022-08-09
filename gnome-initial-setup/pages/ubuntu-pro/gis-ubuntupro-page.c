@@ -229,24 +229,21 @@ on_uad_disappeared (GDBusConnection *unused1,
 static void
 gis_ubuntupro_page_constructed (GObject *object)
 {
-  GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (object);
-  gis_page_set_complete (GIS_PAGE (page), TRUE);
-  gtk_widget_show (GTK_WIDGET (page));
+  GisUbuntuProPage *main_page = GIS_UBUNTUPRO_PAGE (object);
+  GisUbuntuProPagePrivate *main_page_priv = gis_ubuntupro_page_get_instance_private (main_page);
+  GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE1 (main_page_priv->page1);
+  GisUbuntuProPage1Private *priv = gis_ubuntupro_page_get_instance_private (page);
 
-}
+  gis_page_set_complete (GIS_PAGE (main_page), TRUE);
+  gtk_widget_show (GTK_WIDGET (main_page));
 
-static void
-gis_ubuntupro_page1_constructed (GObject *object)
-{
-  GisUbuntuProPage1 *page = GIS_UBUNTUPRO_PAGE1 (object);
-  GisUbuntuProPage1Private *priv = gis_ubuntupro_page1_get_instance_private (page);
   g_autoptr(GError) error = NULL;
   GDBusConnection *connection;
   GNetworkMonitor *network_monitor = g_network_monitor_get_default ();
 
-  G_OBJECT_CLASS (gis_ubuntupro_page1_parent_class)->constructed (object);
+  G_OBJECT_CLASS (gis_ubuntupro_page_parent_class)->constructed (object);
 
-  gis_page_set_skippable (GIS_PAGE (page), TRUE);
+  gis_page_set_skippable (GIS_PAGE (main_page), TRUE);
   
   priv->permission = polkit_permission_new_sync ("com.ubuntu.welcome.ubuntupro", NULL, NULL, &error); /* TOFIX */
   if (priv->permission == NULL) {
@@ -258,7 +255,7 @@ gis_ubuntupro_page1_constructed (GObject *object)
   g_signal_connect (network_monitor, "network-changed",
                     G_CALLBACK (network_status_changed), priv);
 
-  gis_page_set_complete (GIS_PAGE (page), TRUE);
+  gis_page_set_complete (GIS_PAGE (main_page), TRUE);
 
   if (!g_network_monitor_get_network_available (network_monitor)) {
     gtk_widget_set_sensitive (priv->enable_pro_select, FALSE);
@@ -269,7 +266,7 @@ gis_ubuntupro_page1_constructed (GObject *object)
     //gtk_image_set_from_icon_name (GTK_IMAGE(priv->pro_status_image), "gtk-yes", GTK_ICON_SIZE_DND);
   }
 
-  gtk_widget_show (GTK_WIDGET (page));
+  gtk_widget_show (GTK_WIDGET (main_page));
 }
 
 /*
@@ -709,8 +706,6 @@ gis_ubuntupro_page1_class_init (GisUbuntuProPage1Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_register_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_status_image);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, skip_choice);
-
-  object_class->constructed = gis_ubuntupro_page1_constructed;
 }
 static void
 gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
