@@ -103,9 +103,6 @@ GType gis_ubuntupro_page2_get_type (void);
 GType gis_ubuntupro_page3_get_type (void);
 
 GisPage *gis_prepare_ubuntu_pro_page (GisDriver *driver);
-GisPage *gis_prepare_ubuntu_pro_page1 (GisDriver *driver);
-GisPage *gis_prepare_ubuntu_pro_page2 (GisDriver *driver);
-GisPage *gis_prepare_ubuntu_pro_page3 (GisDriver *driver);
 
 G_END_DECLS
 

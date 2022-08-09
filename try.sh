@@ -14,5 +14,9 @@ cd tweakui; patch -p0 < template.patch
 cd -
 cp tweakui/gis-ubuntupro-page.ui gnome-initial-setup/pages/ubuntu-pro/gis-ubuntupro-page.ui
 ninja -C build || exit 1
-GTK_THEME=Adwaita XDG_CURRENT_DESKTOP=ubuntu ./build/gnome-initial-setup/gnome-initial-setup --existing-user
+if [ "$1" != debug ]; then
+    GTK_THEME=Adwaita XDG_CURRENT_DESKTOP=ubuntu ./build/gnome-initial-setup/gnome-initial-setup --existing-user
+else
+    G_DEBUG=fatal-warnings GTK_THEME=Adwaita XDG_CURRENT_DESKTOP=ubuntu gdb -ex run --args ./build/gnome-initial-setup/gnome-initial-setup --existing-user
+fi
 
