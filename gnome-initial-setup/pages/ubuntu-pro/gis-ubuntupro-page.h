@@ -65,29 +65,29 @@ struct _GisUbuntuProPage
 {
   GisPage parent;
 };
-
 struct _GisUbuntuProPageClass
 {
   GisPageClass parent_class;
 };
+
 struct _GisUbuntuProPage1
 {
   GtkBin parent;
 };
-
 struct _GisUbuntuProPage1Class
 {
   GtkBinClass parent_class;
 };
+
 struct _GisUbuntuProPage2
 {
   GtkBin parent;
 };
-
 struct _GisUbuntuProPage2Class
 {
   GtkBinClass parent_class;
 };
+
 struct _GisUbuntuProPage3
 {
   GtkBin parent;

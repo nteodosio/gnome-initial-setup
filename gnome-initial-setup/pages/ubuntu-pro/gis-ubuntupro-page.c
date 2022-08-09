@@ -19,9 +19,6 @@
 /* Canonical Ubuntu Pro page {{{1 */
 
 #define PAGE_ID "UbuntuPro"
-#define PAGE1_ID "UbuntuPro1"
-#define PAGE2_ID "UbuntuPro2"
-#define PAGE3_ID "UbuntuPro3"
 
 #include "config.h"
 #include "gis-auth-dialog.h"
@@ -247,7 +244,7 @@ gis_ubuntupro_page1_constructed (GObject *object)
   GDBusConnection *connection;
   GNetworkMonitor *network_monitor = g_network_monitor_get_default ();
 
-  G_OBJECT_CLASS (gis_ubuntupro_page_parent_class)->constructed (object);
+  G_OBJECT_CLASS (gis_ubuntupro_page1_parent_class)->constructed (object);
 
   gis_page_set_skippable (GIS_PAGE (page), TRUE);
   
@@ -701,7 +698,6 @@ gis_ubuntupro_page_apply (GisPage      *page,
 static void
 gis_ubuntupro_page1_class_init (GisUbuntuProPage1Class *klass)
 {
-  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntupro-page-1.ui");
@@ -714,13 +710,11 @@ gis_ubuntupro_page1_class_init (GisUbuntuProPage1Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_status_image);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, skip_choice);
 
-  page_class->page_id = PAGE1_ID;
   object_class->constructed = gis_ubuntupro_page1_constructed;
 }
 static void
 gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
 {
-  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntupro-page-2.ui");
@@ -731,12 +725,10 @@ gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_hint);
 
-  page_class->page_id = PAGE2_ID;
 }
 static void
 gis_ubuntupro_page3_class_init (GisUbuntuProPage3Class *klass)
 {
-  GisPageClass *page_class = GIS_PAGE_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-ubuntupro-page-3.ui");
@@ -747,7 +739,6 @@ gis_ubuntupro_page3_class_init (GisUbuntuProPage3Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, available_services_header);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, contract_name);
 
-  page_class->page_id = PAGE3_ID;
 }
 
 static void
