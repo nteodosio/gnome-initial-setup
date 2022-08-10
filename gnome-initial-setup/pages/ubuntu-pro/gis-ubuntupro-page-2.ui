@@ -183,7 +183,7 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
             <property name="no-show-all">True</property>
             <child>
               <object class="GtkEntry" id="token_field">
-                <property name="visible">False</property>
+                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
                 <property name="margin-left">20</property>

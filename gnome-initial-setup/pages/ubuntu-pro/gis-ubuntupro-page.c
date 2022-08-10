@@ -549,36 +549,6 @@ end:
     return ret;
 }
 
-/*
-static void
-next_page (GtkButton *button, GisUbuntuProPage *page)
-{
-  GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
-  static int page_n = 2;
-
-  if (page_n == 2){
-    if (gtk_toggle_button_get_active(GTK_WIDGET(priv->enable_pro_select))){
-      gtk_widget_set_visible(GTK_WIDGET(priv->page1), FALSE);
-      gtk_widget_set_visible(GTK_WIDGET(priv->page2), TRUE);
-      gtk_widget_set_visible(GTK_WIDGET (priv->token_field), TRUE);
-    } else if (gtk_toggle_button_get_active(GTK_WIDGET(priv->skip_pro_select))){
-      //Skip to next section
-    } else {
-      g_assert_not_reached ();
-    }
-  } else if (page_n == 3){
-    if (display_ua_services(priv)){
-      gtk_widget_set_visible(GTK_WIDGET(priv->page2), FALSE);
-      gtk_widget_set_visible(GTK_WIDGET(priv->page3), TRUE);
-    } else {
-      //Error: Couldn't get services
-    }
-  }
-
-  page_n++;
-}
-*/
-
 static void
 request_magic_attach (GisUbuntuProPage2 *page)
 {
@@ -662,11 +632,11 @@ on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
   GisUbuntuProPage2 *page2 = GIS_UBUNTUPRO_PAGE2(priv0->page2);
   GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (page2);
 
-    const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
-    if (*label == '\0' || priv->timeout <= 0){
-      request_magic_attach(page2);
-      gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
-      gtk_label_set_text(GTK_LABEL(priv->pin_status), "");
+  const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
+  if (*label == '\0' || priv->timeout <= 0){
+    request_magic_attach(page2);
+    gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
+    gtk_label_set_text(GTK_LABEL(priv->pin_status), "");
   }
 }
 
@@ -785,7 +755,6 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, stack);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
-  //gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_token_toggled);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), on_magic_toggled);
   
