@@ -607,7 +607,7 @@ ua_attach(const gchar *token){
     return(TRUE);
 }
 
-static void
+void
 request_token_attach (GtkButton *button, GisUbuntuProPage2 *page)
 {
   gchar *str_label;
@@ -625,7 +625,7 @@ request_token_attach (GtkButton *button, GisUbuntuProPage2 *page)
   }
 }
 
-static void
+void
 on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
 {
   GisUbuntuProPagePrivate *priv0 = gis_ubuntupro_page_get_instance_private (page);
@@ -640,7 +640,7 @@ on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
   }
 }
 
-static void
+void
 on_token_toggled (GtkButton *button, GisUbuntuProPage2 *page)
 {
   GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (page);
