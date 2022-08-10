@@ -74,6 +74,7 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *page1;
   GtkWidget *page2;
   GtkWidget *page3;
+  GtkWidget *stack;
 
   guint ua_desktop_watch;
 };
@@ -697,14 +698,12 @@ gis_ubuntupro_page1_apply (GisUbuntuProPage1 *page,
                                    GisPageApplyCallback      callback,
                                    gpointer                  data)
 {
-    g_print("1apply\n");
   GisPage *ubuntupro_page1 = GIS_PAGE (data);
   GisUbuntuProPage1Private *priv = gis_ubuntupro_page1_get_instance_private (page);
 
   priv->apply_complete_callback = callback;
   priv->apply_complete_data = data;
   priv->cancellable = g_object_ref (cancellable);
-    g_print("1applied\n");
   return TRUE;
 }
 
@@ -713,10 +712,11 @@ static gboolean
 gis_ubuntupro_page_apply (GisPage      *gis_page,
                          GCancellable *cancellable)
 {
-  g_print("apply\n");
   GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (gis_page);
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
 
+  gis_page_set_complete (GIS_PAGE (page), TRUE);
+  gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page2);
   if (gis_ubuntupro_page1_apply (GIS_UBUNTUPRO_PAGE1 (priv->page1), cancellable,
                                 ubuntupro_apply_complete, page)){
     gis_assistant_next_page (gis_driver_get_assistant (GIS_PAGE (page)->driver));
@@ -782,6 +782,7 @@ gis_ubuntupro_page_class_init (GisUbuntuProPageClass *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, page1);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, page2);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, page3);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage, stack);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_token_attach);
   gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), request_magic_attach);
   //gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), next_page);
@@ -853,6 +854,20 @@ GisPage *
 gis_prepare_ubuntu_pro_page1 (GisDriver *driver)
 {
   return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE1,
+                       "driver", driver,
+                       NULL);
+}
+GisPage *
+gis_prepare_ubuntu_pro_page2 (GisDriver *driver)
+{
+  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE2,
+                       "driver", driver,
+                       NULL);
+}
+GisPage *
+gis_prepare_ubuntu_pro_page3 (GisDriver *driver)
+{
+  return g_object_new (GIS_TYPE_UBUNTUPRO_PAGE3,
                        "driver", driver,
                        NULL);
 }
