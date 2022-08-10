@@ -684,6 +684,7 @@ gis_ubuntupro_page_apply (GisPage      *gis_page,
   GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (gis_page);
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
 
+  on_magic_toggled(NULL, GIS_UBUNTUPRO_PAGE2(priv->page2));
   gis_page_set_complete (GIS_PAGE (page), TRUE);
   gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page2);
   if (gis_ubuntupro_page1_apply (GIS_UBUNTUPRO_PAGE1 (priv->page1), cancellable,
@@ -710,6 +711,7 @@ gis_ubuntupro_page1_class_init (GisUbuntuProPage1Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_status_image);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, skip_choice);
 }
+
 static void
 gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
 {
