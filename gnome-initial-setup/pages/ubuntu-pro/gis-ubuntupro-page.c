@@ -687,13 +687,13 @@ gis_ubuntupro_page_apply (GisPage      *gis_page,
   on_magic_toggled(NULL, GIS_UBUNTUPRO_PAGE2(priv->page2));
   gis_page_set_complete (GIS_PAGE (page), TRUE);
   gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page2);
-  if (gis_ubuntupro_page1_apply (GIS_UBUNTUPRO_PAGE1 (priv->page1), cancellable,
-                                ubuntupro_apply_complete, page)){
+//if (gis_ubuntupro_page1_apply (GIS_UBUNTUPRO_PAGE1 (priv->page1), cancellable,
+//                              ubuntupro_apply_complete, page)){
     gis_assistant_next_page (gis_driver_get_assistant (GIS_PAGE (page)->driver));
     return TRUE;
-  } else {
-    return FALSE;
-  }
+//} else {
+//  return FALSE;
+//}
 }
 
 static void
