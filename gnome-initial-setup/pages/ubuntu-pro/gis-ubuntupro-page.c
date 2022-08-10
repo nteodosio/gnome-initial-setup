@@ -626,15 +626,14 @@ request_token_attach (GtkButton *button, GisUbuntuProPage2 *page)
 }
 
 void
-on_magic_toggled (GtkButton *button, GisUbuntuProPage *page)
+on_magic_toggled (GtkButton *button, GisUbuntuProPage2 *page)
 {
-  GisUbuntuProPagePrivate *priv0 = gis_ubuntupro_page_get_instance_private (page);
-  GisUbuntuProPage2 *page2 = GIS_UBUNTUPRO_PAGE2(priv0->page2);
-  GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (page2);
+  GisUbuntuProPage2Private *priv = gis_ubuntupro_page2_get_instance_private (page);
 
+  gtk_widget_is_visible(priv->pin_label);
   const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
   if (*label == '\0' || priv->timeout <= 0){
-    request_magic_attach(page2);
+    request_magic_attach(page);
     gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
     gtk_label_set_text(GTK_LABEL(priv->pin_status), "");
   }
