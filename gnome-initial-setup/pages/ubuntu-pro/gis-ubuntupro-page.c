@@ -554,34 +554,56 @@ request_magic_attach (GisUbuntuProPage2 *page)
   free(buf);
 }
 
-static gboolean
-ua_attach(const gchar *token){
-    GVariant        *result;
-    GDBusConnection *bus;
-    GError          *error = NULL;
+static void
+on_ua_attach_requested (GObject *source,
+                        GAsyncResult *result,
+                        gpointer user_data)
+{
+  GisUbuntuProPage2Private *priv = user_data;
+  GError *error = NULL;
+  GVariant *retval;
+  gchar *str_label;
 
-    bus = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
-    if (bus == NULL){
-        g_warning("Failed to get system bus: %s", error->message);
-        return(FALSE);
-    }
-    result = g_dbus_connection_call_sync(bus,
-        "com.canonical.UbuntuAdvantage",
-        "/com/canonical/UbuntuAdvantage/Manager",
-        "com.canonical.UbuntuAdvantage.Manager",
-        "Attach",
-        g_variant_new("(s)", token),
-        G_VARIANT_TYPE("()"),
-        G_DBUS_CALL_FLAGS_NONE,
-        -1,
-        NULL,
-        &error);
-    if (result == NULL){
-        g_warning("Failed to contact Ubuntu Advantage D-Bus service: %s",
-                  error->message);
-        return(FALSE);
-    }
-    return(TRUE);
+  retval = g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, &error);
+  if (retval == NULL) {
+    g_warning ("Failed to attach token: %s", error->message);
+    g_error_free (error);
+
+    /* Failed to attach */
+    str_label = g_strdup_printf("<span foreground=\"#900000\"><b>Failed to attach</b></span>");
+    gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
+    gtk_widget_set_sensitive (priv->token_field, TRUE);
+  } else {
+    g_variant_unref (retval);
+
+    str_label = g_strdup_printf("<span foreground=\"#008000\"><b>Valid token</b></span>");
+    gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
+  }
+  g_free(str_label);
+}
+
+static void
+ua_attach(const gchar *token, GisUbuntuProPage2Private *priv){
+  GDBusConnection *bus;
+  GError          *error = NULL;
+
+  bus = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+  if (bus == NULL){
+      g_warning("Failed to get system bus: %s", error->message);
+  } else {
+    g_dbus_connection_call(bus,
+      "com.canonical.UbuntuAdvantage",
+      "/com/canonical/UbuntuAdvantage/Manager",
+      "com.canonical.UbuntuAdvantage.Manager",
+      "Attach",
+      g_variant_new("(s)", token),
+      G_VARIANT_TYPE("()"),
+      G_DBUS_CALL_FLAGS_NONE,
+      -1,
+      NULL,
+      on_ua_attach_requested,
+      priv);
+  }
 }
 
 void
@@ -592,14 +614,10 @@ request_token_attach (GtkButton *button, GisUbuntuProPage2 *page)
 
   gtk_widget_set_sensitive (priv->token_field, FALSE);
   const gchar *token = gtk_entry_get_text(GTK_ENTRY(priv->token_field));
-  if (ua_attach(token)){
-    str_label = g_strdup_printf("<span foreground=\"#008000\"><b>Valid token</b></span>");
-    gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
-  } else {
-    str_label = g_strdup_printf("<span foreground=\"#900000\"><b>Failed to attach</b></span>");
-    gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
-    gtk_widget_set_sensitive (priv->token_field, TRUE);
-  }
+  ua_attach(token, priv);
+  str_label = g_strdup_printf("<span foreground=\"#999999\"><b>Verifying token</b></span>");
+  gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
+  g_free(str_label);
 }
 
 void
