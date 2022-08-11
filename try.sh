@@ -1,6 +1,4 @@
 #!/bin/sh
-#If you're on Kinetic, you need to downgrade base-files to Jammy make this work,
-#or manually alter /etc/os_release
 if ! [ -d build ]; then
     mkdir build
     meson build
