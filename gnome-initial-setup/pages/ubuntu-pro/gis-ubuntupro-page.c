@@ -677,7 +677,6 @@ gis_ubuntupro_page_apply (GisPage      *gis_page,
   g_print("Counter: %d\n", counter);
   if (counter == 2) {
     on_magic_toggled(NULL, GIS_UBUNTUPRO_PAGE2(priv->page2));
-    gis_page_set_complete (GIS_PAGE (page), FALSE);
     gis_page_apply_complete (GIS_PAGE (page), FALSE);
     gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page2);
     return TRUE;
@@ -685,11 +684,9 @@ gis_ubuntupro_page_apply (GisPage      *gis_page,
     GisUbuntuProPage3 *page3 = GIS_UBUNTUPRO_PAGE3(priv->page3);
     display_ua_services(gis_ubuntupro_page3_get_instance_private (page3));
     gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page3);
-    gis_assistant_next_page (gis_driver_get_assistant (GIS_PAGE (page)->driver));
+    gis_page_apply_complete (GIS_PAGE (page), FALSE);
     return TRUE;
   } else {
-    gis_page_set_complete (GIS_PAGE (page), TRUE);
-    gis_page_apply_complete (GIS_PAGE (page), TRUE);
     return FALSE;
   }
 }
