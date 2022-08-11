@@ -35,12 +35,7 @@ struct _GisUbuntuProPage1Private {
   GtkWidget *enable_pro_select;
   GtkWidget *skip_pro_select;
   GtkWidget *offline_warning;
-
-  /* Unused! */
-  GtkWidget *pro_email_entry;
-  GtkWidget *pro_register_label;
   GtkWidget *pro_status_image;
-  GtkWidget *skip_choice;
 
   GPermission *permission;
   GCancellable *cancellable;
@@ -191,8 +186,6 @@ network_status_changed (GNetworkMonitor *monitor,
 
   if (!available) {
     gtk_widget_set_sensitive (priv->enable_pro_select, FALSE);
-    gtk_widget_set_sensitive (priv->pro_email_entry, FALSE);
-    gtk_widget_set_sensitive (priv->pro_register_label, FALSE);
     gtk_widget_show (GTK_WIDGET (priv->offline_warning));
     gtk_widget_show (GTK_WIDGET (priv->pro_status_image));
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->skip_pro_select), TRUE);
@@ -200,8 +193,6 @@ network_status_changed (GNetworkMonitor *monitor,
   }
   else {
     gtk_widget_set_sensitive (priv->enable_pro_select, TRUE);
-    gtk_widget_set_sensitive (priv->pro_email_entry, TRUE);
-    gtk_widget_set_sensitive (priv->pro_register_label, TRUE);
     gtk_widget_hide (GTK_WIDGET (priv->offline_warning));
     gtk_widget_hide (GTK_WIDGET (priv->pro_status_image));
   }
@@ -263,8 +254,6 @@ gis_ubuntupro_page_constructed (GObject *object)
 
   if (!g_network_monitor_get_network_available (network_monitor)) {
     gtk_widget_set_sensitive (priv->enable_pro_select, FALSE);
-    gtk_widget_set_sensitive (priv->pro_email_entry, FALSE);
-    gtk_widget_set_sensitive (priv->pro_register_label, FALSE);
     gtk_widget_show (GTK_WIDGET (priv->offline_warning));
     gtk_widget_show (GTK_WIDGET (priv->pro_status_image));
     //gtk_image_set_from_icon_name (GTK_IMAGE(priv->pro_status_image), "gtk-yes", GTK_ICON_SIZE_DND);
@@ -709,10 +698,7 @@ gis_ubuntupro_page1_class_init (GisUbuntuProPage1Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, enable_pro_select);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, skip_pro_select);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, offline_warning);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_email_entry);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_register_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, pro_status_image);
-  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage1, skip_choice);
 }
 
 static void

@@ -154,22 +154,6 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="spacing">6</property>
-<!---->
-                            <child>
-                              <object class="GtkEntry" id="pro_email_entry">
-                                <property name="visible">False</property>
-                                <property name="sensitive">False</property>
-                                <property name="can-focus">True</property>
-                                <property name="width-chars">35</property>
-                                <property name="placeholder-text" translatable="yes">Your Ubuntu One email</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-<!---->
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
@@ -213,22 +197,6 @@ to enable Ubuntu Pro</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
-<!---->
-                        <child>
-                          <object class="GtkLabel" id="pro_register_label">
-                            <property name="visible">False</property>
-                            <property name="can-focus">True</property>
-                            <property name="label" translatable="yes">&lt;small&gt;&lt;a href="https://login.ubuntu.com/"&gt;Register with Ubuntu One&lt;/a&gt;&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-<!---->
                         <child>
                           <object class="GtkLabel" id="token_attach_label">
                             <property name="can-focus">False</property>
@@ -259,7 +227,7 @@ to enable Ubuntu Pro</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox" id="skip_choice">
+              <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
