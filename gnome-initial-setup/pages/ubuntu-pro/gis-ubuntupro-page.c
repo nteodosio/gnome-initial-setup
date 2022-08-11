@@ -628,14 +628,21 @@ on_token_toggled (GtkButton *button, GisUbuntuProPage2 *page)
   }
 }
 
-/* non working yet hack trying to override the next action */
 static gboolean
 gis_ubuntupro_page_apply (GisPage      *gis_page,
-                         GCancellable *cancellable)
+                          GCancellable *cancellable)
 {
   GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (gis_page);
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
   if (priv->current_page == 1) {
+    GisUbuntuProPage1 *page1 = GIS_UBUNTUPRO_PAGE1 (priv->page1);
+    GisUbuntuProPage1Private *priv1 = gis_ubuntupro_page1_get_instance_private (page1);
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (priv1->skip_pro_select))) {
+      /* Bails out of UbuntuPro if skip button was selected */
+      return FALSE;
+    }
+
+    /* Request magic token already and advance to next local page */
     on_magic_toggled(NULL, GIS_UBUNTUPRO_PAGE2(priv->page2));
     gis_page_apply_complete (GIS_PAGE (page), FALSE);
     gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page2);
