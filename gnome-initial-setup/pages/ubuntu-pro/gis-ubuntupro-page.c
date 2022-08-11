@@ -63,6 +63,7 @@ struct _GisUbuntuProPage2Private {
   GtkWidget *token_status_icon;
   GtkWidget *pin_hint;
   GtkWidget *pin_status;
+  GtkWidget *pin_status_icon;
 
   gint64 timeout;
   gchar *token;
@@ -361,6 +362,8 @@ token_countdown (gpointer data)
   if (priv->timeout <= 0) {
     str_label = g_strdup_printf ("<span foreground=\"#900000\"><b>Code expired</b></span>");
     gtk_label_set_markup (GTK_LABEL (priv->pin_status), str_label);
+    gtk_image_set_from_resource(GTK_IMAGE(priv->pin_status_icon), "/org/gnome/initial-setup/fail.svg");
+    gtk_widget_set_visible (GTK_WIDGET (priv->pin_status_icon), TRUE);
     gtk_label_set_text(GTK_LABEL(priv->pin_hint), "Click the button to generate a new code.");
     return FALSE;
   } else if (priv->timeout % 10 == 0) {
@@ -368,7 +371,10 @@ token_countdown (gpointer data)
     gboolean attached = poll_token_attach(priv);
     if (attached) {
       str_label = g_strdup_printf ("<span foreground=\"#008000\"><b>Code verified</b></span>");
-      gtk_label_set_text(GTK_LABEL(priv->pin_status), "Code verified");
+      gtk_label_set_markup (GTK_LABEL (priv->pin_status), str_label);
+      gtk_image_set_from_resource(GTK_IMAGE(priv->pin_status_icon), "/org/gnome/initial-setup/checkmark.svg");
+      gtk_widget_set_visible (GTK_WIDGET (priv->pin_status_icon), TRUE);
+      g_free(str_label);
       return FALSE;
     }
   }
@@ -633,6 +639,7 @@ on_magic_toggled (GtkButton *button, GisUbuntuProPage2 *page)
   const gchar *label = gtk_label_get_text (GTK_LABEL (priv->pin_label));
   if (*label == '\0' || priv->timeout <= 0){
     request_magic_attach(page);
+    gtk_widget_set_visible (GTK_WIDGET (priv->pin_status_icon), FALSE);
     gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
     gtk_label_set_text(GTK_LABEL(priv->pin_status), "");
   }
@@ -723,6 +730,7 @@ gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, token_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, token_status_icon);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_status);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_status_icon);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_hint);
 }
 static void

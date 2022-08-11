@@ -133,7 +133,6 @@ More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&
               <object class="GtkImage" id="pin_status_icon">
                 <property name="visible">False</property>
                 <property name="margin-left">20</property>
-                <property name="resource">/org/gnome/initial-setup/checkmark.svg</property>
               </object>
               <packing>
                 <property name="expand">False</property>
