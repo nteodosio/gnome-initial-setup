@@ -113,6 +113,7 @@ GType gis_ubuntupro_page3_get_type (void);
 
 GisPage *gis_prepare_ubuntu_pro_page (GisDriver *driver);
 
+
 G_END_DECLS
 
 #endif /* __GIS_UBUNTUPRO_PAGE_H__ */
