@@ -73,7 +73,7 @@
                     <property name="can-focus">True</property>
                     <property name="label" translatable="yes">Upgrade this machine to Ubuntu Pro for security updates on a much wider range of packages, until 2032. Assists with FedRAMP, FIPS, STIG, HIPAA and other compliance or hardening requirements.
 
-More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&gt;</property>
+More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&gt;.</property>
                     <property name="use-markup">True</property>
                     <property name="wrap">True</property>
                     <property name="max-width-chars">130</property>
