@@ -6,6 +6,7 @@
     <file preprocess="xml-stripblanks" alias="gis-ubuntupro-page-2.ui">gis-ubuntupro-page-2.ui</file>
     <file preprocess="xml-stripblanks" alias="gis-ubuntupro-page-3.ui">gis-ubuntupro-page-3.ui</file>
     <file alias="ubuntu-pro.svg">ubuntu-pro.svg</file>
+    <file alias="checkmark.svg">checkmark.svg</file>
   </gresource>
 </gresources>
 

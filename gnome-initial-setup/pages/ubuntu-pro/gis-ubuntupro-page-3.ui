@@ -54,7 +54,7 @@
             <property name="margin-left">5</property>
             <property name="margin-right">5</property>
             <property name="yalign">0</property>
-            <property name="pixbuf">checkmark.png</property>
+            <property name="resource">/org/gnome/initial-setup/checkmark.svg</property>
           </object>
           <packing>
             <property name="expand">False</property>
