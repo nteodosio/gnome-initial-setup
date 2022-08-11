@@ -60,6 +60,7 @@ struct _GisUbuntuProPage2Private {
   GtkWidget *pin_label;
   GtkWidget *token_field;
   GtkWidget *token_status;
+  GtkWidget *token_status_icon;
   GtkWidget *pin_hint;
   GtkWidget *pin_status;
 
@@ -569,14 +570,15 @@ on_ua_attach_requested (GObject *source,
     g_warning ("Failed to attach token: %s", error->message);
     g_error_free (error);
 
-    /* Failed to attach */
     str_label = g_strdup_printf("<span foreground=\"#900000\"><b>Failed to attach</b></span>");
     gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
+    gtk_image_set_from_resource(GTK_IMAGE(priv->token_status_icon), "/org/gnome/initial-setup/fail.svg");
     gtk_widget_set_sensitive (priv->token_field, TRUE);
   } else {
     g_variant_unref (retval);
 
     str_label = g_strdup_printf("<span foreground=\"#008000\"><b>Valid token</b></span>");
+    gtk_image_set_from_resource(GTK_IMAGE(priv->token_status_icon), "/org/gnome/initial-setup/checkmark.svg");
     gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
   }
   g_free(str_label);
@@ -617,6 +619,8 @@ request_token_attach (GtkButton *button, GisUbuntuProPage2 *page)
   ua_attach(token, priv);
   str_label = g_strdup_printf("<span foreground=\"#999999\"><b>Verifying token</b></span>");
   gtk_label_set_markup (GTK_LABEL (priv->token_status), str_label);
+  gtk_widget_set_visible (GTK_WIDGET (priv->token_status_icon), TRUE);
+  gtk_image_set_from_resource(GTK_IMAGE(priv->token_status_icon), "/org/gnome/initial-setup/loading.svg");
   g_free(str_label);
 }
 
@@ -717,6 +721,7 @@ gis_ubuntupro_page2_class_init (GisUbuntuProPage2Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_label);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, token_field);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, token_status);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, token_status_icon);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_status);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage2, pin_hint);
 }
