@@ -71,7 +71,7 @@ struct _GisUbuntuProPagePrivate {
   GtkWidget *page3;
   GtkWidget *stack;
 
-  guint ua_desktop_watch;
+  guint current_page;
 };
 typedef struct _GisUbuntuProPagePrivate GisUbuntuProPagePrivate;
 
@@ -259,6 +259,7 @@ gis_ubuntupro_page_constructed (GObject *object)
     //gtk_image_set_from_icon_name (GTK_IMAGE(priv->pro_status_image), "gtk-yes", GTK_ICON_SIZE_DND);
   }
 
+  main_page_priv->current_page = 1;
   gtk_widget_show (GTK_WIDGET (main_page));
 }
 
@@ -672,23 +673,20 @@ gis_ubuntupro_page_apply (GisPage      *gis_page,
 {
   GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (gis_page);
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
-  static int counter = 1;
-  counter++;
-  g_print("Counter: %d\n", counter);
-  if (counter == 2) {
+  if (priv->current_page == 1) {
     on_magic_toggled(NULL, GIS_UBUNTUPRO_PAGE2(priv->page2));
     gis_page_apply_complete (GIS_PAGE (page), FALSE);
     gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page2);
-    return TRUE;
-  } else if (counter == 3) {
+  } else if (priv->current_page == 2) {
     GisUbuntuProPage3 *page3 = GIS_UBUNTUPRO_PAGE3(priv->page3);
     display_ua_services(gis_ubuntupro_page3_get_instance_private (page3));
     gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page3);
     gis_page_apply_complete (GIS_PAGE (page), FALSE);
-    return TRUE;
   } else {
     return FALSE;
   }
+  priv->current_page++;
+  return TRUE;
 }
 
 static void
