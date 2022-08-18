@@ -76,6 +76,7 @@ struct _GisUbuntuProPage3Private {
   GtkWidget *available_services;
   GtkWidget *available_services_header;
   GtkWidget *contract_name;
+  GtkWidget *checkmark;
 };
 typedef struct _GisUbuntuProPage3Private GisUbuntuProPage3Private;
 
@@ -449,6 +450,26 @@ parse_ua_status(){
     return(output);
 }
 
+static void
+display_checkmark(GisUbuntuProPage3Private *priv){
+  GError *error = NULL;
+  GdkPixbuf *check_pixbuf = gdk_pixbuf_new_from_resource_at_scale (
+      "/org/gnome/initial-setup/checkmark.svg",
+      30,
+      -1,
+      TRUE,
+      &error
+  );
+
+  if (check_pixbuf != NULL){
+    gtk_image_set_from_pixbuf(GTK_IMAGE(priv->checkmark), check_pixbuf);
+  } else {
+    g_warning("Unable to load pixbuf: %s\n", error->message);
+  }
+  g_error_free(error);
+  g_free(check_pixbuf);
+}
+
 static gboolean
 display_ua_services(GisUbuntuProPage3Private *priv){
     JsonParser  *parser;
@@ -678,6 +699,7 @@ gis_ubuntupro_page_apply (GisPage      *gis_page,
   } else if (priv->current_page == 2) {
     GisUbuntuProPage3 *page3 = GIS_UBUNTUPRO_PAGE3(priv->page3);
     display_ua_services(gis_ubuntupro_page3_get_instance_private (page3));
+    display_checkmark(gis_ubuntupro_page3_get_instance_private (page3));
     gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->page3);
     gis_page_apply_complete (GIS_PAGE (page), FALSE);
   } else {
@@ -743,6 +765,7 @@ gis_ubuntupro_page3_class_init (GisUbuntuProPage3Class *klass)
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, available_services);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, available_services_header);
   gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, contract_name);
+  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass), GisUbuntuProPage3, checkmark);
 }
 
 static void
