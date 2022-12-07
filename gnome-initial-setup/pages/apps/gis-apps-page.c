@@ -374,7 +374,7 @@ load_store_icon (GisSnapTile *tile)
     return;
 
   message = soup_message_new ("GET", url);
-  soup_session_send_async (tile->soup_session, message, NULL, icon_cb, tile);
+  soup_session_send_async (tile->soup_session, message, 0, NULL, icon_cb, tile);
 }
 
 static void

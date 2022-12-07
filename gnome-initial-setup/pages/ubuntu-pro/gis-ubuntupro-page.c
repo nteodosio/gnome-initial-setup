@@ -281,10 +281,9 @@ make_rest_req(void *buf, size_t bufsize, const char* type, const char* where,
   const char *field = "foo";
   GError *error = NULL;
   msg = soup_message_new(type, where);
-  soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
-    strlen(field));
+  soup_message_set_request_body(msg, "text/plain", NULL, -1);
   if (header_name != NULL && header != NULL){
-    soup_message_headers_append (msg->request_headers, header_name, header);
+    soup_message_headers_append (soup_message_get_request_headers(msg), header_name, header);
   }
   GInputStream *stream = soup_session_send(session, msg, NULL, &error);
   gssize nbytes = g_input_stream_read(stream, buf, bufsize, NULL, &error);
