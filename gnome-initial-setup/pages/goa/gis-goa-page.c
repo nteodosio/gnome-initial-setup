@@ -62,6 +62,25 @@ struct _ProviderWidget {
 };
 typedef struct _ProviderWidget ProviderWidget;
 
+static gboolean
+is_desktop (const gchar *name)
+{
+  const gchar *xdg_current_desktop;
+  g_auto(GStrv) tokens = NULL;
+  int i;
+
+  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+  if (xdg_current_desktop == NULL)
+    return FALSE;
+
+  tokens = g_strsplit (xdg_current_desktop, ":", -1);
+  for (i = 0; tokens[i] != NULL; i++)
+    if (strcmp (tokens[i], name) == 0)
+      return TRUE;
+
+  return FALSE;
+}
+
 static void
 sync_provider_widget (ProviderWidget *provider_widget)
 {
@@ -185,8 +204,10 @@ populate_provider_list (GisGoaPage *page)
 {
   g_auto(GStrv) conf_providers =
     gis_driver_conf_get_string_list (GIS_PAGE (page)->driver, VENDOR_GOA_GROUP, VENDOR_PROVIDERS_KEY, NULL);
-  GStrv providers = conf_providers ? conf_providers :
-    (gchar *[]) { "google", "owncloud", "windows_live", "facebook", NULL };
+  GStrv default_providers = is_desktop ("ubuntu") ?
+    (gchar *[]) { "ubuntusso", "google", "owncloud", "windows_live", NULL } :
+    (gchar *[]) { "ubuntusso", "google", "owncloud", "windows_live", "facebook", NULL };
+  GStrv providers = conf_providers ? conf_providers : default_providers;
 
   /* This code will read the keyfile containing vendor customization options and
    * look for options under the "goa" group, and supports the following keys:

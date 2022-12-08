@@ -68,6 +68,15 @@
         <property name="pack-type">end</property>
       </packing>
     </child>
+    <child>
+      <object class="GtkButton" id="done">
+        <property name="use-underline">True</property>
+        <property name="can-default">True</property>
+      </object>
+      <packing>
+        <property name="pack-type">end</property>
+      </packing>
+    </child>
   </object>
 
   <object class="GtkSizeGroup" id="headerheight">

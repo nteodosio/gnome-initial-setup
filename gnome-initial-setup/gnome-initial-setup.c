@@ -45,6 +45,9 @@
 #include "pages/parental-controls/gis-parental-controls-page.h"
 #include "pages/password/gis-password-page.h"
 #include "pages/summary/gis-summary-page.h"
+#include "pages/ubuntu-report/gis-ubuntu-report-page.h"
+#include "pages/livepatch/gis-livepatch-page.h"
+#include "pages/apps/gis-apps-page.h"
 
 #define VENDOR_PAGES_GROUP "pages"
 #define VENDOR_SKIP_KEY "skip"
@@ -81,6 +84,27 @@ static PageData page_table[] = {
   PAGE (parent_password, TRUE),
 #endif
   PAGE (summary,  FALSE),
+  { NULL },
+};
+
+static PageData ubuntu_page_table[] = {
+  PAGE (goa,            FALSE),
+  PAGE (livepatch,      FALSE),
+  PAGE (ubuntu_report,  FALSE),
+  PAGE (privacy,        FALSE),
+  PAGE (account,        TRUE),
+  PAGE (password,       TRUE),
+  PAGE (apps,           FALSE),
+  { NULL },
+};
+
+static PageData unity_page_table[] = {
+  PAGE (goa,            FALSE),
+  PAGE (livepatch,      FALSE),
+  PAGE (ubuntu_report,  FALSE),
+  PAGE (account,        TRUE),
+  PAGE (password,       TRUE),
+  PAGE (apps,           FALSE),
   { NULL },
 };
 
@@ -181,6 +205,25 @@ destroy_pages_after (GisAssistant *assistant,
   }
 }
 
+static gboolean
+is_desktop (const gchar *name)
+{
+  const gchar *xdg_current_desktop;
+  g_auto(GStrv) tokens = NULL;
+  int i;
+
+  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+  if (xdg_current_desktop == NULL)
+    return FALSE;
+
+  tokens = g_strsplit (xdg_current_desktop, ":", -1);
+  for (i = 0; tokens[i] != NULL; i++)
+    if (strcmp (tokens[i], name) == 0)
+      return TRUE;
+
+  return FALSE;
+}
+
 static void
 rebuild_pages_cb (GisDriver *driver)
 {
@@ -193,7 +236,13 @@ rebuild_pages_cb (GisDriver *driver)
 
   assistant = gis_driver_get_assistant (driver);
   current_page = gis_assistant_get_current_page (assistant);
-  page_data = page_table;
+
+  if (is_desktop ("ubuntu"))
+    page_data = ubuntu_page_table;
+  else if (is_desktop ("unity"))
+    page_data = unity_page_table;
+  else
+    page_data = page_table;
 
   g_ptr_array_free (skipped_pages, TRUE);
   skipped_pages = g_ptr_array_new_with_free_func ((GDestroyNotify) gtk_widget_destroy);
@@ -201,7 +250,7 @@ rebuild_pages_cb (GisDriver *driver)
   if (current_page != NULL) {
     destroy_pages_after (assistant, current_page);
 
-    for (page_data = page_table; page_data->page_id != NULL; ++page_data)
+    for (page_data = ubuntu_page_table; page_data->page_id != NULL; ++page_data) // FIXME conditional
       if (g_str_equal (page_data->page_id, GIS_PAGE_GET_CLASS (current_page)->page_id))
         break;
 
@@ -320,20 +369,6 @@ main (int argc, char *argv[])
     gis_ensure_login_keyring ();
 
   driver = gis_driver_new (mode);
-
-  /* On first login, GNOME Shell offers to run a tour. If we also run Initial
-   * Setup, the two immovable, centred windows will sit atop one another.
-   * Until we have the ability to run Initial Setup in the "kiosk" mode, like
-   * it does in new-user mode, disable Initial Setup for existing users.
-   *
-   * https://gitlab.gnome.org/GNOME/gnome-initial-setup/-/issues/120#note_1019004
-   * https://gitlab.gnome.org/GNOME/gnome-initial-setup/-/issues/12
-   */
-  if (mode == GIS_DRIVER_MODE_EXISTING_USER) {
-    g_message ("Skipping gnome-initial-setup for existing user");
-    gis_ensure_stamp_files (driver);
-    exit (EXIT_SUCCESS);
-  }
 
   /* We only do this in existing-user mode, because if gdm launches us
    * in new-user mode and we just exit, gdm's special g-i-s session

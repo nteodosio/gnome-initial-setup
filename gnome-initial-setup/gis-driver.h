@@ -120,6 +120,12 @@ gchar *gis_driver_conf_get_string (GisDriver *driver,
                                    const gchar *group,
                                    const gchar *key);
 
+void gis_driver_inhibit_quit (GisDriver *driver);
+
+void gis_driver_uninhibit_quit (GisDriver *driver);
+
+void gis_driver_quit (GisDriver *driver);
+
 GisDriver *gis_driver_new (GisDriverMode mode);
 
 G_END_DECLS
