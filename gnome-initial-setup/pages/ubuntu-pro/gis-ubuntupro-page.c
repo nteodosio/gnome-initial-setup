@@ -662,7 +662,7 @@ on_magic_toggled (GtkButton *button, GisUbuntuProPage2 *page)
   if (*label == '\0' || priv->timeout <= 0){
     request_magic_attach(page);
     gtk_widget_set_visible (GTK_WIDGET (priv->pin_status_icon), FALSE);
-    gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Enter code on ubuntu.com/pro/attach");
+    gtk_label_set_text (GTK_LABEL (priv->pin_hint), "Attach machine via your Ubuntu One account");
     gtk_label_set_text(GTK_LABEL(priv->pin_status), "");
   }
 }
