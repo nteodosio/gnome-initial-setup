@@ -71,7 +71,7 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="label" translatable="yes">Upgrade this machine to Ubuntu Pro for security updates on a much wider range of packages, until 2032. Assists with FedRAMP, FIPS, STIG, HIPAA and other compliance or hardening requirements.
+                    <property name="label" translatable="yes">Upgrade this machine to Ubuntu Pro for security updates on a much wider range of packages, until 2032. Fulfill FedRAMP, FIPS, STIG and HIPAA and other compliance and hardening requirements with certified tooling and crypto-modules. Free up to 5 machines.
 
 More information on &lt;a href="https://ubuntu.com/pro"&gt;ubuntu.com/pro&lt;/a&gt;.</property>
                     <property name="use-markup">True</property>
