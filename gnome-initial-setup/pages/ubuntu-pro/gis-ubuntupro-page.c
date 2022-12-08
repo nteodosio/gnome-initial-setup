@@ -459,14 +459,16 @@ display_checkmark(GisUbuntuProPage3Private *priv){
       TRUE,
       &error
   );
+  if (error){
+    g_warning("Unable to create pixbuf: %s\n", error->message);
+    g_error_free(error);
+  }
 
   if (check_pixbuf != NULL){
     gtk_image_set_from_pixbuf(GTK_IMAGE(priv->checkmark), check_pixbuf);
   } else {
     g_warning("Unable to load pixbuf: %s\n", error->message);
   }
-  g_error_free(error);
-  g_free(check_pixbuf);
 }
 
 static gboolean
@@ -489,6 +491,7 @@ display_ua_services(GisUbuntuProPage3Private *priv){
     json_parser_load_from_data(parser, str, strlen(str), &error);
     if (error){
         g_warning("Couldn't parse magic token JSON; %s\n", error->message);
+        g_error_free(error);
         ret = FALSE;
         goto end;
     }
@@ -549,7 +552,6 @@ display_ua_services(GisUbuntuProPage3Private *priv){
 end:
     free(str);
     g_object_unref(parser);
-    g_error_free(error);
     return ret;
 }
 
