@@ -10,6 +10,7 @@ pages = [
    'software',
    'summary',
    'welcome',
+   'ubuntu-pro',
    'ubuntu-report',
    'livepatch',
    'apps',

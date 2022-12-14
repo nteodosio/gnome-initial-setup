@@ -47,6 +47,7 @@
 #include "pages/summary/gis-summary-page.h"
 #include "pages/ubuntu-report/gis-ubuntu-report-page.h"
 #include "pages/livepatch/gis-livepatch-page.h"
+#include "pages/ubuntu-pro/gis-ubuntupro-page.h"
 #include "pages/apps/gis-apps-page.h"
 
 #define VENDOR_PAGES_GROUP "pages"
@@ -88,6 +89,7 @@ static PageData page_table[] = {
 };
 
 static PageData ubuntu_page_table[] = {
+  PAGE (ubuntu_pro,     FALSE),
   PAGE (goa,            FALSE),
   PAGE (livepatch,      FALSE),
   PAGE (ubuntu_report,  FALSE),
@@ -99,6 +101,7 @@ static PageData ubuntu_page_table[] = {
 };
 
 static PageData unity_page_table[] = {
+  PAGE (ubuntu_pro,     FALSE),
   PAGE (goa,            FALSE),
   PAGE (livepatch,      FALSE),
   PAGE (ubuntu_report,  FALSE),

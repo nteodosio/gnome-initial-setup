@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <template class="GisUbuntuProPage" parent="GisPage">
+    <child>
+  <object class="GtkBox" id="stepUbuntuPro">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+        <child>
+          <object class="GtkStack" id="stack">
+            <property name="visible">True</property>
+            <property name="valign">start</property>
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GisUbuntuProPage1" id="page1">
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GisUbuntuProPage2" id="page2">
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GisUbuntuProPage3" id="page3">
+                <property name="visible">True</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
