@@ -331,7 +331,7 @@ make_rest_req(void *buf,
   SoupSession *session = soup_session_new();
   SoupMessage *msg;
   const char *field = "foo";
-  GError *error = NULL;
+  g_autoptr(GError) error = NULL;
   msg = soup_message_new(type, where);
   soup_message_set_request(msg, "text/plain", SOUP_MEMORY_COPY, field,
     strlen(field));
@@ -352,9 +352,9 @@ poll_token_attach (GisUbuntuProPage2Private *priv)
 {
   gboolean ret = FALSE;
   size_t bufsize = 1024;
-  void *buf = malloc(bufsize);
+  g_autofree void *buf = malloc(bufsize);
   const char *header_name = "Authorization";
-  gchar *header = g_strconcat("Bearer ", priv->token, NULL);
+  g_autofree gchar *header = g_strconcat("Bearer ", priv->token, NULL);
 
 /* curl -X GET -H 'Authorization: Bearer >>TOKEN<<'
  *
@@ -387,7 +387,6 @@ poll_token_attach (GisUbuntuProPage2Private *priv)
   gssize nbytes = make_rest_req(buf, bufsize, "GET",
     "https://contracts.staging.canonical.com/v1/magic-attach",
     header_name, header);
-  free(header);
   if (nbytes > 0) {
     RestJSONResponse resp;
     if (!magic_parser(buf, nbytes, &resp)) {
@@ -398,7 +397,6 @@ poll_token_attach (GisUbuntuProPage2Private *priv)
     }
   }
 
-  free(buf);
   return ret;
 }
 
@@ -433,17 +431,13 @@ magic_parser(void* ptr,              /* pointer to actual response */
 {
     const char *data = (const char*)ptr; // Not null terminated, use nmemb
 
-    JsonParser *parser;
+    g_autoptr(JsonParser) parser = json_parser_new();
     JsonNode *root;
-    GError *error;
+    g_autoptr(GError) error = NULL;
 
-    parser = json_parser_new();
-    error = NULL;
     json_parser_load_from_data(parser, data, nmemb, &error);
     if (error) {
         g_warning("Couldn't parse magic token JSON; %s\n", error->message);
-        g_error_free(error);
-        g_object_unref(parser);
         return FALSE;
     }
     root = json_parser_get_root(parser);
@@ -466,19 +460,17 @@ magic_parser(void* ptr,              /* pointer to actual response */
         strdup(json_object_get_string_member(response, "contractToken")) :
         NULL;
 
-    g_object_unref(parser);
     return TRUE;
 }
 
 gboolean
 parse_ua_status(gchar **contents, gsize *len)
 {
-    GError *error = NULL;
+    g_autoptr(GError) error = NULL;
 
     if (!g_file_get_contents("/var/lib/ubuntu-advantage/status.json",
                              contents, len, &error)) {
         g_warning("Unable to read pro status: %s\n", error->message);
-        g_error_free(error);
         return FALSE;
     }
     return TRUE;
@@ -487,7 +479,7 @@ parse_ua_status(gchar **contents, gsize *len)
 static void
 display_checkmark(GisUbuntuProPage3Private *priv)
 {
-  GError *error = NULL;
+  g_autoptr(GError) error = NULL;
   GdkPixbuf *check_pixbuf = gdk_pixbuf_new_from_resource_at_scale (
       "/org/gnome/initial-setup/checkmark.svg",
       30,
@@ -497,7 +489,6 @@ display_checkmark(GisUbuntuProPage3Private *priv)
   );
   if (error) {
     g_warning("Unable to create pixbuf: %s\n", error->message);
-    g_error_free(error);
   }
 
   if (check_pixbuf != NULL) {
@@ -510,15 +501,15 @@ display_checkmark(GisUbuntuProPage3Private *priv)
 static void
 display_ua_services(GisUbuntuProPage3Private *priv)
 {
-    JsonParser  *parser;
+    g_autoptr(JsonParser) parser = json_parser_new();
     JsonNode    *root_node;
     JsonObject  *root, *services, *contract;
     JsonArray   *services_array;
-    GError      *error;
+    g_autoptr(GError) error = NULL;
     guint       i, n_services;
     const char  *status, *description, *available, *contract_name;
-    gchar       *str, *enabled_str, *available_str;
     gsize       len;
+    g_autofree gchar *str, *enabled_str, *available_str;
 
     if (!parse_ua_status(&str, &len)) {
         return;
@@ -526,18 +517,13 @@ display_ua_services(GisUbuntuProPage3Private *priv)
     available_str = (gchar *)g_malloc0(len);
     enabled_str = (gchar *)g_malloc0(len);
 
-    parser = json_parser_new();
-    error = NULL;
     json_parser_load_from_data(parser, str, strlen(str), &error);
     if (error) {
         g_warning("Couldn't parse magic token JSON; %s\n", error->message);
-        g_error_free(error);
-        goto end;
     }
     root_node = json_parser_get_root(parser);
     if (!JSON_NODE_HOLDS_OBJECT(root_node)) {
         g_warning("Invalid magic token JSON\n");
-        goto end;
     }
 
     root = json_node_get_object(root_node);
@@ -575,18 +561,12 @@ display_ua_services(GisUbuntuProPage3Private *priv)
       gtk_widget_destroy(GTK_WIDGET(priv->enabled_services_header));
     } else {
       gtk_label_set_text(GTK_LABEL(priv->enabled_services), enabled_str);
-      free(enabled_str);
     }
     if (available_str == NULL) {
       gtk_widget_destroy(GTK_WIDGET(priv->available_services_header));
     } else {
       gtk_label_set_text(GTK_LABEL(priv->available_services), available_str);
-      free(available_str);
     }
-
-end:
-    free(str);
-    g_object_unref(parser);
 }
 
 static void
@@ -599,7 +579,7 @@ request_magic_attach (GisUbuntuProPage2 *page)
   }
 
   size_t bufsize = 1024;
-  void *buf = malloc(bufsize);
+  g_autofree void *buf = malloc(bufsize);
   gssize nbytes = make_rest_req(buf, bufsize, "POST",
     "https://contracts.staging.canonical.com/v1/magic-attach", NULL, NULL);
   if (nbytes > 0) {
@@ -617,8 +597,6 @@ request_magic_attach (GisUbuntuProPage2 *page)
     free(resp.token);
     free(resp.code);
   }
-
-  free(buf);
 }
 
 static void
@@ -627,17 +605,14 @@ on_ua_attach_requested (GObject *source,
                         gpointer user_data)
 {
   GisUbuntuProPage2Private *priv = user_data;
-  GError *error = NULL;
-  GVariant *retval;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GVariant) retval = g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, &error);
   status_t status;
 
-  retval = g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, &error);
   if (retval == NULL) {
     g_warning ("Failed to attach token: %s", error->message);
-    g_error_free (error);
     status = FAIL;
   } else {
-    g_variant_unref (retval);
     SuccessfullyAttached = TRUE;
     status = SUCCESS;
     g_source_remove(priv->poll_id);
@@ -651,7 +626,7 @@ static void
 ua_attach(const gchar *token, GisUbuntuProPage2Private *priv)
 {
   GDBusConnection *bus;
-  GError          *error = NULL;
+  g_autoptr(GError) error = NULL;
   status_t        status = NONE;
 
   if (priv->attaching) {
