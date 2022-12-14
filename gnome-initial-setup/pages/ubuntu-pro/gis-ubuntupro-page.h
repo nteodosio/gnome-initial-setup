@@ -59,7 +59,6 @@ typedef struct _GisUbuntuProPage2       GisUbuntuProPage2;
 typedef struct _GisUbuntuProPage2Class  GisUbuntuProPage2Class;
 typedef struct _GisUbuntuProPage3       GisUbuntuProPage3;
 typedef struct _GisUbuntuProPage3Class  GisUbuntuProPage3Class;
-typedef struct _RestJSONResponse        RestJSONResponse;
 
 struct _GisUbuntuProPage
 {
@@ -96,13 +95,6 @@ struct _GisUbuntuProPage3
 struct _GisUbuntuProPage3Class
 {
   GtkBinClass parent_class;
-};
-
-struct _RestJSONResponse {
-    gint64 expiresIn;
-    gchar *token;
-    gchar *code;
-    gchar *contractToken;
 };
 
 GType gis_ubuntupro_page_get_type (void);

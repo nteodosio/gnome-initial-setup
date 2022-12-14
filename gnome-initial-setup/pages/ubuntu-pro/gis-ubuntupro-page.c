@@ -102,6 +102,14 @@ struct _GisUbuntuProPage3Private {
 };
 typedef struct _GisUbuntuProPage3Private GisUbuntuProPage3Private;
 
+struct _RestJSONResponse {
+    gint64 expiresIn;
+    gchar *token;
+    gchar *code;
+    gchar *contractToken;
+};
+
+typedef struct _RestJSONResponse RestJSONResponse;
 static void ua_attach(const gchar *, GisUbuntuProPage2Private *);
 static gboolean magic_parser(void*, size_t, RestJSONResponse*);
 
