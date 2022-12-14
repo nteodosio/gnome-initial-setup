@@ -55,10 +55,6 @@ struct _GisUbuntuProPage1Private {
   GtkWidget *skip_pro_select;
   GtkWidget *offline_warning;
   GtkWidget *pro_status_image;
-
-  GCancellable *cancellable;
-  GisPageApplyCallback apply_complete_callback;
-  gpointer apply_complete_data;
 };
 typedef struct _GisUbuntuProPage1Private GisUbuntuProPage1Private;
 
