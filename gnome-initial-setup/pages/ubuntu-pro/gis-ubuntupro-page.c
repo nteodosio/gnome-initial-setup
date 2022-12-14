@@ -82,7 +82,7 @@ struct _GisUbuntuProPage2Private {
     MAGIC,
     TOKEN,
   } active_radio;
-  gchar *contractToken;
+  gchar *contract_token;
   gchar *token;
   gchar *pin;
 };
@@ -102,7 +102,7 @@ struct _RestJSONResponse {
     gint64 expiresIn;
     gchar *token;
     gchar *code;
-    gchar *contractToken;
+    gchar *contract_token;
 };
 
 typedef struct _RestJSONResponse RestJSONResponse;
@@ -387,8 +387,8 @@ poll_token_attach (GisUbuntuProPage2Private *priv)
     RestJSONResponse resp;
     if (!magic_parser(buf, nbytes, &resp)) {
       g_warning("Couldn't parse response.\n");
-    } else if (resp.contractToken != NULL) {
-      priv->contractToken = strdup(resp.contractToken);
+    } else if (resp.contract_token != NULL) {
+      priv->contract_token = strdup(resp.contract_token);
       ret = TRUE;
     }
   }
@@ -414,7 +414,7 @@ poll_magic_token (gpointer data)
   gboolean token_received = poll_token_attach(priv);
   if (token_received) {
     priv->magic_token_polling = FALSE;
-    ua_attach(priv->contractToken, priv);
+    ua_attach(priv->contract_token, priv);
   }
 
   return priv->magic_token_polling;
@@ -452,7 +452,7 @@ magic_parser(void* ptr,              /* pointer to actual response */
     resp->code = json_object_has_member(response, "userCode") ?
         strdup(json_object_get_string_member(response, "userCode")) :
         NULL;
-    resp->contractToken = json_object_has_member(response, "contractToken") ?
+    resp->contract_token = json_object_has_member(response, "contractToken") ?
         strdup(json_object_get_string_member(response, "contractToken")) :
         NULL;
 
