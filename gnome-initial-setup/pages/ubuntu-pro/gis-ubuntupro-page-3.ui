@@ -23,11 +23,6 @@
           <attribute name="scale" value="1.4"/>
         </attributes>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkSeparator">
@@ -36,11 +31,6 @@
         <property name="margin-top">10</property>
         <property name="margin-bottom">10</property>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">1</property>
-      </packing>
     </child>
     <child>
       <object class="GtkBox">
@@ -55,11 +45,6 @@
             <property name="margin-right">15</property>
             <property name="yalign">0</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
         <object class="GtkBox">
@@ -68,7 +53,7 @@
           <property name="no-show-all">True</property>
           <property name="orientation">vertical</property>
         <child>
-          <object class="GtkLabel" id="subscription">
+          <object class="GtkLabel">
             <property name="label" translatable="yes">Your subscription:</property>
             <property name="margin-bottom">10</property>
             <property name="visible">True</property>
@@ -77,11 +62,6 @@
               <attribute name="scale" value="1.5"/>
             </attributes>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">5</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="contract_name">
@@ -89,11 +69,6 @@
             <property name="margin-bottom">15</property>
             <property name="halign">start</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">5</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="enabled_services_header">
@@ -105,22 +80,12 @@
               <attribute name="scale" value="1.5"/>
             </attributes>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">5</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="enabled_services">
             <property name="visible">True</property>
             <property name="halign">start</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">4</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="available_services_header">
@@ -132,22 +97,12 @@
               <attribute name="scale" value="1.5"/>
             </attributes>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">5</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="available_services">
             <property name="visible">True</property>
             <property name="halign">start</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">6</property>
-          </packing>
         </child>
         </object>
         </child>
@@ -160,11 +115,6 @@
             <property name="wrap">True</property>
             <property name="halign">start</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">9</property>
-          </packing>
         </child>
   </object>
   </child>
