@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <template class="GisUbuntuProPage3" parent="GtkBin">
+  <template class="GisUbuntuProListServicesPage" parent="GtkBin">
   <child>
-  <object class="GtkBox" id="page3">
+  <object class="GtkBox" id="list_services_page">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="no-show-all">True</property>

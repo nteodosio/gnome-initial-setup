@@ -12,17 +12,17 @@
             <property name="valign">start</property>
             <property name="vexpand">True</property>
             <child>
-              <object class="GisUbuntuProPage1" id="page1">
+              <object class="GisUbuntuProOfferPage" id="offer_page">
                 <property name="visible">True</property>
               </object>
             </child>
             <child>
-              <object class="GisUbuntuProPage2" id="page2">
+              <object class="GisUbuntuProAttachPage" id="attach_page">
                 <property name="visible">True</property>
               </object>
             </child>
             <child>
-              <object class="GisUbuntuProPage3" id="page3">
+              <object class="GisUbuntuProListServicesPage" id="list_services_page">
                 <property name="visible">True</property>
               </object>
             </child>

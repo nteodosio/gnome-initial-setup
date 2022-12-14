@@ -24,41 +24,41 @@
 G_BEGIN_DECLS
 
 #define GIS_TYPE_UBUNTUPRO_PAGE            (gis_ubuntupro_page_get_type ())
-#define GIS_TYPE_UBUNTUPRO_PAGE1           (gis_ubuntupro_page1_get_type ())
-#define GIS_TYPE_UBUNTUPRO_PAGE2           (gis_ubuntupro_page2_get_type ())
-#define GIS_TYPE_UBUNTUPRO_PAGE3           (gis_ubuntupro_page3_get_type ())
+#define GIS_TYPE_UBUNTUPRO_OFFER_PAGE           (gis_ubuntupro_offer_page_get_type ())
+#define GIS_TYPE_UBUNTUPRO_ATTACH_PAGE           (gis_ubuntupro_attach_page_get_type ())
+#define GIS_TYPE_UBUNTUPRO_LISTSERVICES_PAGE           (gis_ubuntupro_list_services_page_get_type ())
 
 #define GIS_UBUNTUPRO_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPage))
 #define GIS_UBUNTUPRO_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPageClass))
-#define GIS_UBUNTUPRO_PAGE1(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE1, GisUbuntuProPage1))
-#define GIS_UBUNTUPRO_PAGE1_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE1, GisUbuntuProPage1Class))
-#define GIS_UBUNTUPRO_PAGE2(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE2, GisUbuntuProPage2))
-#define GIS_UBUNTUPRO_PAGE2_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE2, GisUbuntuProPage2Class))
-#define GIS_UBUNTUPRO_PAGE3(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_PAGE3, GisUbuntuProPage3))
-#define GIS_UBUNTUPRO_PAGE3_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_PAGE3, GisUbuntuProPage3Class))
+#define GIS_UBUNTUPRO_OFFER_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_OFFER_PAGE, GisUbuntuProOfferPage))
+#define GIS_UBUNTUPRO_OFFER_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_OFFER_PAGE, GisUbuntuProOfferPageClass))
+#define GIS_UBUNTUPRO_ATTACH_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_ATTACH_PAGE, GisUbuntuProAttachPage))
+#define GIS_UBUNTUPRO_ATTACH_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_ATTACH_PAGE, GisUbuntuProAttachPageClass))
+#define GIS_UBUNTUPRO_LISTSERVICES_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GIS_TYPE_UBUNTUPRO_LISTSERVICES_PAGE, GisUbuntuProListServicesPage))
+#define GIS_UBUNTUPRO_LISTSERVICES_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GIS_TYPE_UBUNTUPRO_LISTSERVICES_PAGE, GisUbuntuProListServicesPageClass))
 
 #define GIS_IS_UBUNTUPRO_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTUPRO_PAGE))
 #define GIS_IS_UBUNTUPRO_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTUPRO_PAGE))
-#define GIS_IS_UBUNTUPRO_PAGE1(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTUPRO_PAGE1))
-#define GIS_IS_UBUNTUPRO_PAGE1_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTUPRO_PAGE1))
-#define GIS_IS_UBUNTUPRO_PAGE2(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTUPRO_PAGE2))
-#define GIS_IS_UBUNTUPRO_PAGE2_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTUPRO_PAGE2))
-#define GIS_IS_UBUNTUPRO_PAGE3(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTUPRO_PAGE3))
-#define GIS_IS_UBUNTUPRO_PAGE3_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTUPRO_PAGE3))
+#define GIS_IS_UBUNTUPRO_OFFER_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTUPRO_OFFER_PAGE))
+#define GIS_IS_UBUNTUPRO_OFFER_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTUPRO_OFFER_PAGE))
+#define GIS_IS_UBUNTUPRO_ATTACH_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTUPRO_ATTACH_PAGE))
+#define GIS_IS_UBUNTUPRO_ATTACH_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTUPRO_ATTACH_PAGE))
+#define GIS_IS_UBUNTUPRO_LISTSERVICES_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GIS_TYPE_UBUNTUPRO_LISTSERVICES_PAGE))
+#define GIS_IS_UBUNTUPRO_LISTSERVICES_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GIS_TYPE_UBUNTUPRO_LISTSERVICES_PAGE))
 
 #define GIS_UBUNTUPRO_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_PAGE, GisUbuntuProPageClass))
-#define GIS_UBUNTUPRO_PAGE1_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_PAGE1, GisUbuntuProPage1Class))
-#define GIS_UBUNTUPRO_PAGE2_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_PAGE2, GisUbuntuProPage2Class))
-#define GIS_UBUNTUPRO_PAGE3_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_PAGE3, GisUbuntuProPage3Class))
+#define GIS_UBUNTUPRO_OFFER_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_OFFER_PAGE, GisUbuntuProOfferPageClass))
+#define GIS_UBUNTUPRO_ATTACH_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_ATTACH_PAGE, GisUbuntuProAttachPageClass))
+#define GIS_UBUNTUPRO_LISTSERVICES_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GIS_TYPE_UBUNTUPRO_LISTSERVICES_PAGE, GisUbuntuProListServicesPageClass))
 
 typedef struct _GisUbuntuProPage        GisUbuntuProPage;
 typedef struct _GisUbuntuProPageClass   GisUbuntuProPageClass;
-typedef struct _GisUbuntuProPage1       GisUbuntuProPage1;
-typedef struct _GisUbuntuProPage1Class  GisUbuntuProPage1Class;
-typedef struct _GisUbuntuProPage2       GisUbuntuProPage2;
-typedef struct _GisUbuntuProPage2Class  GisUbuntuProPage2Class;
-typedef struct _GisUbuntuProPage3       GisUbuntuProPage3;
-typedef struct _GisUbuntuProPage3Class  GisUbuntuProPage3Class;
+typedef struct _GisUbuntuProOfferPage       GisUbuntuProOfferPage;
+typedef struct _GisUbuntuProOfferPageClass  GisUbuntuProOfferPageClass;
+typedef struct _GisUbuntuProAttachPage       GisUbuntuProAttachPage;
+typedef struct _GisUbuntuProAttachPageClass  GisUbuntuProAttachPageClass;
+typedef struct _GisUbuntuProListServicesPage       GisUbuntuProListServicesPage;
+typedef struct _GisUbuntuProListServicesPageClass  GisUbuntuProListServicesPageClass;
 
 struct _GisUbuntuProPage
 {
@@ -69,38 +69,38 @@ struct _GisUbuntuProPageClass
   GisPageClass parent_class;
 };
 
-struct _GisUbuntuProPage1
+struct _GisUbuntuProOfferPage
 {
   GtkBin parent;
 };
-struct _GisUbuntuProPage1Class
+struct _GisUbuntuProOfferPageClass
 {
   GtkBinClass parent_class;
 };
 
-struct _GisUbuntuProPage2
+struct _GisUbuntuProAttachPage
 {
   GtkBin parent;
 };
-struct _GisUbuntuProPage2Class
+struct _GisUbuntuProAttachPageClass
 {
   GtkBinClass parent_class;
 };
 
-struct _GisUbuntuProPage3
+struct _GisUbuntuProListServicesPage
 {
   GtkBin parent;
 };
 
-struct _GisUbuntuProPage3Class
+struct _GisUbuntuProListServicesPageClass
 {
   GtkBinClass parent_class;
 };
 
 GType gis_ubuntupro_page_get_type (void);
-GType gis_ubuntupro_page1_get_type (void);
-GType gis_ubuntupro_page2_get_type (void);
-GType gis_ubuntupro_page3_get_type (void);
+GType gis_ubuntupro_offer_page_get_type (void);
+GType gis_ubuntupro_attach_page_get_type (void);
+GType gis_ubuntupro_list_services_page_get_type (void);
 
 GisPage *gis_prepare_ubuntu_pro_page (GisDriver *driver);
 
