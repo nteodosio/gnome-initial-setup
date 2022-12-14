@@ -646,7 +646,7 @@ ua_attach(const gchar *token, GisUbuntuProAttachPagePrivate *priv)
       g_variant_new("(s)", token),
       G_VARIANT_TYPE("()"),
       G_DBUS_CALL_FLAGS_NONE,
-      543210, /* I have observed that -1, the default timeout, is not enough. */
+      123456, /* I have observed that -1, the default timeout, is not enough. */
       NULL,
       on_ua_attach_requested,
       priv);
