@@ -23,8 +23,6 @@ sources += files(
     'tz.h',
     'gis-bubble-widget.c',
     'gis-bubble-widget.h',
-    'gis-location-entry.c',
-    'gis-location-entry.h',
     'gis-timezone-page.c',
     'gis-timezone-page.h'
 )

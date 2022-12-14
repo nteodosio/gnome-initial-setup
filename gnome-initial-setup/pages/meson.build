@@ -10,6 +10,9 @@ pages = [
    'software',
    'summary',
    'welcome',
+   'ubuntu-report',
+   'livepatch',
+   'apps',
 ]
 
 if libmalcontent_dep.found() and libmalcontent_ui_dep.found()

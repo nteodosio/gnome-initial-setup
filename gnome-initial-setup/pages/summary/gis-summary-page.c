@@ -190,7 +190,7 @@ done_cb (GtkButton *button, GisSummaryPage *page)
       log_user_in (page);
       break;
     case GIS_DRIVER_MODE_EXISTING_USER:
-      g_application_quit (G_APPLICATION (GIS_PAGE (page)->driver));
+      gis_driver_quit (GIS_PAGE (page)->driver);
     default:
       break;
     }
@@ -249,6 +249,8 @@ gis_summary_page_constructed (GObject *object)
   GisSummaryPagePrivate *priv = gis_summary_page_get_instance_private (page);
 
   G_OBJECT_CLASS (gis_summary_page_parent_class)->constructed (object);
+
+  gis_page_set_hide_navigation (GIS_PAGE (page), TRUE);
 
   update_distro_name (page);
   g_signal_connect (priv->start_button, "clicked", G_CALLBACK (done_cb), page);

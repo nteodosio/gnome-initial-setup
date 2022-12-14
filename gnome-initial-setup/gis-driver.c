@@ -101,6 +101,9 @@ struct _GisDriver {
 
   const gchar *vendor_conf_file_path;
   GKeyFile *vendor_conf_file;
+
+  guint inhibit_count;
+  gboolean quit_requested;
 };
 
 G_DEFINE_TYPE (GisDriver, gis_driver, GTK_TYPE_APPLICATION)
@@ -589,6 +592,17 @@ gis_driver_is_small_screen (GisDriver *driver)
   return driver->small_screen;
 }
 
+static void
+gis_driver_shutdown (GApplication *app)
+{
+  GisDriver *driver = GIS_DRIVER (app);
+
+  G_APPLICATION_CLASS (gis_driver_parent_class)->shutdown (app);
+
+  if (driver->mode == GIS_DRIVER_MODE_EXISTING_USER)
+    gis_ensure_stamp_files (driver);
+}
+
 static gboolean
 monitor_is_small (GdkMonitor *monitor)
 {
@@ -873,6 +887,7 @@ gis_driver_class_init (GisDriverClass *klass)
   gobject_class->finalize = gis_driver_finalize;
   application_class->startup = gis_driver_startup;
   application_class->activate = gis_driver_activate;
+  application_class->shutdown = gis_driver_shutdown;
 
   signals[REBUILD_PAGES] =
     g_signal_new ("rebuild-pages",
@@ -966,6 +981,33 @@ gis_driver_save_data (GisDriver  *driver,
 
   return gis_assistant_save_data (driver->assistant, error);
 }
+
+void
+gis_driver_inhibit_quit (GisDriver *driver)
+{
+  driver->inhibit_count++;
+}
+
+void
+gis_driver_uninhibit_quit (GisDriver *driver)
+{
+  driver->inhibit_count--;
+  if (!driver->inhibit_count && driver->quit_requested)
+    gis_driver_quit (driver);
+}
+
+void gis_driver_quit (GisDriver *driver)
+{
+  if (driver->inhibit_count == 0)
+    {
+      g_application_quit (G_APPLICATION (driver));
+    }
+  else
+    {
+      driver->quit_requested = TRUE;
+      gtk_widget_hide (GTK_WIDGET (driver->main_window));
+    }
+  }
 
 GisDriver *
 gis_driver_new (GisDriverMode mode)

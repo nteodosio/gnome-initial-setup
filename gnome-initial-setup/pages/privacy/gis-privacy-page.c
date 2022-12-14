@@ -127,7 +127,7 @@ gis_privacy_page_constructed (GObject *object)
   priv->location_settings = g_settings_new ("org.gnome.system.location");
   priv->privacy_settings = g_settings_new ("org.gnome.desktop.privacy");
 
-  gtk_switch_set_active (GTK_SWITCH (priv->location_switch), TRUE);
+  gtk_switch_set_active (GTK_SWITCH (priv->location_switch), FALSE);
   gtk_switch_set_active (GTK_SWITCH (priv->reporting_switch), TRUE);
 
   update_os_data (page);
@@ -243,7 +243,7 @@ activate_link (GtkLabel       *label,
 static void
 gis_privacy_page_locale_changed (GisPage *page)
 {
-  gis_page_set_title (GIS_PAGE (page), _("Privacy"));
+  gis_page_set_title (GIS_PAGE (page), _("Welcome to Ubuntu"));
 }
 
 static void

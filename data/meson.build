@@ -99,6 +99,14 @@ if enable_systemd
     )
 endif
 
+i18n.merge_file(
+    input: 'com.ubuntu.welcome.policy.in',
+    output: 'com.ubuntu.welcome.policy',
+    install: true,
+    install_dir: join_paths(data_dir, 'polkit-1', 'actions'),
+    po_dir: po_dir,
+    type: 'xml'
+)
 
 rules_dir = join_paths(data_dir, 'polkit-1', 'rules.d')
 configure_file(

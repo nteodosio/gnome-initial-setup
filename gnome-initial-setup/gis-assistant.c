@@ -47,6 +47,7 @@ struct _GisAssistant
   GtkBox     parent_instance;
 
   GtkWidget *forward;
+  GtkWidget *done;
   GtkWidget *accept;
   GtkWidget *skip;
   GtkWidget *back;
@@ -121,7 +122,11 @@ find_next_page (GisAssistant *self,
 static void
 switch_to_next_page (GisAssistant *assistant)
 {
-  switch_to (assistant, find_next_page (assistant, assistant->current_page));
+  GisPage *page;
+
+  page = find_next_page (assistant, assistant->current_page);
+  if (page)
+    switch_to (assistant, page);
 }
 
 static void
@@ -185,6 +190,7 @@ set_navigation_button (GisAssistant *assistant,
                        GtkWidget    *widget)
 {
   gtk_widget_set_visible (assistant->forward, (widget == assistant->forward));
+  gtk_widget_set_visible (assistant->done, (widget == assistant->done));
   gtk_widget_set_visible (assistant->accept, (widget == assistant->accept));
   gtk_widget_set_visible (assistant->skip, (widget == assistant->skip));
 }
@@ -203,7 +209,7 @@ update_navigation_buttons (GisAssistant *assistant)
 
   is_last_page = (l->next == NULL);
 
-  if (is_last_page)
+  if (gis_page_get_hide_navigation (page))
     {
       gtk_widget_hide (assistant->back);
       gtk_widget_hide (assistant->forward);
@@ -223,6 +229,8 @@ update_navigation_buttons (GisAssistant *assistant)
 
       if (gis_page_get_needs_accept (page))
         next_widget = assistant->accept;
+      else if (is_last_page)
+        next_widget = assistant->done;
       else
         next_widget = assistant->forward;
 
@@ -254,6 +262,7 @@ update_applying_state (GisAssistant *assistant)
       is_first_page = assistant->pages->data == assistant->current_page;
     }
   gtk_widget_set_sensitive (assistant->forward, !applying);
+  gtk_widget_set_sensitive (assistant->done, !applying);
   gtk_widget_set_visible (assistant->back, !applying && !is_first_page);
   gtk_widget_set_visible (assistant->cancel, applying);
   gtk_widget_set_visible (assistant->spinner, applying);
@@ -405,6 +414,7 @@ gis_assistant_locale_changed (GisAssistant *assistant)
   GList *l;
 
   gtk_button_set_label (GTK_BUTTON (assistant->forward), _("_Next"));
+  gtk_button_set_label (GTK_BUTTON (assistant->done), _("_Done"));
   gtk_button_set_label (GTK_BUTTON (assistant->accept), _("_Accept"));
   gtk_button_set_label (GTK_BUTTON (assistant->skip), _("_Skip"));
   gtk_button_set_label (GTK_BUTTON (assistant->back), _("_Previous"));
@@ -440,6 +450,7 @@ gis_assistant_init (GisAssistant *assistant)
                     G_CALLBACK (current_page_changed), assistant);
 
   g_signal_connect (assistant->forward, "clicked", G_CALLBACK (go_forward), assistant);
+  g_signal_connect (assistant->done, "clicked", G_CALLBACK (go_forward), assistant);
   g_signal_connect (assistant->accept, "clicked", G_CALLBACK (go_forward), assistant);
   g_signal_connect (assistant->skip, "clicked", G_CALLBACK (go_forward), assistant);
 
@@ -478,6 +489,7 @@ gis_assistant_class_init (GisAssistantClass *klass)
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gnome/initial-setup/gis-assistant.ui");
 
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GisAssistant, forward);
+  gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GisAssistant, done);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GisAssistant, accept);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GisAssistant, skip);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GisAssistant, back);
