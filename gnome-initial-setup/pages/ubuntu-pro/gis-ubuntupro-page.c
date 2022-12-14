@@ -117,7 +117,7 @@ static void
 update_gui(GisUbuntuProAttachPagePrivate *priv, status_t status)
 {
   GtkWidget *label, *icon, *spinner;
-  gchar *hint = "Attach machine via your Ubuntu One account";
+  gchar *hint = _("Attach machine via your Ubuntu One account");
 
   if (priv->active_radio == MAGIC) {
     icon = priv->pin_status_icon;
@@ -142,19 +142,23 @@ update_gui(GisUbuntuProAttachPagePrivate *priv, status_t status)
 
   switch (status) {
   case SUCCESS:
-    gtk_label_set_markup(GTK_LABEL(label), "<span foreground=\"green\"><b>Valid token</b></span>");
+    gtk_label_set_markup(GTK_LABEL(label), g_strconcat(
+        "<span foreground=\"green\"><b>", _("Valid token"), "</b></span>", NULL
+    ));
     gtk_image_set_from_resource(GTK_IMAGE(icon), "/org/gnome/initial-setup/checkmark.svg");
     gtk_widget_set_sensitive(GTK_WIDGET(priv->token_field), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(priv->magic_radio), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(priv->token_radio), FALSE);
     break;
   case FAIL:
-    gtk_label_set_markup(GTK_LABEL(label), "<span foreground=\"red\"><b>Invalid token</b></span>");
+    gtk_label_set_markup(GTK_LABEL(label), g_strconcat(
+        "<span foreground=\"red\"><b>", _("Invalid token"), "</b></span>", NULL
+    ));
     gtk_image_set_from_resource(GTK_IMAGE(icon), "/org/gnome/initial-setup/fail.svg");
     break;
   case EXPIRED:
     hint = "Click the button to generate a new code.";
-    gtk_label_set_markup(GTK_LABEL(label), "Code expired");
+    gtk_label_set_markup(GTK_LABEL(label), _("Code expired"));
     gtk_image_set_from_resource(GTK_IMAGE(icon), "/org/gnome/initial-setup/fail.svg");
     break;
   default:
