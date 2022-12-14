@@ -84,7 +84,6 @@ struct _GisUbuntuProPage2Private {
   } active_radio;
   gchar *contract_token;
   gchar *token;
-  gchar *pin;
 };
 typedef struct _GisUbuntuProPage2Private GisUbuntuProPage2Private;
 
@@ -121,7 +120,6 @@ update_gui(GisUbuntuProPage2Private *priv, status_t status)
   gchar *hint = "Attach machine via your Ubuntu One account";
 
   if (priv->active_radio == MAGIC) {
-    gtk_label_set_text (GTK_LABEL (priv->pin_label), priv->pin);
     icon = priv->pin_status_icon;
     label = priv->pin_status;
     spinner = priv->pin_spinner;
@@ -584,7 +582,7 @@ request_magic_attach (GisUbuntuProPage2 *page)
       g_warning("Couldn't parse response.\n");
       return;
     }
-    priv->pin = strdup(resp.code);
+    gtk_label_set_text (GTK_LABEL (priv->pin_label), resp.code);
     priv->expired_by = resp.expiresIn + time(0);
     priv->token = strdup(resp.token);
     priv->magic_token_polling = TRUE;
