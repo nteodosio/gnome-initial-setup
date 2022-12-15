@@ -687,6 +687,9 @@ gis_ubuntupro_page_apply (GisPage      *gis_page,
 {
   GisUbuntuProPage *page = GIS_UBUNTUPRO_PAGE (gis_page);
   GisUbuntuProPagePrivate *priv = gis_ubuntupro_page_get_instance_private (page);
+  GisUbuntuProAttachPage *attach_page = GIS_UBUNTUPRO_ATTACH_PAGE (priv->attach_page);
+  GisUbuntuProAttachPagePrivate *priv_attach = gis_ubuntupro_attach_page_get_instance_private (attach_page);
+
   if (priv->current_page == 1) {
     GisUbuntuProOfferPage *offer_page = GIS_UBUNTUPRO_OFFER_PAGE (priv->offer_page);
     GisUbuntuProOfferPagePrivate *priv1 = gis_ubuntupro_offer_page_get_instance_private (offer_page);
@@ -699,8 +702,13 @@ gis_ubuntupro_page_apply (GisPage      *gis_page,
     on_magic_clicked(NULL, GIS_UBUNTUPRO_ATTACH_PAGE(priv->attach_page));
     gis_page_apply_complete (GIS_PAGE (page), FALSE);
     /* Change button from Skip to Next */
-    gis_page_set_complete (GIS_PAGE (page), FALSE);
+    //gis_page_set_complete (GIS_PAGE (page), FALSE);
     gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->attach_page);
+  } else if (priv->current_page == 2) {
+    const gchar *token = priv_attach->active_radio == MAGIC ?
+                         priv_attach->contract_token : 
+                         gtk_entry_get_text(GTK_ENTRY(priv_attach->token_field));
+    ua_attach(token, priv_attach);
   } else if (priv->current_page == 2 && SuccessfullyAttached) {
     GisUbuntuProListServicesPage *list_services_page = GIS_UBUNTUPRO_LISTSERVICES_PAGE(priv->list_services_page);
     display_ua_services(gis_ubuntupro_list_services_page_get_instance_private (list_services_page));
